@@ -18,7 +18,7 @@
 - Höhenunterschied Ronden-/Preformhalter
 - Was passiert physisch beim 8-mm-Nachfahren nach dem Greiferschließen (Wechsler und B-Achse)?
 - Nullpunkte 09.11.2026: Kontroll-Lauf MESS_REL_PLAN + MESS_ABS nach dem Technikertermin 19.11.2026 (Soll 19,50 / 4,50); neue X- und Y-Werte ohne Bestätigungslauf
-- G58-Z: gemessen +0,0625 mit T4081. Gegenprobe mit T4090 (`MESS_G58_Z_T4090_V1.nc`), dann entscheiden – Änderung verschiebt alle gedrehten Durchmesser um 0,125 und damit die Passungen
+- G58-Z: +0,0625 mit T4081 und T4090 bestätigt (Maschine). Entscheiden, ob und wann korrigiert wird – nur zusammen mit einer Frässtrategie-Version (Drehfräs-Aufmaße −0,0625). Beim Technikertermin 19.11.2026 darauf achten, dass G58-Z nicht unbemerkt geändert wird
 - Schräge Anstellung unter G59: Kalibrierteil A −65 bis −100 schreiben (braucht echtes hyperDENT-NC mit Anstellung); Vorhersage rund 6 µm je Grad prüfen; mit dem Techniker klären, ob die Steuerung eine Kinematik-Korrektur hat
 - `KONTROLL_TELESKOP_V1.nc` einmal fahren (zurückgestellt)
 - Lose Auflage im Spannsystem der B-Achse (NSE mini 90-25-V4): Wie hält die feste Auflage (Lippen, Gummischnur, Stift)? Winkelanschlag oder Höhenauflage (Filzstift-Probe)? Neues Teil von HEDS? Danach G58/G59 neu kalibrieren (11-stoerungen-historie.md)
