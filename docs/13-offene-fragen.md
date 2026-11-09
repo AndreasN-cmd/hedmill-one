@@ -17,7 +17,12 @@
 - Platz 7 mit Preform getestet?
 - Höhenunterschied Ronden-/Preformhalter
 - Was passiert physisch beim 8-mm-Nachfahren nach dem Greiferschließen (Wechsler und B-Achse)?
-- G58-Y / G59-Z: Bestätigung per Wiederholteil
+- Nullpunkte 09.11.2026: Kontroll-Lauf MESS_REL_PLAN + MESS_ABS nach dem Technikertermin 19.11.2026 (Soll 19,50 / 4,50); neue X- und Y-Werte ohne Bestätigungslauf
+- G58-Z: gemessen +0,0625 mit T4081. Gegenprobe mit T4090 (`MESS_G58_Z_T4090_V1.nc`), dann entscheiden – Änderung verschiebt alle gedrehten Durchmesser um 0,125 und damit die Passungen
+- Schräge Anstellung unter G59: Kalibrierteil A −65 bis −100 schreiben (braucht echtes hyperDENT-NC mit Anstellung); Vorhersage rund 6 µm je Grad prüfen; mit dem Techniker klären, ob die Steuerung eine Kinematik-Korrektur hat
+- `KONTROLL_TELESKOP_V1.nc` einmal fahren (zurückgestellt)
+- Lose Auflage im Spannsystem der B-Achse (NSE mini 90-25-V4): Wie hält die feste Auflage (Lippen, Gummischnur, Stift)? Winkelanschlag oder Höhenauflage (Filzstift-Probe)? Neues Teil von HEDS? Danach G58/G59 neu kalibrieren (11-stoerungen-historie.md)
+- Wie stark streut die Länge der Prefab-Tonnen (Soll 20,00)? 3–5 Rohlinge messen
 - Antwort von HEDS zu Look-ahead (`interpolator.parameter 200`), CNC 4.34 und Meldung 70222
 - Hybrid-Express-Halter: sechs Rückfragen offen (22-hybrid-express-halter.md)
 - Herkunft der Schnittwerte T4090 (S8000 / S18500, HL 8) und T4081 (S11500) in 06-werkzeuge-schnittwerte.md: eigene NC-Programme oder alter Stand? (weichen von der Werkzeug-DB ab)

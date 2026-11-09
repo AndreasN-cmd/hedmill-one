@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Versatz‑Rechner HEDmill</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#161922; --panel2:#1c2030; --line:#2a2f40;
+    --fg:#e6e9f0; --muted:#9aa3b2; --accent:#5aa9ff; --ok:#7ee787; --warn:#ffae57; --err:#ff7878;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,sans-serif;padding:24px;max-width:920px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 6px 0}
+  .sub{color:var(--muted);margin-bottom:24px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:16px}
+  .panel h2{font-size:16px;margin:0 0 4px 0;color:var(--accent)}
+  .panel .hint{color:var(--muted);font-size:12px;margin-bottom:14px}
+  .row{display:grid;grid-template-columns:1fr 140px 28px;gap:10px;align-items:center;margin:8px 0}
+  .row label{color:var(--fg)}
+  input[type=number]{
+    background:var(--panel2);border:1px solid var(--line);color:var(--fg);
+    border-radius:6px;padding:8px 10px;width:100%;text-align:right;
+    font-variant-numeric:tabular-nums;font-size:15px
+  }
+  input.ist{border-color:#3a4970}
+  input.cur{border-color:#3a3a3a}
+  input.rund{border-color:#5aa9ff}
+  .unit{color:var(--muted);font-size:12px}
+  hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+  .out{
+    background:#0a1626;border:1px solid #1f3a5f;border-radius:8px;padding:14px;
+    font-family:ui-monospace,Menlo,monospace;font-size:14px;color:#cfe3ff;line-height:1.7
+  }
+  .out .lbl{color:#7aa6d8;display:inline-block;width:48px}
+  .out .v{font-weight:600}
+  .check{
+    margin-top:10px;font-family:ui-monospace,Menlo,monospace;font-size:12px;
+    color:var(--muted);line-height:1.6
+  }
+  .check .ok{color:var(--ok)}
+  .check .warn{color:var(--warn)}
+  .placeholder{opacity:.55}
+  .footer{color:var(--muted);font-size:12px;margin-top:8px}
+  .pill{padding:2px 8px;border-radius:999px;font-size:11px;margin-left:6px}
+  .pill-ok{background:#13361f;color:#7ee787}
+  .pill-warn{background:#3a2a14;color:#ffae57}
+</style>
+</head>
+<body>
+
+<h1>Versatz‑Rechner HEDmill</h1>
+<div class="sub">Aktuellen Nullpunkt + Rund‑Ø + Anfräsungen eintragen — die XYZ‑Werte für die Nullpunkttabelle stehen unten.</div>
+
+<!-- ============ Aktueller G57 ============ -->
+<div class="panel">
+  <h2>Aktueller Nullpunkt vor dem Fräsen</h2>
+  <div class="hint">Die G57‑Werte, mit denen das Tonnen‑Programm gefahren wurde. Wird auf den gemessenen Versatz aufaddiert.</div>
+  <div class="row"><label>X</label><input type="number" class="cur" id="cur_X" step="0.001" value="0.000"><span class="unit">mm</span></div>
+  <div class="row"><label>Y</label><input type="number" class="cur" id="cur_Y" step="0.001" value="0.000"><span class="unit">mm</span></div>
+  <div class="row"><label>Z</label><input type="number" class="cur" id="cur_Z" step="0.001" value="0.000"><span class="unit">mm</span></div>
+</div>
+
+<!-- ============ G59 — Tonne A=-90 ============ -->
+<div class="panel">
+  <h2>G59 — Tonne A = ‑90 <span class="pill pill-ok">aktiv</span></h2>
+  <div class="hint">Programm: <code>IBN_Testpreform_A‑90.nc</code>. Werkstück liegt entlang Z, X und Y radial. Werkzeug X=‑6.75 (Rund) / X=‑6.25 (9 Uhr, X‑minus‑Fläche) / Y=‑6.25 (6 Uhr, Y‑minus‑Fläche). Soll: D_rund 10.500 / D_X 10.000 / D_Y 10.000.</div>
+
+  <div class="row"><label>Ø nach Rundfräsen</label><input type="number" class="rund" id="g59_R" step="0.001" placeholder="10.500"><span class="unit">mm</span></div>
+  <div class="row"><label>X‑minus Fläche zum Ø (9 Uhr)</label><input type="number" class="ist" id="g59_X" step="0.001" placeholder="10.000"><span class="unit">mm</span></div>
+  <div class="row"><label>Y‑minus Fläche zum Ø (6 Uhr)</label><input type="number" class="ist" id="g59_Y" step="0.001" placeholder="10.000"><span class="unit">mm</span></div>
+  <div class="check" id="g59_check"></div>
+</div>
+
+<!-- ============ G58 — Tonne A=0 ============ -->
+<div class="panel">
+  <h2>G58 — Tonne A = 0 <span class="pill pill-ok">aktiv</span></h2>
+  <div class="hint">Programm: <code>IBN_Testpreform_A0.nc</code>. Werkzeug X=‑6.25 (R1.5) → Plane X=‑4.75. Werkzeug Z=+4.5 (Stirnseite) → Plane Z=+4.5. Soll bei r=5: D_X 9.750, D_Z 9.500.</div>
+
+  <div class="row"><label>Ø nach Rundfräsen</label><input type="number" class="rund" id="g58_R" step="0.001" placeholder="10.000"><span class="unit">mm</span></div>
+  <div class="row"><label>X‑Fläche zum Ø (X minus)</label><input type="number" class="ist" id="g58_X" step="0.001" placeholder="9.750"><span class="unit">mm</span></div>
+  <div class="row"><label>Z‑Fläche zum Ø (Z plus)</label><input type="number" class="ist" id="g58_Z" step="0.001" placeholder="9.500"><span class="unit">mm</span></div>
+  <div class="check" id="g58_check"></div>
+</div>
+
+<!-- ============ Y vom Kreuz ============ -->
+<div class="panel placeholder">
+  <h2>Y aus Testkreuz <span class="pill pill-warn">Mess‑Eingabe folgt</span></h2>
+  <div class="hint">Y‑Verschiebung vom Kreuz. Wird auf den aktuellen G57‑Y aufaddiert. Gilt für G58 und G59 gleich.</div>
+  <div class="row"><label>Δ Y (vom Kreuz)</label><input type="number" class="ist" id="kreuz_Y" step="0.001" placeholder="0.000"><span class="unit">mm</span></div>
+</div>
+
+<!-- ============ Ergebnis ============ -->
+<div class="panel">
+  <h2>Eintrag in Nullpunkttabelle</h2>
+  <div class="out">
+<span class="lbl">G58</span> X <span class="v" id="o58X">—</span>   Y <span class="v" id="o58Y">—</span>   Z <span class="v" id="o58Z">—</span>
+<span class="lbl">G59</span> X <span class="v" id="o59X">—</span>   Y <span class="v" id="o59Y">—</span>   Z <span class="v" id="o59Z">—</span>
+  </div>
+  <div class="footer">Drei Nachkommastellen, alle Werte in mm. ΔZ wird aus der Z‑Anfräsung berechnet; der Rund‑Ø liefert die Querprobe (siehe oben pro Tonne).</div>
+</div>
+
+<script>
+  // Programm‑Geometrie (hart hinterlegt):
+  //   G58 (A=0):    Werkzeug X=-6.25 → Plane X=-4.75 (Mantel‑Cut), Werkzeug Z=+4.5 → Plane Z=+4.5 (Stirn‑Cut)
+  //   G59 (A=-90):  Werkzeug X=-6.25 → Plane X=-4.75, Werkzeug Y=-6.25 → Plane Y=-4.75 (beide Mantel‑Cut)
+  //   Soll Rund‑Ø: G58=10.000 (r=5.0) ; G59=10.500 (r=5.25, weil Werkzeug‑Tangente bei X=-6.75)
+  const PLANE_OFFSET   = 4.75;   // alle Mantel‑Anfräsungen
+  const Z_PLANE_OFFSET = 4.5;    // G58 Z‑Stirn‑Anfräsung
+  const R_SOLL_G58     = 5.000;
+  const R_SOLL_G59     = 5.250;
+
+  function val(id){
+    const v = parseFloat(document.getElementById(id).value);
+    return isNaN(v) ? null : v;
+  }
+  function fmt(n){ return (n>=0?'+':'') + n.toFixed(3); }
+
+  function computeG58(){
+    const Drund = val('g58_R');
+    const DX    = val('g58_X');
+    const DZ    = val('g58_Z');
+    const r     = (Drund!==null) ? Drund/2 : R_SOLL_G58;
+
+    const dX = (DX!==null && Drund!==null) ? (DX - r - PLANE_OFFSET) : null;
+    const dZ = (DZ!==null && Drund!==null) ? ((Z_PLANE_OFFSET + r) - DZ) : null;
+    const dZ_rund = (Drund!==null) ? (R_SOLL_G58 - r) : null;
+
+    const checkEl = document.getElementById('g58_check');
+    if(Drund===null){ checkEl.innerHTML = ''; }
+    else {
+      const lines = [`r aus Ø: <b>${r.toFixed(3)}</b> mm  (Soll 5.000)`];
+      if(dZ!==null && dZ_rund!==null){
+        const diff = Math.abs(dZ - dZ_rund);
+        const cls = diff <= 0.005 ? 'ok' : 'warn';
+        lines.push(`ΔZ aus Z‑Fläche: ${fmt(dZ)}  •  ΔZ aus Rund‑Ø: ${fmt(dZ_rund)}  <span class="${cls}">(Δ ${diff.toFixed(3)})</span>`);
+      } else if(dZ_rund!==null){
+        lines.push(`ΔZ aus Rund‑Ø: ${fmt(dZ_rund)}`);
+      }
+      checkEl.innerHTML = lines.join('<br>');
+    }
+    return {dX, dZ: (dZ!==null ? dZ : dZ_rund)};
+  }
+
+  function computeG59(){
+    const Drund = val('g59_R');
+    const DX    = val('g59_X');
+    const DY    = val('g59_Y');
+    const r     = (Drund!==null) ? Drund/2 : R_SOLL_G59;
+
+    const dX = (DX!==null && Drund!==null) ? (DX - r - PLANE_OFFSET) : null;
+    const dY = (DY!==null && Drund!==null) ? (DY - r - PLANE_OFFSET) : null;
+    const dR_rund = (Drund!==null) ? (R_SOLL_G59 - r) : null;  // radialer Rund‑Versatz
+
+    const checkEl = document.getElementById('g59_check');
+    if(Drund===null){ checkEl.innerHTML = ''; }
+    else {
+      const lines = [`r aus Ø: <b>${r.toFixed(3)}</b> mm  (Soll 5.250)`];
+      if(dR_rund!==null){
+        lines.push(`Rund‑Ø Abweichung radial: ${fmt(dR_rund)} mm  (steckt in X und/oder Y)`);
+      }
+      checkEl.innerHTML = lines.join('<br>');
+    }
+    return {dX, dY};
+  }
+
+  function recalc(){
+    const cX = val('cur_X') ?? 0;
+    const cY = val('cur_Y') ?? 0;
+    const cZ = val('cur_Z') ?? 0;
+    const dY_kreuz = val('kreuz_Y');
+
+    const r58 = computeG58();
+    const r59 = computeG59();
+
+    document.getElementById('o58X').textContent = r58.dX===null? '—' : fmt(cX + r58.dX);
+    document.getElementById('o58Z').textContent = r58.dZ===null? '—' : fmt(cZ + r58.dZ);
+    document.getElementById('o58Y').textContent = (r59.dY!==null) ? fmt(cY + r59.dY)
+                                                : (dY_kreuz!==null ? fmt(cY + dY_kreuz) : '—');
+
+    document.getElementById('o59X').textContent = r59.dX===null? '—' : fmt(cX + r59.dX);
+    document.getElementById('o59Y').textContent = r59.dY===null? '—' : fmt(cY + r59.dY);
+    document.getElementById('o59Z').textContent = (r58.dZ!==null) ? fmt(cZ + r58.dZ)
+                                                : (dY_kreuz!==null ? '—' : '—');
+  }
+
+  document.querySelectorAll('input').forEach(el=>el.addEventListener('input',recalc));
+  recalc();
+</script>
+</body>
+</html>

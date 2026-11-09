@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nullpunkt-Rechner G58 / G59 · HEDmill</title>
+<style>
+  :root{
+    --paper:#F1EEEA; --card:#FFFFFF; --ink:#333F48; --mut:#6E7883;
+    --line:#DDD7D1; --line2:#C9C1BA; --sand:#E1DDDA;
+    --rot:#89201F; --ziegel:#BF6352; --lachs:#F2A895;
+    --neu:#156A4E; --neu-bg:#E9F1EC; --focus:#333F48;
+    --mono:ui-monospace,"Cascadia Mono","Consolas","Menlo",monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+       font-size:15px;line-height:1.45;padding:28px 16px 60px}
+  .wrap{max-width:880px;margin:0 auto}
+
+  /* Kopf im Stil eines NC-Kommentarblocks */
+  .nchead{font-family:var(--mono);font-size:13px;color:var(--mut);
+          border:1px solid var(--line2);border-left:4px solid var(--rot);
+          background:var(--card);padding:14px 18px;border-radius:6px;white-space:pre-wrap}
+  .nchead b{color:var(--rot);font-weight:600}
+
+  h1{font-size:20px;font-weight:650;letter-spacing:.01em;margin:26px 0 4px}
+  .sub{color:var(--mut);margin-bottom:22px}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media (max-width:700px){.grid{grid-template-columns:1fr}}
+
+  .card{background:var(--card);border:1px solid var(--line2);border-radius:8px;
+        border-top:4px solid var(--rot);padding:20px 20px 18px}
+  .card.g59{border-top-color:var(--ziegel)}
+  .card h2{font-size:15px;font-weight:650;display:flex;align-items:baseline;gap:10px}
+  .card h2 .np{font-family:var(--mono);font-size:17px;color:var(--rot)}
+  .card.g59 h2 .np{color:var(--ziegel)}
+  .card h2 .tag{font-size:12px;color:var(--mut);font-weight:500}
+  .hint{font-size:12.5px;color:var(--mut);margin:4px 0 16px}
+
+  fieldset{border:0;padding:0;margin:0 0 14px}
+  legend{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+         color:var(--mut);margin-bottom:8px;font-weight:600}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .row1{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  label{display:block;font-size:12px;color:var(--mut);margin-bottom:3px}
+  input{width:100%;font-family:var(--mono);font-size:15px;padding:7px 9px;
+        border:1px solid var(--line2);border-radius:5px;background:#FDFCFB;color:var(--ink)}
+  input::placeholder{color:#B9B1AA;opacity:1}
+  input:hover{border-color:var(--lachs)}
+  input:focus{outline:2px solid var(--focus);outline-offset:1px}
+
+  /* DRO-Zeile: Delta / Korrektur */
+  .dro{display:flex;gap:0;border:1px solid var(--line2);border-radius:6px;
+       overflow:hidden;margin:6px 0 14px;background:#FBFAF8}
+  .dro div{flex:1;padding:8px 10px;text-align:center}
+  .dro div+div{border-left:1px solid var(--line)}
+  .dro .k{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+  .dro .v{font-family:var(--mono);font-size:17px;font-weight:600}
+  .dro .v.neg{color:var(--ziegel)}
+  .dro .v.pos{color:var(--neu)}
+
+  table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:15px}
+  th{font-family:var(--sans);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+     color:var(--mut);font-weight:600;text-align:left;padding:0 8px 5px;
+     border-bottom:2px solid var(--sand)}
+  td{border:1px solid var(--line2);padding:8px 10px;background:#FBFAF8}
+  td.axis{font-family:var(--sans);font-size:12px;color:var(--mut);width:52px;background:transparent;border:0}
+  td.neu{background:var(--neu-bg);color:var(--neu);font-weight:650}
+  td.keep{color:#8A929B}
+  .note{font-size:12.5px;color:var(--mut);margin-top:10px}
+  .note.warn{color:var(--rot)}
+
+  .conv{display:flex;align-items:center;gap:10px;margin:24px 0 18px;
+        font-size:13.5px;color:var(--mut);flex-wrap:wrap}
+  .conv select{font-family:var(--sans);font-size:13.5px;padding:5px 8px;
+        border:1px solid var(--line2);border-radius:5px;background:var(--card);color:var(--ink)}
+  .foot{font-size:12.5px;color:var(--mut);margin-top:26px;border-top:1px solid var(--line2);
+        padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="nchead">; ==========================================================
+; <b>NULLPUNKT-RECHNER G58 / G59</b> - HEDmill Drehfraesen
+; Eingabe: aktuelle Nullpunkte + Messwert
+; Ausgabe: neue Werte fuer die Nullpunkttabelle
+; ==========================================================</div>
+
+  <h1>Nullpunkt-Rechner</h1>
+  <p class="sub">Sollmaße sind fest hinterlegt (G58: 5,00&nbsp;mm · G59: 4,50&nbsp;mm) und erscheinen hellgrau im leeren Ist-Feld. Korrektur = Soll&nbsp;−&nbsp;Ist, wird auf die betroffene Achse addiert; alle anderen Achsen bleiben unverändert. Komma oder Punkt als Dezimaltrenner, Ausgabe auf 0,001&nbsp;mm.</p>
+
+  <div class="conv">
+    <label for="conv" style="margin:0;font-size:13.5px;color:var(--ink)">Vorzeichenkonvention der Tabelle:</label>
+    <select id="conv">
+      <option value="1" selected>Standard (Korrektur wird addiert)</option>
+      <option value="-1">Invertiert (Korrektur wird subtrahiert)</option>
+    </select>
+    <span>– im Zweifel Standard lassen und per Wiederholteil bestätigen.</span>
+  </div>
+
+  <div class="grid">
+
+    <!-- G58 -->
+    <div class="card">
+      <h2><span class="np">G58</span><span class="tag">Absolutmessung · Drehfräsen A0 · korrigiert Y</span></h2>
+      <p class="hint">Messung Stirnfläche → Schulter am Preform (MESS_ABS). Soll: 5,00&nbsp;mm, fest.</p>
+
+      <fieldset>
+        <legend>Aktueller Nullpunkt (aus der Tabelle eintragen)</legend>
+        <div class="row3">
+          <div><label for="g58x">X alt</label><input id="g58x" inputmode="decimal" autocomplete="off"></div>
+          <div><label for="g58y">Y alt</label><input id="g58y" inputmode="decimal" autocomplete="off"></div>
+          <div><label for="g58z">Z alt</label><input id="g58z" inputmode="decimal" autocomplete="off"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Messung</legend>
+        <div class="row1">
+          <div><label for="istAbs">Ist [mm]</label><input id="istAbs" inputmode="decimal" autocomplete="off" placeholder="5,00"></div>
+        </div>
+      </fieldset>
+
+      <div class="dro">
+        <div><div class="k">Delta (Ist−Soll)</div><div class="v" id="dAbs">–</div></div>
+        <div><div class="k">Korrektur auf Y</div><div class="v" id="kAbs">–</div></div>
+      </div>
+
+      <table aria-label="Neuer Nullpunkt G58">
+        <thead><tr><th></th><th>X</th><th>Y</th><th>Z</th></tr></thead>
+        <tbody><tr>
+          <td class="axis">neu</td>
+          <td class="keep" id="g58xn">–</td>
+          <td class="neu" id="g58yn">–</td>
+          <td class="keep" id="g58zn">–</td>
+        </tr></tbody>
+      </table>
+      <p class="note" id="noteAbs"></p>
+    </div>
+
+    <!-- G59 -->
+    <div class="card g59">
+      <h2><span class="np">G59</span><span class="tag">Relativtest · Planen A-90 · korrigiert Z</span></h2>
+      <p class="hint">Messung Planfläche → Schulter nach MESS_REL_PLAN + MESS_ABS. Soll: 4,50&nbsp;mm, fest. Nur korrigieren, wenn G58-Y bereits bestätigt ist.</p>
+
+      <fieldset>
+        <legend>Aktueller Nullpunkt (aus der Tabelle eintragen)</legend>
+        <div class="row3">
+          <div><label for="g59x">X alt</label><input id="g59x" inputmode="decimal" autocomplete="off"></div>
+          <div><label for="g59y">Y alt</label><input id="g59y" inputmode="decimal" autocomplete="off"></div>
+          <div><label for="g59z">Z alt</label><input id="g59z" inputmode="decimal" autocomplete="off"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Messung</legend>
+        <div class="row1">
+          <div><label for="istRel">Ist [mm]</label><input id="istRel" inputmode="decimal" autocomplete="off" placeholder="4,50"></div>
+        </div>
+      </fieldset>
+
+      <div class="dro">
+        <div><div class="k">Delta (Ist−Soll)</div><div class="v" id="dRel">–</div></div>
+        <div><div class="k">Korrektur auf Z</div><div class="v" id="kRel">–</div></div>
+      </div>
+
+      <table aria-label="Neuer Nullpunkt G59">
+        <thead><tr><th></th><th>X</th><th>Y</th><th>Z</th></tr></thead>
+        <tbody><tr>
+          <td class="axis">neu</td>
+          <td class="keep" id="g59xn">–</td>
+          <td class="keep" id="g59yn">–</td>
+          <td class="neu" id="g59zn">–</td>
+        </tr></tbody>
+      </table>
+      <p class="note" id="noteRel"></p>
+    </div>
+
+  </div>
+
+  <p class="foot">Grüne Zelle = neuer Tabellenwert, graue Zellen unverändert übernehmen. Korrekturen unter 0,05&nbsp;mm liegen im Bereich des Messschieber-Rauschens – erst mit Bügelmessschraube absichern. Nach jedem Tabelleneintrag: Wiederholteil fräsen und Soll bestätigen.</p>
+</div>
+
+<script>
+  var SOLL_ABS = 5.00;
+  var SOLL_REL = 4.50;
+
+  function num(id){
+    var t = document.getElementById(id).value.trim().replace(',', '.');
+    if (t === '') return null;
+    var v = parseFloat(t);
+    return isNaN(v) ? null : v;
+  }
+  function fmt(v){
+    if (v === null) return '–';
+    var s = (Math.round(v * 1000) / 1000).toFixed(3).replace('.', ',');
+    return (v > 0 ? '+' : '') + s;
+  }
+  function fmtPlain(v){
+    if (v === null) return '–';
+    return (Math.round(v * 1000) / 1000).toFixed(3).replace('.', ',');
+  }
+  function setDelta(id, v){
+    var el = document.getElementById(id);
+    el.textContent = fmt(v);
+    el.className = 'v' + (v === null ? '' : (v < 0 ? ' neg' : v > 0 ? ' pos' : ''));
+  }
+  function calc(){
+    var conv = parseFloat(document.getElementById('conv').value);
+
+    // G58 (absolut -> Y), Soll fest
+    var istA = num('istAbs');
+    var dA = (istA !== null) ? istA - SOLL_ABS : null;
+    var kA = dA === null ? null : conv * (SOLL_ABS - istA);
+    setDelta('dAbs', dA); setDelta('kAbs', kA);
+    var yAlt = num('g58y');
+    document.getElementById('g58xn').textContent = fmtPlain(num('g58x'));
+    document.getElementById('g58yn').textContent = (yAlt !== null && kA !== null) ? fmtPlain(yAlt + kA) : '–';
+    document.getElementById('g58zn').textContent = fmtPlain(num('g58z'));
+    var nA = document.getElementById('noteAbs');
+    if (dA !== null && Math.abs(dA) < 0.05){
+      nA.textContent = 'Abweichung unter 0,05 mm – im Messrauschen. Empfehlung: Wert nicht ändern oder erst genauer messen.';
+      nA.className = 'note warn';
+    } else { nA.textContent = ''; nA.className = 'note'; }
+
+    // G59 (relativ -> Z), Soll fest
+    var istR = num('istRel');
+    var dR = (istR !== null) ? istR - SOLL_REL : null;
+    var kR = dR === null ? null : conv * (SOLL_REL - istR);
+    setDelta('dRel', dR); setDelta('kRel', kR);
+    var zAlt = num('g59z');
+    document.getElementById('g59xn').textContent = fmtPlain(num('g59x'));
+    document.getElementById('g59yn').textContent = fmtPlain(num('g59y'));
+    document.getElementById('g59zn').textContent = (zAlt !== null && kR !== null) ? fmtPlain(zAlt + kR) : '–';
+    var nR = document.getElementById('noteRel');
+    if (dR !== null && Math.abs(dR) < 0.05){
+      nR.textContent = 'Abweichung unter 0,05 mm – im Messrauschen. Empfehlung: Wert nicht ändern oder erst genauer messen.';
+      nR.className = 'note warn';
+    } else { nR.textContent = ''; nR.className = 'note'; }
+  }
+  document.querySelectorAll('input, select').forEach(function(el){
+    el.addEventListener('input', calc);
+  });
+  calc();
+</script>
+</body>
+</html>

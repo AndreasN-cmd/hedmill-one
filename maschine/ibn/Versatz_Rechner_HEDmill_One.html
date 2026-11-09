@@ -1,0 +1,1165 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Versatz-Rechner HEDmill One — Nullpunkte einmessen</title>
+<style>
+  :root{
+    --bg:#eef1f5; --card:#ffffff; --line:#ccd5df; --line2:#e3e9ef;
+    --fg:#141d27; --muted:#5a6b7d;
+    --accent:#0a5fbf; --accent-bg:#e8f1fc;
+    --ok:#0d7a3c; --ok-bg:#e3f6ea;
+    --warn:#a35c00; --warn-bg:#fff2df;
+    --err:#b3261e; --err-bg:#fdeceb;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:28px 20px 80px}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{margin-bottom:22px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+  h1{font-size:27px;line-height:1.2;margin:0;letter-spacing:-.3px}
+  h1 small{display:block;font-size:15px;font-weight:500;color:var(--muted);margin-top:5px;letter-spacing:0}
+  .btn{appearance:none;border:1.5px solid var(--line);background:var(--card);color:var(--fg);
+    font:600 15px/1 system-ui,sans-serif;padding:12px 18px;border-radius:9px;cursor:pointer}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  .card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;
+    padding:22px 24px;margin-bottom:18px}
+  .card > h2{font-size:19px;margin:0 0 3px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .card > .lead{color:var(--muted);font-size:14.5px;margin:0 0 18px}
+  .num{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+    width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;
+    font-size:15px;font-weight:700}
+  .chip{font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:999px;
+    background:var(--accent-bg);color:var(--accent);letter-spacing:.2px}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:860px){.grid,.grid4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.grid,.grid4{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:9px}
+  .field .sub{font-size:12.5px;color:var(--muted);font-weight:400;line-height:1.45;min-height:34px}
+  .field input{font:600 21px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-variant-numeric:tabular-nums;padding:13px 14px;border:2px solid var(--line);
+    border-radius:10px;text-align:right;background:#fbfcfd;color:var(--fg);width:100%}
+  .field input:focus{outline:none;border-color:var(--accent);background:#fff;
+    box-shadow:0 0 0 4px rgba(10,95,191,.14)}
+  .field input::placeholder{color:#a9b6c4;font-weight:500}
+  .bdg{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+    width:25px;height:25px;border-radius:50%;background:var(--accent);color:#fff;
+    font-weight:800;font-size:13.5px}
+  .soll-pill{font:700 12.5px ui-monospace,Menlo,monospace;background:var(--accent-bg);
+    color:var(--accent);padding:3px 9px;border-radius:6px;margin-left:auto}
+
+  .armhead{font-size:14px;font-weight:800;color:var(--muted);letter-spacing:.6px;
+    text-transform:uppercase;margin:20px 0 10px;padding-bottom:6px;border-bottom:1.5px solid var(--line2)}
+
+  .views{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  @media(max-width:860px){.views{grid-template-columns:1fr}}
+  .fig{background:linear-gradient(180deg,#f8fafc,#eef2f6);border:1.5px solid var(--line2);
+    border-radius:12px;padding:12px 14px 10px;margin:0;display:flex;flex-direction:column}
+  .fig figcaption{font-size:12.5px;color:var(--muted);margin-top:9px;text-align:center;
+    border-top:1px solid var(--line2);padding-top:8px}
+  .fig figcaption b{color:#33424f;font-weight:700}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);
+    justify-content:center;margin:0 0 16px}
+  .legend i{display:inline-block;width:13px;height:13px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+
+  .probe{margin-top:18px;border-top:1.5px dashed var(--line);padding-top:16px;
+    font-size:14px;display:flex;flex-direction:column;gap:10px}
+  .probe .ln{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .probe .k{color:var(--muted);min-width:250px}
+  .probe .val{font:700 16px ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+  .badge{font-size:12px;font-weight:700;padding:3px 9px;border-radius:6px}
+  .b-ok{background:var(--ok-bg);color:var(--ok)}
+  .b-warn{background:var(--warn-bg);color:var(--warn)}
+  .b-err{background:var(--err-bg);color:var(--err)}
+  .muted{color:var(--muted)}
+
+  .result{background:#0d2438;border-color:#0d2438;color:#eaf2fa}
+  .result h2{color:#fff} .result .lead{color:#9fb6cc}
+  .rrow{display:grid;grid-template-columns:78px repeat(3,1fr);gap:14px;align-items:center;
+    padding:15px 0;border-top:1px solid #1e3b56}
+  @media(max-width:720px){.rrow{grid-template-columns:64px 1fr;row-gap:8px}}
+  .rrow .np{font:800 21px system-ui,sans-serif;color:#7fc0ff}
+  .rcell .ax{font-size:12px;color:#8fa9c2;letter-spacing:1.2px;font-weight:700}
+  .rcell .v{font:700 25px ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;
+    color:#fff;letter-spacing:-.5px}
+  .rcell .d{font-size:12.5px;color:#9fb6cc;font-variant-numeric:tabular-nums}
+  .extra{border-top:1px solid #1e3b56;padding-top:15px;margin-top:4px;display:flex;
+    gap:34px;flex-wrap:wrap}
+  .extra div span{display:block}
+  .extra .lbl{font-size:12px;color:#8fa9c2;letter-spacing:1.1px;font-weight:700}
+  .extra .v2{font:700 22px ui-monospace,Menlo,monospace;color:#fff}
+
+  details{border:1.5px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:14px}
+  details[open]{border-color:#b9cfe8}
+  summary{cursor:pointer;padding:17px 22px;font-size:17px;font-weight:700;list-style:none;
+    display:flex;align-items:center;gap:11px}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"▸";color:var(--accent);font-size:15px;transition:transform .15s}
+  details[open] summary::before{transform:rotate(90deg)}
+  .dbody{padding:0 22px 22px;border-top:1px solid var(--line2);margin-top:-1px;padding-top:18px}
+
+  ol.steps{margin:0;padding:0;list-style:none;counter-reset:s}
+  ol.steps > li{counter-increment:s;position:relative;padding:0 0 20px 46px;margin-bottom:2px;
+    border-left:2px solid var(--line2)}
+  ol.steps > li:last-child{border-left-color:transparent;padding-bottom:0}
+  ol.steps > li::before{content:counter(s);position:absolute;left:-16px;top:-2px;width:30px;height:30px;
+    border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:15px;
+    display:flex;align-items:center;justify-content:center}
+  ol.steps h4{margin:2px 0 7px;font-size:16px}
+  ol.steps p{margin:0 0 8px;font-size:14.5px;color:#33424f}
+  ol.steps ul{margin:6px 0 0;padding-left:19px;font-size:14.5px;color:#33424f}
+  ol.steps li li{margin-bottom:5px}
+
+  code{font:600 13.5px ui-monospace,Menlo,monospace;background:#eef2f6;padding:2px 6px;
+    border-radius:5px;color:#0f3f75}
+  .callout{border-left:4px solid var(--warn);background:var(--warn-bg);border-radius:0 9px 9px 0;
+    padding:13px 16px;margin:14px 0;font-size:14.5px;color:#5c3b0c}
+  .callout.info{border-left-color:var(--accent);background:var(--accent-bg);color:#123f72}
+  .callout.good{border-left-color:var(--ok);background:var(--ok-bg);color:#0b4f28}
+  .formula{background:#f6f8fa;border:1.5px solid var(--line2);border-radius:10px;padding:15px 17px;
+    font:14px/1.85 ui-monospace,Menlo,monospace;overflow-x:auto;margin:12px 0;color:#22303d}
+  .formula b{color:#0a5fbf}
+  table.geo{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}
+  table.geo th,table.geo td{border:1px solid var(--line);padding:9px 11px;text-align:left}
+  table.geo th{background:#f2f5f8;font-weight:700}
+  table.geo td:first-child{font-weight:600;white-space:nowrap}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:26px;line-height:1.7}
+
+  @media print{
+    body{background:#fff;padding:0;font-size:12px}
+    .btn{display:none}
+    .card,details{break-inside:avoid;border-color:#bbb}
+    details:not([open]) .dbody{display:block}
+    .result{background:#fff;color:#000;border:1.5px solid #333}
+    .result h2,.rcell .v,.extra .v2,.rrow .np{color:#000}
+    .result .lead,.rcell .ax,.rcell .d,.extra .lbl{color:#444}
+    .rrow,.extra{border-top:1px solid #999}
+  }
+
+  /* aus dem Tonnen-Rechner uebernommen */
+  .rrow.has-copy{grid-template-columns:78px repeat(3,1fr) auto}
+  @media(max-width:720px){.rrow.has-copy{grid-template-columns:64px 1fr}}
+  .btn-copy{appearance:none;border:1.5px solid #2c5478;background:#12314a;color:#cfe4f8;
+    font:600 13.5px system-ui,sans-serif;padding:9px 14px;border-radius:8px;cursor:pointer}
+  .btn-copy:hover{border-color:#7fc0ff;color:#fff}
+  .field.soll input{border-color:#b9cfe8}
+
+  /* Reiter */
+  .tabs{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+  .tab{appearance:none;border:1.5px solid var(--line);background:var(--card);color:var(--muted);
+    font:800 16px system-ui,sans-serif;padding:15px 24px;border-radius:12px;cursor:pointer;
+    display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;flex:1 1 260px}
+  .tab small{font-weight:500;font-size:12.5px;opacity:.9}
+  .tab:hover{border-color:var(--accent);color:var(--accent)}
+  .tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .tab.active small{color:#d3e6fb}
+  .pane{display:none}
+  .pane.active{display:block}
+  .paneintro{font-size:14.5px;color:var(--muted);margin:0 0 20px;padding:14px 18px;
+    background:var(--card);border:1.5px solid var(--line);border-radius:12px}
+  .paneintro b{color:var(--fg)}
+  @media print{ .tabs{display:none} .pane{display:block!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>Versatz-Rechner HEDmill One
+      <small>Werkstück-Nullpunkte aus Testteilen einmessen · Testkreuz und Drehfräs-Preforms</small>
+    </h1>
+  </div>
+  <button class="btn" onclick="window.print()">Drucken</button>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-pane="pane-kreuz">Testkreuz
+    <small>G54 · G55 &nbsp;—&nbsp; B = 0 / B = 180</small></button>
+  <button class="tab" data-pane="pane-tonnen">Drehfräsnullpunkte
+    <small>G58 · G59 &nbsp;—&nbsp; A = 0 / A = −90</small></button>
+</nav>
+
+<section class="pane active" id="pane-kreuz">
+  <div class="paneintro"><b>Testkreuz</b> — bestimmt X für G54 und G55, die A-Kippung und über die
+    Kreuzhöhe den Werkzeug-Längenoffset. Programm <code>IBN_Testkreuz.nc</code>, rund 40 Minuten.
+    Y kann das Kreuz nicht liefern.</div>
+<!-- ============================== ANLEITUNG ============================== -->
+<details open>
+  <summary>Kurzanleitung — so wird eingemessen</summary>
+  <div class="dbody">
+
+    <div class="callout info">
+      <strong>Prinzip:</strong> Das Programm fräst aus <code>B = 0</code> (Nullpunkt G54) einen
+      Kreuz-<strong>Steg</strong> und aus <code>B = 180</code> (Nullpunkt G55) eine Kreuz-<strong>Nut</strong>
+      von der Gegenseite hinein. Übrig bleibt pro Arm ein U-Kanal mit zwei Seitenwänden: die äußere
+      Fläche kommt aus dem einen Pass, die innere aus dem anderen. Sitzt die Drehachse daneben,
+      wird eine Wand dicker und die andere dünner. <strong>Die Asymmetrie ist das Messsignal —
+      der Absolutwert der Wandstärke ist unerheblich.</strong>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <h4>Vorbereiten</h4>
+        <p>Rohteil wie im Produktionsbetrieb spannen. Werkzeuge <code>T3030</code> (Ø3 Ball) und
+           <code>T3020</code> (Ø2 Ball) werden beim Einwechseln automatisch vermessen.</p>
+        <div class="callout">
+          <strong>G54 und G55 ablesen — nur über die normale CNC-Oberfläche</strong>, die
+          Nullpunkttabelle ist über die Easy-HMI nicht erreichbar. In der Tabelle müssen bei
+          beiden Nullpunkten <strong>A und B auf 0</strong> stehen; die 180°-Drehung macht das
+          Programm selbst.
+        </div>
+      </li>
+
+      <li>
+        <h4>Kreuz fräsen — <code>IBN_Testkreuz.nc</code></h4>
+        <p>Rund 40 Minuten. Das Programm schaltet B selbständig zwischen 0° und 180° und wechselt
+           dabei zwischen G54 und G55 — beide Aufspannungen laufen also in einem Durchgang.
+           A bleibt durchgehend auf 0.</p>
+      </li>
+
+      <li>
+        <h4>+X-Richtung anzeichnen, <em>bevor</em> das Teil herauskommt</h4>
+        <div class="callout">
+          Das ist der kritische Schritt. Alle acht Wandstärken sind einzeln nur zu gebrauchen, wenn
+          klar ist, welche Wand auf der Plus- und welche auf der Minus-Seite liegt. Ist die
+          Orientierung weg, ist die Messung wertlos — die Vorzeichen kippen und die Korrektur geht
+          in die falsche Richtung.
+        </div>
+        <p>Mit Folienstift auf dem Teil markieren: einen Pfeil in <strong>+X</strong> und einen in
+           <strong>+Y</strong>, dazu die Armbezeichnungen 12 / 3 / 6 / 9 Uhr. Die Zuordnung ist die
+           gleiche wie bei den Tonnen: Blick auf die Werkstückebene, X+ nach rechts, Y+ nach oben,
+           12 Uhr oben.</p>
+      </li>
+
+      <li>
+        <h4>Ausbauen und messen</h4>
+        <p><strong>Nicht in der Maschine messen.</strong> Teil herausnehmen oder den ganzen Halter
+           entnehmen — beides ist gleichwertig.</p>
+        <ul>
+          <li><strong>Acht Wandstärken</strong>: pro Arm die beiden Seitenwände des U-Kanals.
+              Messschieber quer über die Wand, etwa auf halber Kanaltiefe. Soll je 1,810 mm.</li>
+          <li><strong>Vier Gesamthöhen</strong> an den Armen 12 / 3 / 6 / 9 Uhr: flächig von der
+              Unterseite bis zur Oberseite, möglichst weit außen (bei ±38). Soll je 10,000 mm.
+              Nicht die Kanaltiefe messen.</li>
+          <li>Jeden Wert 2–3× messen und den Mittelwert nehmen. Messrauschen ± 0,005 mm.</li>
+        </ul>
+        <div class="callout good">
+          Die Messhöhe an der Wand ist <strong>unkritisch</strong>: Steg und Nut sind beide mit
+          ~2° entformt, aber gegenläufig. Die Verjüngungen heben sich fast auf, die Soll-Wandstärke
+          schwankt über die ganze Kanaltiefe nur zwischen 1,844 und 1,848 mm.
+        </div>
+        <div class="callout">
+          Liegen <em>alle</em> Wände reproduzierbar über 1,810 (etwa durchgängig bei 1,86), ist das
+          Werkzeugabdrängung — beide Flanken drängen in dieselbe Richtung und machen die Wand dicker.
+          Für die Rechnung ohne Bedeutung, weil nur die Differenz eingeht.
+        </div>
+      </li>
+
+      <li>
+        <h4>Werte übertragen — zwei verschiedene Orte</h4>
+        <p><strong>ΔX in die Nullpunkttabelle</strong>, über die normale CNC-Oberfläche, auf G54_X
+           und G55_X gleichermaßen. <strong>B bleibt bei beiden auf 0</strong> — die 180°-Drehung
+           macht das Programm selbst.</p>
+        <div class="callout">
+          <strong>Der Höhenfehler geht nicht in die Nullpunkttabelle.</strong> Ist das Testkreuz zu
+          hoch, wird der halbe Fehler auf die Variable <strong>WZ-Längenoffset</strong> addiert:
+          in der HMI unter <code>BACK / Maschinenparameter</code>, danach
+          <strong>„Übertragen in SPS"</strong>. Der Faktor ½ kommt daher, dass das Werkzeug beide
+          Stirnflächen anfährt und ein Längenfehler doppelt in die Höhe eingeht.
+        </div>
+        <p><strong>ΔA in die A-Spalte</strong> der Nullpunkttabelle, bei G54 und G55 derselbe
+           Wert mit demselben Vorzeichen. A steht in beiden Aufspannungen auf 0, die Kippung wirkt
+           also in beiden gleich. Eine Kippung lässt sich nicht durch eine Verschiebung in X, Y
+           oder Z aufheben — deshalb gehört der Wert in die A-Spalte, nicht in eine Längenspalte.</p>
+        <p>ΔA wird bei jedem Lauf mitgerechnet. Die Querprobe 3 Uhr − 9 Uhr zeigt dabei an, wie
+           fein die Höhenmessung an diesem Teil überhaupt auflöst — sie muss null sein, weil sich
+           eine B-Kippung durch die 180°-Drehung heraushebt.</p>
+      </li>
+
+      <li>
+        <h4>Verifizieren</h4>
+        <p>Neue Werte setzen, Kreuz auf einem frischen Rohteil erneut fräsen, erneut messen.
+           Erst wenn alle acht Wände innerhalb 0,01 mm gleich sind, ist eingemessen.</p>
+      </li>
+    </ol>
+
+    <div class="callout">
+      <strong>Was das Kreuz nicht kann:</strong> Die 180°-Drehung geht um die Y-Achse und spiegelt
+      damit nur X und Z. Ein Y-Versatz der Drehachse wirkt in beiden Aufspannungen gleich und hebt
+      sich heraus. <strong>Das absolute Y ist aus dem Kreuz nicht bestimmbar</strong> — die Arme
+      3 und 9 Uhr prüfen nur, ob G54_Y und G55_Y zueinander passen.
+    </div>
+  </div>
+</details>
+
+<!-- ============================== SCHRITT 1 ============================== -->
+<div class="card">
+  <h2><span class="num">1</span> Aktueller Nullpunkt vor dem Fräsen</h2>
+  <p class="lead">Aus der Nullpunkttabelle über die normale CNC-Oberfläche. Nach Projekt-Konvention
+     sind G54 und G55 in X / Y / Z gleich gesetzt — alle berechneten Δ werden auf diese Werte aufaddiert.</p>
+  <div class="grid4">
+    <div class="field"><label>X</label><div class="sub">mm</div><input type="number" id="k_X" step="0.001" value="0.000"></div>
+    <div class="field"><label>Y</label><div class="sub">mm</div><input type="number" id="k_Y" step="0.001" value="0.000"></div>
+    <div class="field"><label>Z</label><div class="sub">mm</div><input type="number" id="k_Z" step="0.001" value="0.000"></div>
+    <div class="field"><label>A</label><div class="sub">Grad · bei G54 und G55 derselbe Wert</div><input type="number" id="k_A" step="0.0001" value="0.0000"></div>
+  </div>
+</div>
+
+<!-- ============================== ZEICHNUNGEN ============================ -->
+<div class="card">
+  <h2><span class="num">2</span> Was gemessen wird <span class="chip">Soll-Wand 1,810 · Gesamthöhe 10,000</span></h2>
+  <p class="lead">Die Buchstaben in den Zeichnungen entsprechen genau den Eingabefeldern darunter.</p>
+
+  <div class="views">
+    <figure class="fig">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-313.6 -267.0 627.2 534.0" style="width:100%;height:auto;display:block"><defs><marker id="ka_p" markerWidth="9" markerHeight="9" refX="7.8" refY="4.5" orient="auto"><path d="M0.4,0.8 L8.6,4.5 L0.4,8.2 z" fill="#0a5fbf"/></marker><marker id="kg_p" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0.4,0.7 L7.6,4 L0.4,7.3 z" fill="#5a6b7d"/></marker></defs><polygon points="28.3,-28.3 199.0,-28.3 199.0,28.3 28.3,28.3 28.3,199.0 -28.3,199.0 -28.3,28.3 -199.0,28.3 -199.0,-28.3 -28.3,-28.3 -28.3,-199.0 28.3,-199.0" fill="#c9d2dc" stroke="#6f8095" stroke-width="1.9" stroke-linejoin="round"/><polygon points="20.8,-20.8 185.0,-20.8 185.0,20.8 20.8,20.8 20.8,185.0 -20.8,185.0 -20.8,20.8 -185.0,20.8 -185.0,-20.8 -20.8,-20.8 -20.8,-185.0 20.8,-185.0" fill="none" stroke="#e07c05" stroke-width="1.9" stroke-linejoin="round" stroke-dasharray="7 4"/><polygon points="-28.3,-20.8 -20.8,-20.8 -20.8,-185.0 -28.3,-185.0" fill="#f4d9b4" stroke="none" stroke-width="0.0" stroke-linejoin="round"/><polygon points="-28.3,185.0 -20.8,185.0 -20.8,20.8 -28.3,20.8" fill="#f4d9b4" stroke="none" stroke-width="0.0" stroke-linejoin="round"/><polygon points="20.8,-20.8 28.3,-20.8 28.3,-185.0 20.8,-185.0" fill="#f4d9b4" stroke="none" stroke-width="0.0" stroke-linejoin="round"/><polygon points="20.8,185.0 28.3,185.0 28.3,20.8 20.8,20.8" fill="#f4d9b4" stroke="none" stroke-width="0.0" stroke-linejoin="round"/><polygon points="20.8,28.3 185.0,28.3 185.0,20.8 20.8,20.8" fill="#f4d9b4" stroke="none" stroke-width="0.0" stroke-linejoin="round"/><polygon points="-185.0,28.3 -20.8,28.3 -20.8,20.8 -185.0,20.8" fill="#f4d9b4" stroke="none" stroke-width="0.0" stroke-linejoin="round"/><polygon points="20.8,-20.8 185.0,-20.8 185.0,-28.3 20.8,-28.3" fill="#f4d9b4" stroke="none" stroke-width="0.0" stroke-linejoin="round"/><polygon points="-185.0,-20.8 -20.8,-20.8 -20.8,-28.3 -185.0,-28.3" fill="#f4d9b4" stroke="none" stroke-width="0.0" stroke-linejoin="round"/><polygon points="28.3,-28.3 199.0,-28.3 199.0,28.3 28.3,28.3 28.3,199.0 -28.3,199.0 -28.3,28.3 -199.0,28.3 -199.0,-28.3 -28.3,-28.3 -28.3,-199.0 28.3,-199.0" fill="none" stroke="#6f8095" stroke-width="1.9" stroke-linejoin="round"/><polygon points="20.8,-20.8 185.0,-20.8 185.0,20.8 20.8,20.8 20.8,185.0 -20.8,185.0 -20.8,20.8 -185.0,20.8 -185.0,-20.8 -20.8,-20.8 -20.8,-185.0 20.8,-185.0" fill="none" stroke="#e07c05" stroke-width="1.9" stroke-linejoin="round" stroke-dasharray="7 4"/><circle cx="-24.6" cy="-150.0" r="13.5" fill="#0a5fbf" stroke="#fff" stroke-width="2"/><text x="-24.6" y="-144.6" font-size="15" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">A</text><circle cx="24.6" cy="-150.0" r="13.5" fill="#0a5fbf" stroke="#fff" stroke-width="2"/><text x="24.6" y="-144.6" font-size="15" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">B</text><circle cx="-24.6" cy="150.0" r="13.5" fill="#0a5fbf" stroke="#fff" stroke-width="2"/><text x="-24.6" y="155.4" font-size="15" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">C</text><circle cx="24.6" cy="150.0" r="13.5" fill="#0a5fbf" stroke="#fff" stroke-width="2"/><text x="24.6" y="155.4" font-size="15" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">D</text><circle cx="150.0" cy="24.6" r="13.5" fill="#0a5fbf" stroke="#fff" stroke-width="2"/><text x="150.0" y="30.0" font-size="15" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">E</text><circle cx="150.0" cy="-24.6" r="13.5" fill="#0a5fbf" stroke="#fff" stroke-width="2"/><text x="150.0" y="-19.2" font-size="15" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">F</text><circle cx="-150.0" cy="24.6" r="13.5" fill="#0a5fbf" stroke="#fff" stroke-width="2"/><text x="-150.0" y="30.0" font-size="15" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">G</text><circle cx="-150.0" cy="-24.6" r="13.5" fill="#0a5fbf" stroke="#fff" stroke-width="2"/><text x="-150.0" y="-19.2" font-size="15" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">H</text><g><rect x="-33.5" y="-244.0" width="67.0" height="30" rx="8" fill="#eef2f7" stroke="#33455c" stroke-width="1.7"/><text x="0.0" y="-223.3" font-size="14.0" font-weight="700" fill="#33455c" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">12 Uhr</text></g><g><rect x="-29.6" y="214.0" width="59.2" height="30" rx="8" fill="#eef2f7" stroke="#33455c" stroke-width="1.7"/><text x="0.0" y="234.7" font-size="14.0" font-weight="700" fill="#33455c" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">6 Uhr</text></g><g><rect x="231.4" y="-15.0" width="59.2" height="30" rx="8" fill="#eef2f7" stroke="#33455c" stroke-width="1.7"/><text x="261.0" y="5.7" font-size="14.0" font-weight="700" fill="#33455c" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">3 Uhr</text></g><g><rect x="-290.6" y="-15.0" width="59.2" height="30" rx="8" fill="#eef2f7" stroke="#33455c" stroke-width="1.7"/><text x="-261.0" y="5.7" font-size="14.0" font-weight="700" fill="#33455c" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">9 Uhr</text></g><line x1="-189.0" y1="169.0" x2="-131.0" y2="169.0" stroke="#5a6b7d" stroke-width="2" marker-end="url(#kg_p)"/><text x="-113.6" y="174.0" font-size="14" font-weight="700" fill="#5a6b7d" font-family="system-ui,sans-serif" text-anchor="middle">X+</text><line x1="-189.0" y1="169.0" x2="-189.0" y2="111.0" stroke="#5a6b7d" stroke-width="2" marker-end="url(#kg_p)"/><text x="-189.0" y="93.6" font-size="14" font-weight="700" fill="#5a6b7d" font-family="system-ui,sans-serif" text-anchor="middle">Y+</text></svg>
+      <figcaption><b>Draufsicht</b> — Steg durchgezogen, verdeckte Nut gestrichelt.
+        Die acht Messstellen A – H liegen in den Wandstreifen.</figcaption>
+    </figure>
+    <figure class="fig">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-297.5 -155.5 670.0 315.0" style="width:100%;height:auto;display:block"><defs><marker id="ka_s" markerWidth="9" markerHeight="9" refX="7.8" refY="4.5" orient="auto"><path d="M0.4,0.8 L8.6,4.5 L0.4,8.2 z" fill="#0a5fbf"/></marker><marker id="kg_s" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0.4,0.7 L7.6,4 L0.4,7.3 z" fill="#5a6b7d"/></marker></defs><polygon points="-87.8,-77.5 87.8,-77.5 92.8,77.5 -92.8,77.5" fill="#c9d2dc" stroke="#6f8095" stroke-width="1.9" stroke-linejoin="round"/><polygon points="-62.8,-0.0 62.8,-0.0 64.4,77.5 -64.4,77.5" fill="#ffffff" stroke="#e07c05" stroke-width="1.9" stroke-linejoin="round"/><polygon points="-87.8,-0.0 -62.8,-0.0 -64.4,77.5 -92.8,77.5" fill="#f4d9b4" stroke="none" stroke-width="0.0" stroke-linejoin="round"/><polygon points="62.8,-0.0 87.8,-0.0 92.8,77.5 64.4,77.5" fill="#f4d9b4" stroke="none" stroke-width="0.0" stroke-linejoin="round"/><polygon points="-87.8,-77.5 87.8,-77.5 92.8,77.5 -92.8,77.5" fill="none" stroke="#6f8095" stroke-width="1.9" stroke-linejoin="round"/><polygon points="-62.8,-0.0 62.8,-0.0 64.4,77.5 -64.4,77.5" fill="none" stroke="#e07c05" stroke-width="1.9" stroke-linejoin="round"/><line x1="-90.0" y1="30.8" x2="-90.0" y2="46.8" stroke="#0a5fbf" stroke-width="2.1" stroke-linecap="round"/><line x1="-63.6" y1="30.8" x2="-63.6" y2="46.8" stroke="#0a5fbf" stroke-width="2.1" stroke-linecap="round"/><line x1="-112.0" y1="38.8" x2="-91.5" y2="38.8" stroke="#0a5fbf" stroke-width="2.1" marker-end="url(#ka_s)"/><line x1="-41.6" y1="38.8" x2="-62.1" y2="38.8" stroke="#0a5fbf" stroke-width="2.1" marker-end="url(#ka_s)"/><line x1="-76.8" y1="38.8" x2="-226.8" y2="112.8" stroke="#0a5fbf" stroke-width="1.3" stroke-dasharray="5 3"/><g><rect x="-274.5" y="97.8" width="95.4" height="30" rx="8" fill="#fff" stroke="#0a5fbf" stroke-width="1.7"/><circle cx="-256.5" cy="112.8" r="11.5" fill="#0a5fbf"/><text x="-256.5" y="117.8" font-size="14" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">A</text><text x="-210.8" y="118.5" font-size="15.5" font-weight="700" fill="#0a5fbf" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">1.810</text></g><line x1="63.6" y1="30.8" x2="63.6" y2="46.8" stroke="#0a5fbf" stroke-width="2.1" stroke-linecap="round"/><line x1="90.0" y1="30.8" x2="90.0" y2="46.8" stroke="#0a5fbf" stroke-width="2.1" stroke-linecap="round"/><line x1="41.6" y1="38.8" x2="62.1" y2="38.8" stroke="#0a5fbf" stroke-width="2.1" marker-end="url(#ka_s)"/><line x1="112.0" y1="38.8" x2="91.5" y2="38.8" stroke="#0a5fbf" stroke-width="2.1" marker-end="url(#ka_s)"/><line x1="76.8" y1="38.8" x2="226.8" y2="112.8" stroke="#0a5fbf" stroke-width="1.3" stroke-dasharray="5 3"/><g><rect x="179.1" y="97.8" width="95.4" height="30" rx="8" fill="#fff" stroke="#0a5fbf" stroke-width="1.7"/><circle cx="197.1" cy="112.8" r="11.5" fill="#0a5fbf"/><text x="197.1" y="117.8" font-size="14" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">B</text><text x="242.8" y="118.5" font-size="15.5" font-weight="700" fill="#0a5fbf" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">1.810</text></g><line x1="153.5" y1="-77.5" x2="137.5" y2="-77.5" stroke="#0a5fbf" stroke-width="2.1" stroke-linecap="round"/><line x1="153.5" y1="77.5" x2="137.5" y2="77.5" stroke="#0a5fbf" stroke-width="2.1" stroke-linecap="round"/><line x1="145.5" y1="-73.5" x2="145.5" y2="73.5" stroke="#0a5fbf" stroke-width="2.1" marker-start="url(#ka_s)" marker-end="url(#ka_s)"/><line x1="145.5" y1="0.0" x2="297.5" y2="-46.0" stroke="#0a5fbf" stroke-width="1.3" stroke-dasharray="5 3"/><g><rect x="245.4" y="-61.0" width="104.1" height="30" rx="8" fill="#fff" stroke="#0a5fbf" stroke-width="1.7"/><circle cx="263.4" cy="-46.0" r="11.5" fill="#0a5fbf"/><text x="263.4" y="-41.0" font-size="14" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">I</text><text x="313.5" y="-40.3" font-size="15.5" font-weight="700" fill="#0a5fbf" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">10.000</text></g><line x1="117.8" y1="-77.5" x2="101.8" y2="-77.5" stroke="#0a5fbf" stroke-width="2.1" stroke-linecap="round"/><line x1="117.8" y1="-0.0" x2="101.8" y2="0.0" stroke="#0a5fbf" stroke-width="2.1" stroke-linecap="round"/><line x1="109.8" y1="-73.5" x2="109.8" y2="-4.0" stroke="#0a5fbf" stroke-width="2.1" marker-start="url(#ka_s)" marker-end="url(#ka_s)"/><line x1="109.8" y1="-38.8" x2="175.8" y2="27.2" stroke="#0a5fbf" stroke-width="1.3" stroke-dasharray="5 3"/><g><rect x="144.1" y="12.2" width="63.4" height="30" rx="8" fill="#fff" stroke="#0a5fbf" stroke-width="1.7"/><text x="175.8" y="33.0" font-size="15.5" font-weight="700" fill="#0a5fbf" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">5.000</text></g><g><rect x="-138.5" y="-132.5" width="277.0" height="30" rx="8" fill="#eef2f7" stroke="#33455c" stroke-width="1.7"/><text x="0.0" y="-111.8" font-size="13.5" font-weight="700" fill="#33455c" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">Steg-Oberseite  ·  aus B = 0 / G54</text></g><g><rect x="-165.0" y="106.5" width="330.0" height="30" rx="8" fill="#fff2df" stroke="#a35c00" stroke-width="1.7"/><text x="0.0" y="127.2" font-size="13.5" font-weight="700" fill="#a35c00" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">Nut kommt von unten  ·  aus B = 180 / G55</text></g><line x1="-176.5" y1="-46.5" x2="-118.5" y2="-46.5" stroke="#5a6b7d" stroke-width="2" marker-end="url(#kg_s)"/><text x="-101.1" y="-41.5" font-size="14" font-weight="700" fill="#5a6b7d" font-family="system-ui,sans-serif" text-anchor="middle">X+</text><line x1="-176.5" y1="-46.5" x2="-176.5" y2="-104.5" stroke="#5a6b7d" stroke-width="2" marker-end="url(#kg_s)"/><text x="-176.5" y="-121.9" font-size="14" font-weight="700" fill="#5a6b7d" font-family="system-ui,sans-serif" text-anchor="middle">Z+</text></svg>
+      <figcaption><b>Schnitt durch einen Arm</b> — Gesamthöhe 10,000 aus Kanalboden 5,000
+        plus Kanaltiefe 5,000, dazu die beiden Seitenwände. Entformung erkennbar.</figcaption>
+    </figure>
+  </div>
+  <div class="legend">
+    <span><i style="background:#c9d2dc"></i>Steg aus B = 0 / G54</span>
+    <span><i style="background:#f4d9b4;border:1px solid #e07c05"></i>Wand — das Messmaß</span>
+    <span><i style="background:#fff;border:1px dashed #e07c05"></i>Nut aus B = 180 / G55</span>
+  </div>
+</div>
+
+<!-- ============================== SCHRITT 3: WÄNDE ====================== -->
+<div class="card">
+  <h2><span class="num">3</span> Wandstärken <span class="chip">Soll je 1,810 mm</span></h2>
+  <p class="lead">Pro Arm die beiden Seitenwände des U-Kanals, gemessen auf halber Kanaltiefe.</p>
+
+  <div class="armhead">Arme 12 und 6 Uhr — Wände liegen in X → bestimmen ΔX</div>
+  <div class="grid4">
+    <div class="field"><label><span class="bdg">A</span>12 Uhr, X−</label>
+      <div class="sub">linke Wand des oberen Arms</div>
+      <input type="number" id="wA" step="0.001" placeholder="1.810"></div>
+    <div class="field"><label><span class="bdg">B</span>12 Uhr, X+</label>
+      <div class="sub">rechte Wand des oberen Arms</div>
+      <input type="number" id="wB" step="0.001" placeholder="1.810"></div>
+    <div class="field"><label><span class="bdg">C</span>6 Uhr, X−</label>
+      <div class="sub">linke Wand des unteren Arms</div>
+      <input type="number" id="wC" step="0.001" placeholder="1.810"></div>
+    <div class="field"><label><span class="bdg">D</span>6 Uhr, X+</label>
+      <div class="sub">rechte Wand des unteren Arms</div>
+      <input type="number" id="wD" step="0.001" placeholder="1.810"></div>
+  </div>
+
+  <div class="armhead">Arme 3 und 9 Uhr — Wände liegen in Y → nur Konsistenzprüfung G54 ↔ G55</div>
+  <div class="grid4">
+    <div class="field"><label><span class="bdg">E</span>3 Uhr, Y−</label>
+      <div class="sub">untere Wand des rechten Arms</div>
+      <input type="number" id="wE" step="0.001" placeholder="1.810"></div>
+    <div class="field"><label><span class="bdg">F</span>3 Uhr, Y+</label>
+      <div class="sub">obere Wand des rechten Arms</div>
+      <input type="number" id="wF" step="0.001" placeholder="1.810"></div>
+    <div class="field"><label><span class="bdg">G</span>9 Uhr, Y−</label>
+      <div class="sub">untere Wand des linken Arms</div>
+      <input type="number" id="wG" step="0.001" placeholder="1.810"></div>
+    <div class="field"><label><span class="bdg">H</span>9 Uhr, Y+</label>
+      <div class="sub">obere Wand des linken Arms</div>
+      <input type="number" id="wH" step="0.001" placeholder="1.810"></div>
+  </div>
+
+  <div class="probe" id="probe_wand"></div>
+</div>
+
+<!-- ============================== SCHRITT 4: KANALBODEN ================= -->
+<div class="card">
+  <h2><span class="num">4</span> Gesamthöhe des Kreuzes <span class="chip">Soll je 10,000 mm</span></h2>
+  <p class="lead">Flächig von der Unterseite bis zur Oberseite, an jedem Arm möglichst weit außen.
+     Beide Flächen werden vom Werkzeug angefahren, je eine aus jeder Aufspannung — ein
+     Längenfehler geht deshalb <strong>doppelt</strong> in die Höhe ein. Die Korrektur landet
+     im <strong>Werkzeug-Längenoffset</strong>, nicht in der Nullpunkttabelle.</p>
+  <div class="grid4">
+    <div class="field"><label><span class="bdg">I</span>12 Uhr</label>
+      <div class="sub">oberer Arm, bei Y ≈ +38</div>
+      <input type="number" id="hI" step="0.001" placeholder="10.000"></div>
+    <div class="field"><label><span class="bdg">J</span>6 Uhr</label>
+      <div class="sub">unterer Arm, bei Y ≈ −38</div>
+      <input type="number" id="hJ" step="0.001" placeholder="10.000"></div>
+    <div class="field"><label><span class="bdg">K</span>3 Uhr</label>
+      <div class="sub">rechter Arm, bei X ≈ +38 — nur Querprobe</div>
+      <input type="number" id="hK" step="0.001" placeholder="10.000"></div>
+    <div class="field"><label><span class="bdg">L</span>9 Uhr</label>
+      <div class="sub">linker Arm, bei X ≈ −38 — nur Querprobe</div>
+      <input type="number" id="hL" step="0.001" placeholder="10.000"></div>
+  </div>
+  <div class="grid" style="margin-top:14px">
+    <div class="field"><label>Messabstand</label>
+      <div class="sub">Abstand jeder Messstelle von der Kreuzmitte, in mm</div>
+      <input type="number" id="armR" step="0.5" value="38"></div>
+  </div>
+  <div class="probe" id="probe_hoehe"></div>
+</div>
+
+<!-- ============================== ERGEBNIS ============================== -->
+<div class="card result">
+  <h2>Eintrag in die Nullpunkttabelle</h2>
+  <p class="lead">Absolute Werte inklusive des aktuellen Nullpunkts. Aus dem Kreuz kommt nur
+     <strong>X</strong>; <strong>Y bleibt unverändert</strong> (kennt das Merkblatt nicht) und
+     <strong>Z</strong> geht in den Werkzeug-Längenoffset. <strong>B bleibt bei beiden auf 0</strong>,
+     in die <strong>A-Spalte</strong> kommt ΔA von unten.</p>
+  <div class="rrow">
+    <div class="np">G54</div>
+    <div class="rcell"><div class="ax">X</div><div class="v" id="o54X">—</div><div class="d" id="d54X">&nbsp;</div></div>
+    <div class="rcell"><div class="ax">Y</div><div class="v" id="o54Y">—</div><div class="d" id="d54Y">&nbsp;</div></div>
+    <div class="rcell"><div class="ax">Z</div><div class="v" id="o54Z">—</div><div class="d" id="d54Z">nicht aus dem Kreuz</div></div>
+  </div>
+  <div class="rrow">
+    <div class="np">G55</div>
+    <div class="rcell"><div class="ax">X</div><div class="v" id="o55X">—</div><div class="d" id="d55X">&nbsp;</div></div>
+    <div class="rcell"><div class="ax">Y</div><div class="v" id="o55Y">—</div><div class="d" id="d55Y">&nbsp;</div></div>
+    <div class="rcell"><div class="ax">Z</div><div class="v" id="o55Z">—</div><div class="d" id="d55Z">nicht aus dem Kreuz</div></div>
+  </div>
+  <div class="extra">
+    <div><span class="lbl">AUF WZ-LÄNGENOFFSET ADDIEREN</span><span class="v2" id="oL">—</span>
+      <span style="font-size:12px;color:#9fb6cc;margin-top:4px">HMI → BACK / Maschinenparameter
+        → „Übertragen in SPS"</span></div>
+    <div><span class="lbl">A-SPALTE VON G54 UND G55 — NEU</span><span class="v2" id="oAabs">—</span>
+      <span style="font-size:12px;color:#9fb6cc;margin-top:4px" id="oA">—</span></div>
+    <div><span class="lbl">B-FEHLER</span><span class="v2" id="oB">—</span>
+      <span style="font-size:12px;color:#9fb6cc;margin-top:4px">nicht korrigierbar</span></div>
+    <div><span class="lbl">Y-ASYMMETRIE (KONTROLLWERT)</span><span class="v2" id="oYdiff">—</span>
+      <span style="font-size:12px;color:#9fb6cc;margin-top:4px">wird nicht eingetragen</span></div>
+  </div>
+</div>
+
+<!-- ============================== RECHENLOGIK =========================== -->
+<details>
+  <summary>Rechenlogik und Programm-Geometrie</summary>
+  <div class="dbody">
+
+    <p style="margin-top:0;font-size:14.5px">Sollwerte, aus <code>IBN_Testkreuz.nc</code> gemessen
+       (Werkzeug T3020, Ball R 1,0):</p>
+    <table class="geo">
+      <tr><th>Merkmal</th><th>Herkunft</th><th>Sollmaß</th></tr>
+      <tr><td>Oberseite</td><td>B = 0 / G54, Plateau bei Z = +5,000</td><td>—</td></tr>
+      <tr><td>Unterseite</td><td>B = 180 / G55, Plateau bei Z = +5,000</td><td>—</td></tr>
+      <tr><td><strong>Gesamthöhe</strong></td><td>Unterseite bis Oberseite</td><td><strong>10,000</strong></td></tr>
+      <tr><td>Kanalboden / Kanaltiefe</td><td>Nutboden liegt genau in der Mitte</td><td>5,000 / 5,000</td></tr>
+      <tr><td>Steg-Breite</td><td>B = 0 / G54</td><td>11,71 … 11,93 über die Kanaltiefe</td></tr>
+      <tr><td>Nut-Breite</td><td>B = 180 / G55</td><td>8,10 … 8,31 über die Kanaltiefe</td></tr>
+      <tr><td><strong>Wandstärke</strong></td><td>(Steg − Nut) / 2 aus der Werkzeugbahn</td><td><strong>1,810</strong> (1,806 … 1,812)</td></tr>
+      <tr><td>Wandstärke laut Zeichnung</td><td><code>Testkreuz.pdf</code>, Bemaßung</td><td>2,0 — die Bahn realisiert 1,81</td></tr>
+      <tr><td>Kreuzmaß</td><td><code>Testkreuz.pdf</code></td><td>80 × 80, H = 10</td></tr>
+      <tr><td>Armlängen</td><td>Steg / Nut</td><td>±39,8 / ±37,0</td></tr>
+    </table>
+
+    <p style="font-size:14.5px"><strong>Warum X und Y unterschiedlich rechnen:</strong>
+       B dreht um die Y-Achse. Die 180°-Drehung spiegelt deshalb X und Z, aber nicht Y.
+       In X verschiebt ein Achsversatz <code>a</code> die Nut um <code>2a</code> gegen den Steg —
+       doppelte Empfindlichkeit. In Y fehlt diese Verdopplung, dort wird nur die Differenz der
+       beiden Nullpunkte sichtbar.</p>
+
+    <div class="formula">
+<b>X-Fehler (Arme 12 und 6 Uhr, Waende in X)</b>
+Merkblatt: "Wand links zu duenn -> G54+G55 positiver Wert,
+gemessener Fehler geteilt durch 4"
+je Arm:    ΔX = (Wand rechts − Wand links) / 4
+gemittelt: ΔX = [ (B − A) + (D − C) ] / 8
+Alternative laut Merkblatt: nach rechts fahren und dort
+den Absolutwert nullen.
+
+<b>Höhenfehler — geht auf den WZ-Längenoffset</b>
+Fehler   = Mittel(I, J, K, L) − 10.000
+Korrektur = Fehler / 2      auf WZ-Längenoffset addieren
+Nicht in die Nullpunkttabelle. Der Faktor 1/2 kommt daher,
+dass das Werkzeug beide Stirnflaechen anfaehrt.
+
+<b>A-Fehler — Kippung der A-Achse (um X)</b>
+ΔA = atan[ (I − J) / (4 · Messabstand) ] · 180/π
+Merkblatt: "12 zu dick -> G54+G55 gleicher positiver Wert,
+Fehler ausrechnen". Eintrag in die A-Spalte, beide gleich.
+Querprobe: K − L muss 0 sein, weil sich die B-Kippung
+durch die Drehung herausmittelt. Was übrig bleibt, ist
+der Rauschboden der Höhenmessung.
+
+<b>B-Fehler (Keil 3 Uhr − 9 Uhr)</b>
+ΔB = atan[ (K − L) / (4 · Messabstand) ]
+Merkblatt: "kann nicht korrigiert werden". Nur Kontrollwert.
+
+<b>Y</b>
+Im Merkblatt nicht vorgesehen. Die Drehung um Y spiegelt Y
+nicht, ein Y-Versatz hebt sich heraus.
+    </div>
+
+    <p style="font-size:14.5px"><strong>Querproben:</strong> <code>(A − B)</code> und
+       <code>(C − D)</code> messen dieselben zwei Wandebenen an beiden Enden desselben Stegs und
+       müssen übereinstimmen — weichen sie ab, steht das Kreuz verdreht oder die Wände sind nicht
+       parallel. Die Stirnwände der Arme 3 und 9 Uhr stehen ebenfalls senkrecht zu X und liefern ΔX
+       ein drittes Mal, falls eine unabhängige Kontrolle gebraucht wird.</p>
+
+    <div class="callout info">
+      <strong>Warum die Wand oft dicker gemessen wird:</strong> Der Sollwert 1,810 mm gilt für die
+      programmierte Bahn. In der Praxis kommen typisch 1,84 – 1,87 heraus, also rund 0,025 mm
+      Abdrängung je Flanke — ein Ø2-Kugelfräser in Kunststoff federt in einer 5 mm tiefen Nut
+      messbar aus. Beide Flanken drängen in dieselbe Richtung und machen die Wand dicker.
+      Für die Rechnung ohne Bedeutung, weil nur die Differenz der beiden Wände eingeht.
+    </div>
+    <div class="callout">
+      <strong>Auflösungsgrenze:</strong> ΔX wird durch 4 geteilt. Ein Messschieber mit 0,01 mm
+      Auflösung ergibt damit 0,0025 mm Auflösung im Ergebnis — brauchbar, aber die Differenz der
+      beiden X-Arme muss dann auch unter 0,01 mm bleiben, sonst steckt das Signal im Rauschen.
+      Für die Wände lohnt ein Bügelmessschraube mit schmalem Amboss mehr als für die Höhen.
+    </div>
+  </div>
+</details>
+
+<footer>
+  Alle Werte in mm, drei Nachkommastellen. Geometrie abgeleitet aus <code>IBN_Testkreuz.nc</code>
+  (125.419 Zeilen, T3030 + T3020, beide Ball).<br>
+  Für die Nullpunkte G58 / G59 (A = 0 / A = −90) gilt der separate Tonnen-Rechner.
+</footer>
+
+</div>
+</section>
+
+<section class="pane" id="pane-tonnen">
+  <div class="paneintro"><b>Drehfräs-Preforms</b> — bestimmen X, Y und Z für G58 (A = 0) und
+    G59 (A = −90). Die beiden Tonnen brauchen sich gegenseitig: Y kommt für beide aus der
+    A−90-Tonne, Z für beide aus der A0-Tonne. Deshalb stehen sie hier zusammen.</div>
+<!-- ================================================== ANLEITUNG ================= -->
+<details open>
+  <summary>Kurzanleitung — so wird eingemessen</summary>
+  <div class="dbody">
+
+    <div class="callout info">
+      <strong>Prinzip:</strong> Die beiden Testprogramme fräsen unter dem <em>aktuellen</em> Nullpunkt
+      <code>G57</code> je einen Rundkörper mit zwei Anfräsungen. Weicht der Nullpunkt ab, verschieben
+      sich die Anfräsungen mit — die gemessenen Abstände verraten also den Fehler.
+      Der wird auf G57 aufaddiert und als G58 bzw. G59 eingetragen.
+    </div>
+
+    <ol class="steps">
+      <li>
+        <h4>Vorbereiten</h4>
+        <p>Testpreform genauso spannen wie im Produktionsbetrieb — die Spannung ist Teil der Messkette.
+           Das Werkzeug <code>T9001</code> (Ø 3 mm, R 1.5) wird beim Einwechseln von der Maschine
+           automatisch vermessen, dazu ist nichts zu tun.</p>
+        <div class="callout">
+          <strong>G57 ablesen — nur über die normale CNC-Oberfläche.</strong> Die Nullpunkttabelle ist
+          über die Easy-HMI <em>nicht</em> erreichbar. Dort die aktiven <code>G57</code>-Werte X / Y / Z
+          ablesen und unten in Schritt&nbsp;1 eintragen — ohne diesen Bezug sind die Ergebniswerte wertlos.
+          Dabei prüfen, dass <strong>A und B bei G57 auf 0 stehen</strong>.
+        </div>
+      </li>
+
+      <li>
+        <h4>Tonne für G59 fräsen — <code>IBN_Testpreform_A-90.nc</code></h4>
+        <p><strong>Die Tonne steht senkrecht.</strong> Die A-Achse kippt den Halter auf −90°, dadurch
+           zeigt der Preform nach oben und dreht sich um die senkrechte Z-Achse. Gefräst wird mit der
+           Werkzeug<em>seite</em>, die von oben nach unten zustellt.</p>
+        <ul>
+          <li>Rundfräsen: Werkzeugseite bei X = −6.75 (+R 1.5), Z von 21 nach 10 → <strong>Soll-Ø 10.500</strong>.</li>
+          <li>Zwei Anfräsungen bei 9 Uhr (X−) und 6 Uhr (Y−), Werkzeug jeweils bei −6.25 (+R 1.5)
+              → <strong>Plane bei −4.750</strong>, nur über Z 20 → 14.</li>
+        </ul>
+      </li>
+
+      <li>
+        <h4>Tonne für G58 fräsen — <code>IBN_Testpreform_A0.nc</code></h4>
+        <p><strong>Die Tonne liegt waagerecht.</strong> Bei A = 0 steht der Halter gerade, der Preform
+           liegt längs der Y-Achse und dreht sich um sie. Gefräst wird mit der Werkzeug<em>stirn</em>
+           von oben, während in Y zugestellt wird.</p>
+        <ul>
+          <li>Rundfräsen: Werkzeugstirn bei Z = 5, mittig über X = 0, Y von −21 nach −12
+              → <strong>Soll-Ø 10.000</strong>.</li>
+          <li>Anfräsung 12 Uhr (Z+) mit der Stirn bei Z = 4.5 → <strong>Plane bei +4.500</strong>, 0.50 mm tief.</li>
+          <li>Anfräsung 9 Uhr (X−) mit der Werkzeugseite bei X = −6.25 (+R 1.5)
+              → <strong>Plane bei −4.750</strong>, nur 0.25 mm tief.</li>
+        </ul>
+      </li>
+
+      <li>
+        <h4>Flächen markieren, dann ausbauen</h4>
+        <div class="callout">
+          <strong>Nicht in der Maschine messen.</strong> Entweder den Preform aus dem Halter
+          herausschrauben und den Halter in der Maschine lassen, oder den ganzen Halter entnehmen —
+          beides ist gleichwertig. Wichtig ist nur, dass frei und beidhändig gemessen werden kann.
+        </div>
+        <p>Weil das Teil dabei die Lage verliert, <strong>vor dem Ausbauen die Flächen markieren</strong>
+           (Folienstift genügt). Die Zuordnung ergibt sich aus dem Blick entlang der Drehachse,
+           X+ nach rechts, Z+ bzw. Y+ nach oben:</p>
+        <ul>
+          <li><strong>12 Uhr = Z+</strong> · <strong>9 Uhr = X−</strong> · <strong>6 Uhr = Y−</strong></li>
+          <li><strong>G58-Tonne:</strong> die schmale Fläche ist X−, die breite ist Z+. Hier reicht es,
+              die schmale zu markieren — verwechseln kann man sie ohnehin kaum.</li>
+          <li><strong>G59-Tonne:</strong> beide Flächen sind gleich groß und haben dasselbe Sollmaß.
+              Hier <strong>beide markieren</strong>, sonst ist draußen nicht mehr zu entscheiden,
+              welche X− und welche Y− ist.</li>
+        </ul>
+      </li>
+
+      <li>
+        <h4>Messen — drei Werte pro Tonne, mit dem Messschieber</h4>
+        <ul>
+          <li><strong>Immer von der Anfräsung quer durch das Teil zur gegenüberliegenden <em>runden</em>
+              Mantelfläche</strong> — nie von Anfräsung zu Anfräsung. Die Buchstaben
+              <span class="bdg" style="width:20px;height:20px;font-size:12px">A</span>
+              <span class="bdg" style="width:20px;height:20px;font-size:12px">B</span>
+              <span class="bdg" style="width:20px;height:20px;font-size:12px">C</span>
+              in den Zeichnungen unten entsprechen genau den Eingabefeldern.</li>
+          <li>Den <strong>Rund-Ø dort messen, wo keine Anfräsung liegt</strong>: bei G59 am unteren
+              glatten Abschnitt (Z 10–14), bei G58 im hinteren Abschnitt (Y −14.5 → −10.5).</li>
+          <li>Jeden Wert 2–3× messen, Teil dazwischen leicht drehen, Mittelwert nehmen.
+              Realistisches Messrauschen: ± 0.005 mm.</li>
+        </ul>
+        <div class="callout">
+          Die Anfräsungen sind <strong>flach</strong> — bei G58 nur 0.250 mm (X−) bzw. 0.500 mm (Z+) tief,
+          bei G59 je 0.500 mm. Auf den ersten Blick wirkt die Tonne fast rund. Zum Ansetzen des
+          Messschiebers die Fläche ertasten, nicht suchen.
+        </div>
+        <p><strong>Was sich verwechseln lässt und was nicht:</strong></p>
+        <ul>
+          <li><strong>Die Tonnen untereinander</strong> sind eindeutig: Rund-Ø 10.000 bei G58
+              gegen 10.500 bei G59. Ein halber Millimeter, mit dem Messschieber sofort klar.</li>
+          <li><strong>Die beiden Flächen der G58-Tonne</strong> ebenfalls — unterschiedlich tief
+              (0.250 / 0.500 mm), dadurch unterschiedlich breit (3.12 / 4.36 mm), und die Sollmaße
+              liegen 0.250 mm auseinander.</li>
+          <li><strong>Die beiden Flächen der G59-Tonne nicht.</strong> Gleich tief, gleich breit,
+              gleiches Sollmaß 10.000 — nur über die Markierung aus Schritt 4 zu unterscheiden.</li>
+        </ul>
+      </li>
+
+      <li>
+        <h4>Werte übertragen</h4>
+        <p>Messwerte in die Felder unten. Das Ergebnisfeld liefert die <strong>fertigen absoluten Werte</strong>
+           (G57 + Δ) — genau so in die Nullpunkttabelle auf G58 bzw. G59 schreiben,
+           wieder über die normale CNC-Oberfläche, nicht über die Easy-HMI.</p>
+        <div class="callout">
+          <strong>A und B müssen auf 0 stehen</strong> — bei G57 genauso wie bei G58 und G59.
+          Eingetragen werden ausschließlich X, Y und Z.
+        </div>
+        <div class="callout info">
+          <strong>Warum über Kreuz?</strong> Bei A = 0 ist Y die Längsachse — eine Y-Verschiebung
+          ändert an der G58-Tonne gar nichts, sie ist daraus nicht messbar. Bei A = −90 ist Z die
+          Längsachse, dort gilt dasselbe für Z. Deshalb:
+          <strong>Y kommt für beide Nullpunkte aus der G59-Tonne, Z für beide aus der G58-Tonne.</strong>
+          Nur X wird je Orientierung getrennt bestimmt.
+        </div>
+      </li>
+
+      <li>
+        <h4>Verifizieren — der Schritt, der oft übersprungen wird</h4>
+        <p>Neue Nullpunkte setzen, beide Programme auf einem <strong>frischen</strong> Preform erneut fahren,
+           erneut messen. Erst wenn alle Δ ≤ 0.005 mm sind, ist sauber eingemessen. In der Praxis
+           braucht es meist 2–3 Durchgänge.</p>
+      </li>
+    </ol>
+  </div>
+</details>
+
+<!-- ================================================== SCHRITT 1 ================= -->
+<div class="card">
+  <h2><span class="num">1</span> Aktueller Nullpunkt <code>G57</code> vor dem Fräsen</h2>
+  <p class="lead">Aus der Nullpunkttabelle ablesen — erreichbar nur über die normale CNC-Oberfläche,
+     nicht über die Easy-HMI. Beide Testprogramme laufen unter G57; alle berechneten Δ werden auf
+     diese Werte aufaddiert. <strong>A und B müssen dabei auf 0 stehen.</strong></p>
+  <div class="grid">
+    <div class="field"><label>X <span class="sub">mm</span></label><input type="number" id="t_X" step="0.001" value="0.000"></div>
+    <div class="field"><label>Y <span class="sub">mm</span></label><input type="number" id="t_Y" step="0.001" value="0.000"></div>
+    <div class="field"><label>Z <span class="sub">mm</span></label><input type="number" id="t_Z" step="0.001" value="0.000"></div>
+  </div>
+</div>
+
+<!-- ================================================== G59 ====================== -->
+<div class="card">
+  <h2><span class="num">2</span> G59 — Tonne A = −90 <span class="chip">IBN_Testpreform_A-90.nc</span></h2>
+  <p class="lead"><strong>Halter auf −90° gekippt, Tonne steht senkrecht</strong> und dreht sich um Z.
+     X und Y liegen damit radial und liefern den Versatz. Z ist die Längsachse — daraus kommt hier kein Wert.</p>
+
+  <div class="views">
+    <figure class="fig">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-335.3 -391.6 693.9 366.4" style="width:100%;height:auto;display:block"><defs><marker id="ahb_c" markerWidth="9" markerHeight="9" refX="7.8" refY="4.5" orient="auto"><path d="M0.4,0.8 L8.6,4.5 L0.4,8.2 z" fill="#0a5fbf"/></marker></defs><polygon points="89.2,-157.0 89.0,-155.3 89.0,-218.3 89.2,-220.1" fill="#6a7077" stroke="#6a7077" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-88.9,-154.7 -89.2,-156.5 -89.2,-219.5 -88.9,-217.8" fill="#6b7178" stroke="#6b7178" stroke-width="0.7" stroke-linejoin="round"/><polygon points="89.0,-155.3 88.6,-153.5 88.6,-216.6 89.0,-218.3" fill="#6d737a" stroke="#6d737a" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-88.4,-153.0 -88.9,-154.7 -88.9,-217.8 -88.4,-216.0" fill="#6e747b" stroke="#6e747b" stroke-width="0.7" stroke-linejoin="round"/><polygon points="88.6,-153.5 87.9,-151.8 87.9,-214.9 88.6,-216.6" fill="#70767e" stroke="#70767e" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-87.6,-151.2 -88.4,-153.0 -88.4,-216.0 -87.6,-214.3" fill="#71777f" stroke="#71777f" stroke-width="0.7" stroke-linejoin="round"/><polygon points="87.9,-151.8 87.0,-150.1 87.0,-213.1 87.9,-214.9" fill="#737981" stroke="#737981" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-86.6,-149.5 -87.6,-151.2 -87.6,-214.3 -86.6,-212.6" fill="#747a82" stroke="#747a82" stroke-width="0.7" stroke-linejoin="round"/><polygon points="87.0,-150.1 85.8,-148.4 85.8,-211.5 87.0,-213.1" fill="#767c84" stroke="#767c84" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-85.4,-147.8 -86.6,-149.5 -86.6,-212.6 -85.4,-210.9" fill="#777d85" stroke="#777d85" stroke-width="0.7" stroke-linejoin="round"/><polygon points="85.8,-148.4 84.4,-146.7 84.4,-209.8 85.8,-211.5" fill="#797f88" stroke="#797f88" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-83.9,-146.2 -85.4,-147.8 -85.4,-210.9 -83.9,-209.2" fill="#7a8089" stroke="#7a8089" stroke-width="0.7" stroke-linejoin="round"/><polygon points="84.4,-146.7 82.8,-145.1 82.8,-208.1 84.4,-209.8" fill="#7c838b" stroke="#7c838b" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-82.2,-144.6 -83.9,-146.2 -83.9,-209.2 -82.2,-207.6" fill="#7d848c" stroke="#7d848c" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-71.3,-335.4 -68.4,-336.7 -65.3,-338.0 -62.0,-339.3 -58.6,-340.5 -54.9,-341.6 -51.2,-342.6 -47.3,-343.6 -43.3,-344.5 -39.1,-345.3 -34.9,-346.0 -30.5,-346.7 -26.1,-347.2 -21.6,-347.7 -17.0,-348.1 -12.4,-348.4 -7.8,-348.5 -3.1,-348.7 1.6,-348.7 6.2,-348.6 10.9,-348.4 15.5,-348.2 20.1,-347.8 24.6,-347.4 29.1,-346.9 33.4,-346.2 37.7,-345.5 41.9,-344.8 46.0,-343.9 49.9,-343.0 53.7,-341.9 57.4,-340.9 60.9,-339.7 64.2,-338.5 67.4,-337.2 70.3,-335.8 73.1,-334.4 75.7,-333.0 78.1,-331.5 80.2,-329.9 82.2,-328.3 83.9,-326.7 85.4,-325.0 86.6,-323.3 87.6,-321.6 88.4,-319.9 88.9,-318.2 89.2,-316.4 89.2,-314.7 89.0,-312.9 88.6,-311.2 87.9,-309.4 87.3,-308.4 41.7,-285.7 39.1,-285.2 34.9,-284.5 30.5,-283.8 26.1,-283.3 21.6,-282.8 17.0,-282.4 12.4,-282.1 7.8,-281.9 3.1,-281.8 -1.6,-281.8 -6.2,-281.9 -10.9,-282.1 -15.5,-282.3 -18.3,-282.5 -78.9,-299.6 -80.2,-300.6 -82.2,-302.2 -83.9,-303.8 -85.4,-305.5 -86.6,-307.2 -87.6,-308.9 -88.4,-310.6 -88.9,-312.3 -89.2,-314.1 -89.2,-315.8 -89.0,-317.6 -88.6,-319.3 -87.9,-321.0 -87.0,-322.8 -85.8,-324.5 -84.4,-326.1 -82.8,-327.8 -80.9,-329.4 -78.8,-330.9 -76.5,-332.5 -74.0,-333.9" fill="#8691a0" stroke="#8691a0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="82.8,-145.1 80.9,-143.5 80.9,-206.5 82.8,-208.1" fill="#7f858e" stroke="#7f858e" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-80.2,-143.0 -82.2,-144.6 -82.2,-207.6 -80.2,-206.0" fill="#80868f" stroke="#80868f" stroke-width="0.7" stroke-linejoin="round"/><polygon points="89.2,-220.1 89.0,-218.3 89.0,-312.9 89.2,-314.7" fill="#6a7077" stroke="#6a7077" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-88.9,-217.8 -89.2,-219.5 -89.2,-314.1 -88.9,-312.3" fill="#6b7178" stroke="#6b7178" stroke-width="0.7" stroke-linejoin="round"/><polygon points="80.9,-143.5 78.8,-141.9 78.8,-205.0 80.9,-206.5" fill="#818891" stroke="#818891" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-78.1,-141.4 -80.2,-143.0 -80.2,-206.0 -78.1,-204.5" fill="#828992" stroke="#828992" stroke-width="0.7" stroke-linejoin="round"/><polygon points="89.0,-218.3 88.6,-216.6 88.6,-311.2 89.0,-312.9" fill="#6d737a" stroke="#6d737a" stroke-width="0.7" stroke-linejoin="round"/><polygon points="78.8,-141.9 76.5,-140.4 76.5,-203.5 78.8,-205.0" fill="#848b94" stroke="#848b94" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-88.4,-216.0 -88.9,-217.8 -88.9,-312.3 -88.4,-310.6" fill="#6e747b" stroke="#6e747b" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-75.7,-139.9 -78.1,-141.4 -78.1,-204.5 -75.7,-203.0" fill="#858c95" stroke="#858c95" stroke-width="0.7" stroke-linejoin="round"/><polygon points="88.6,-216.6 87.9,-214.9 87.9,-309.4 88.6,-311.2" fill="#70767e" stroke="#70767e" stroke-width="0.7" stroke-linejoin="round"/><polygon points="76.5,-140.4 74.0,-138.9 74.0,-202.0 76.5,-203.5" fill="#878e97" stroke="#878e97" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-87.6,-214.3 -88.4,-216.0 -88.4,-310.6 -87.6,-308.9" fill="#71777f" stroke="#71777f" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-73.1,-138.4 -75.7,-139.9 -75.7,-203.0 -73.1,-201.5" fill="#888f98" stroke="#888f98" stroke-width="0.7" stroke-linejoin="round"/><polygon points="87.9,-214.9 87.3,-213.8 87.3,-308.4 87.9,-309.4" fill="#737981" stroke="#737981" stroke-width="0.7" stroke-linejoin="round"/><polygon points="74.0,-138.9 71.3,-137.5 71.3,-200.5 74.0,-202.0" fill="#89919a" stroke="#89919a" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-70.3,-137.0 -73.1,-138.4 -73.1,-201.5 -70.3,-200.1" fill="#8a929b" stroke="#8a929b" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-86.6,-212.6 -87.6,-214.3 -87.6,-308.9 -86.6,-307.2" fill="#747a82" stroke="#747a82" stroke-width="0.7" stroke-linejoin="round"/><polygon points="71.3,-137.5 68.4,-136.1 68.4,-199.2 71.3,-200.5" fill="#8c939d" stroke="#8c939d" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-67.4,-135.7 -70.3,-137.0 -70.3,-200.1 -67.4,-198.7" fill="#8d949e" stroke="#8d949e" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-85.4,-210.9 -86.6,-212.6 -86.6,-307.2 -85.4,-305.5" fill="#777d85" stroke="#777d85" stroke-width="0.7" stroke-linejoin="round"/><polygon points="68.4,-136.1 65.3,-134.8 65.3,-197.9 68.4,-199.2" fill="#8e969f" stroke="#8e969f" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-64.2,-134.4 -67.4,-135.7 -67.4,-198.7 -64.2,-197.4" fill="#8f97a0" stroke="#8f97a0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="65.3,-134.8 62.0,-133.6 62.0,-196.6 65.3,-197.9" fill="#9098a2" stroke="#9098a2" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-83.9,-209.2 -85.4,-210.9 -85.4,-305.5 -83.9,-303.8" fill="#7a8089" stroke="#7a8089" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-60.9,-133.2 -64.2,-134.4 -64.2,-197.4 -60.9,-196.2" fill="#9199a3" stroke="#9199a3" stroke-width="0.7" stroke-linejoin="round"/><polygon points="87.3,-213.8 87.0,-213.1 85.8,-211.5 84.4,-209.8 82.8,-208.1 80.9,-206.5 78.8,-205.0 76.5,-203.5 74.0,-202.0 71.3,-200.5 68.4,-199.2 65.3,-197.9 62.0,-196.6 58.6,-195.4 54.9,-194.3 51.2,-193.3 47.3,-192.3 43.3,-191.4 41.7,-191.1" fill="#8691a0" stroke="#8691a0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="62.0,-133.6 58.6,-132.4 58.6,-195.4 62.0,-196.6" fill="#929aa4" stroke="#929aa4" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-57.4,-132.0 -60.9,-133.2 -60.9,-196.2 -57.4,-195.1" fill="#939ba5" stroke="#939ba5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-82.2,-207.6 -83.9,-209.2 -83.9,-303.8 -82.2,-302.2" fill="#7d848c" stroke="#7d848c" stroke-width="0.7" stroke-linejoin="round"/><polygon points="58.6,-132.4 54.9,-131.3 54.9,-194.3 58.6,-195.4" fill="#949ca7" stroke="#949ca7" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-53.7,-130.9 -57.4,-132.0 -57.4,-195.1 -53.7,-194.0" fill="#959da7" stroke="#959da7" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-80.2,-206.0 -82.2,-207.6 -82.2,-302.2 -80.2,-300.6" fill="#80868f" stroke="#80868f" stroke-width="0.7" stroke-linejoin="round"/><polygon points="54.9,-131.3 51.2,-130.2 51.2,-193.3 54.9,-194.3" fill="#969ea9" stroke="#969ea9" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-49.9,-129.9 -53.7,-130.9 -53.7,-194.0 -49.9,-193.0" fill="#979fa9" stroke="#979fa9" stroke-width="0.7" stroke-linejoin="round"/><polygon points="51.2,-130.2 47.3,-129.3 47.3,-192.3 51.2,-193.3" fill="#98a0ab" stroke="#98a0ab" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-78.9,-205.1 -80.2,-206.0 -80.2,-300.6 -78.9,-299.6" fill="#828992" stroke="#828992" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-46.0,-129.0 -49.9,-129.9 -49.9,-193.0 -46.0,-192.0" fill="#99a1ab" stroke="#99a1ab" stroke-width="0.7" stroke-linejoin="round"/><polygon points="47.3,-129.3 43.3,-128.4 43.3,-191.4 47.3,-192.3" fill="#9aa2ac" stroke="#9aa2ac" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-41.9,-128.1 -46.0,-129.0 -46.0,-192.0 -41.9,-191.1" fill="#9aa3ad" stroke="#9aa3ad" stroke-width="0.7" stroke-linejoin="round"/><polygon points="43.3,-128.4 39.1,-127.6 39.1,-190.6 43.3,-191.4" fill="#9ba4ae" stroke="#9ba4ae" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-37.7,-127.3 -41.9,-128.1 -41.9,-191.1 -37.7,-190.4" fill="#9ca4af" stroke="#9ca4af" stroke-width="0.7" stroke-linejoin="round"/><polygon points="39.1,-127.6 34.9,-126.8 34.9,-189.9 39.1,-190.6" fill="#9da5b0" stroke="#9da5b0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-33.4,-126.6 -37.7,-127.3 -37.7,-190.4 -33.4,-189.7" fill="#9da5b0" stroke="#9da5b0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-18.3,-188.0 -20.1,-188.1 -24.6,-188.5 -29.1,-189.1 -33.4,-189.7 -37.7,-190.4 -41.9,-191.1 -46.0,-192.0 -49.9,-193.0 -53.7,-194.0 -57.4,-195.1 -60.9,-196.2 -64.2,-197.4 -67.4,-198.7 -70.3,-200.1 -73.1,-201.5 -75.7,-203.0 -78.1,-204.5 -78.9,-205.1" fill="#8691a0" stroke="#8691a0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="87.3,-213.8 41.7,-191.1 41.7,-285.7 87.3,-308.4" fill="#b6741e" stroke="#b6741e" stroke-width="0.7" stroke-linejoin="round"/><polygon points="34.9,-126.8 30.5,-126.2 30.5,-189.3 34.9,-189.9" fill="#9ea6b1" stroke="#9ea6b1" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-29.1,-126.0 -33.4,-126.6 -33.4,-189.7 -29.1,-189.1" fill="#9ea7b1" stroke="#9ea7b1" stroke-width="0.7" stroke-linejoin="round"/><polygon points="30.5,-126.2 26.1,-125.6 26.1,-188.7 30.5,-189.3" fill="#9fa7b2" stroke="#9fa7b2" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-24.6,-125.5 -29.1,-126.0 -29.1,-189.1 -24.6,-188.5" fill="#9fa8b3" stroke="#9fa8b3" stroke-width="0.7" stroke-linejoin="round"/><polygon points="26.1,-125.6 21.6,-125.2 21.6,-188.2 26.1,-188.7" fill="#a0a8b3" stroke="#a0a8b3" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-20.1,-125.0 -24.6,-125.5 -24.6,-188.5 -20.1,-188.1" fill="#a0a9b3" stroke="#a0a9b3" stroke-width="0.7" stroke-linejoin="round"/><polygon points="21.6,-125.2 17.0,-124.8 17.0,-187.9 21.6,-188.2" fill="#a0a9b4" stroke="#a0a9b4" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-15.5,-124.7 -20.1,-125.0 -20.1,-188.1 -15.5,-187.7" fill="#a1a9b4" stroke="#a1a9b4" stroke-width="0.7" stroke-linejoin="round"/><polygon points="17.0,-124.8 12.4,-124.5 12.4,-187.6 17.0,-187.9" fill="#a1aab5" stroke="#a1aab5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-10.9,-124.4 -15.5,-124.7 -15.5,-187.7 -10.9,-187.5" fill="#a1aab5" stroke="#a1aab5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="12.4,-124.5 7.8,-124.3 7.8,-187.4 12.4,-187.6" fill="#a1aab5" stroke="#a1aab5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-6.2,-124.3 -10.9,-124.4 -10.9,-187.5 -6.2,-187.3" fill="#a2aab5" stroke="#a2aab5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="7.8,-124.3 3.1,-124.2 3.1,-187.3 7.8,-187.4" fill="#a2aab5" stroke="#a2aab5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-1.6,-124.2 -6.2,-124.3 -6.2,-187.3 -1.6,-187.2" fill="#a2abb5" stroke="#a2abb5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="3.1,-124.2 -1.6,-124.2 -1.6,-187.2 3.1,-187.3" fill="#a2abb6" stroke="#a2abb6" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-18.3,-188.0 -78.9,-205.1 -78.9,-299.6 -18.3,-282.5" fill="#c57e20" stroke="#c57e20" stroke-width="0.7" stroke-linejoin="round"/><polygon points="41.7,-191.1 39.1,-190.6 39.1,-285.2 41.7,-285.7" fill="#9ba4ae" stroke="#9ba4ae" stroke-width="0.7" stroke-linejoin="round"/><polygon points="39.1,-190.6 34.9,-189.9 34.9,-284.5 39.1,-285.2" fill="#9da5b0" stroke="#9da5b0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="34.9,-189.9 30.5,-189.3 30.5,-283.8 34.9,-284.5" fill="#9ea6b1" stroke="#9ea6b1" stroke-width="0.7" stroke-linejoin="round"/><polygon points="30.5,-189.3 26.1,-188.7 26.1,-283.3 30.5,-283.8" fill="#9fa7b2" stroke="#9fa7b2" stroke-width="0.7" stroke-linejoin="round"/><polygon points="26.1,-188.7 21.6,-188.2 21.6,-282.8 26.1,-283.3" fill="#a0a8b3" stroke="#a0a8b3" stroke-width="0.7" stroke-linejoin="round"/><polygon points="21.6,-188.2 17.0,-187.9 17.0,-282.4 21.6,-282.8" fill="#a0a9b4" stroke="#a0a9b4" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-15.5,-187.7 -18.3,-188.0 -18.3,-282.5 -15.5,-282.3" fill="#a1a9b4" stroke="#a1a9b4" stroke-width="0.7" stroke-linejoin="round"/><polygon points="17.0,-187.9 12.4,-187.6 12.4,-282.1 17.0,-282.4" fill="#a1aab5" stroke="#a1aab5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-10.9,-187.5 -15.5,-187.7 -15.5,-282.3 -10.9,-282.1" fill="#a1aab5" stroke="#a1aab5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="12.4,-187.6 7.8,-187.4 7.8,-281.9 12.4,-282.1" fill="#a1aab5" stroke="#a1aab5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-6.2,-187.3 -10.9,-187.5 -10.9,-282.1 -6.2,-281.9" fill="#a2aab5" stroke="#a2aab5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="7.8,-187.4 3.1,-187.3 3.1,-281.8 7.8,-281.9" fill="#a2aab5" stroke="#a2aab5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-1.6,-187.2 -6.2,-187.3 -6.2,-281.9 -1.6,-281.8" fill="#a2abb5" stroke="#a2abb5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="3.1,-187.3 -1.6,-187.2 -1.6,-281.8 3.1,-281.8" fill="#a2abb6" stroke="#a2abb6" stroke-width="0.7" stroke-linejoin="round"/><line x1="74.7" y1="-283.2" x2="202.2" y2="-347.6" stroke="#a35c00" stroke-width="1.3" stroke-dasharray="4 3"/><circle cx="74.7" cy="-283.2" r="3" fill="#a35c00"/><g><rect x="151.7" y="-369.6" width="185.0" height="24" rx="12" fill="#fff2df" stroke="#a35c00" stroke-width="1.3"/><text x="244.2" y="-352.7" font-family="system-ui,-apple-system,sans-serif" font-size="13.5" font-weight="600" fill="#a35c00" text-anchor="middle">X− · 9 Uhr · 0.50 tief</text></g><line x1="-62.2" y1="-276.0" x2="-178.8" y2="-327.6" stroke="#a35c00" stroke-width="1.3" stroke-dasharray="4 3"/><circle cx="-62.2" cy="-276.0" r="3" fill="#a35c00"/><g><rect x="-313.3" y="-349.6" width="185.0" height="24" rx="12" fill="#fff2df" stroke="#a35c00" stroke-width="1.3"/><text x="-220.8" y="-332.7" font-family="system-ui,-apple-system,sans-serif" font-size="13.5" font-weight="600" fill="#a35c00" text-anchor="middle">Y− · 6 Uhr · 0.50 tief</text></g><g><rect x="28.8" y="-111.6" width="282.5" height="24" rx="12" fill="#eef2f7" stroke="#33455c" stroke-width="1.3"/><text x="170.0" y="-94.7" font-family="system-ui,-apple-system,sans-serif" font-size="13.5" font-weight="600" fill="#33455c" text-anchor="middle">A = −90 · steht senkrecht · Achse Z</text></g><line x1="12.4" y1="-149.8" x2="28.1" y2="-73.2" stroke="#0a5fbf" stroke-width="1.3" stroke-dasharray="4 3"/><circle cx="12.4" cy="-149.8" r="3" fill="#0a5fbf"/><g><rect x="-91.4" y="-69.2" width="155.0" height="24" rx="12" fill="#e8f1fc" stroke="#0a5fbf" stroke-width="1.3"/><text x="-13.9" y="-52.3" font-family="system-ui,-apple-system,sans-serif" font-size="13.5" font-weight="600" fill="#0a5fbf" text-anchor="middle">hier Ø rund messen</text></g></svg>
+      <figcaption><b>Lage im Raum</b> — wo die beiden Anfräsungen sitzen</figcaption>
+    </figure>
+    <figure class="fig">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-493.9 -254.8 837.4 534.5" style="width:100%;height:auto;display:block"><defs><marker id="ahb_d" markerWidth="9" markerHeight="9" refX="7.8" refY="4.5" orient="auto"><path d="M0.4,0.8 L8.6,4.5 L0.4,8.2 z" fill="#0a5fbf"/></marker><marker id="ahg_d" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0.4,0.7 L7.6,4 L0.4,7.3 z" fill="#5a6b7d"/></marker></defs><circle cx="0" cy="0" r="141.8" fill="#f0e2cd" stroke="#e07c05" stroke-width="1.3" stroke-dasharray="6 4"/><polygon points="141.8,-0.0 141.6,-7.4 141.0,-14.8 140.0,-22.2 138.7,-29.5 136.9,-36.7 134.8,-43.8 132.3,-50.8 129.5,-57.7 126.3,-64.4 122.8,-70.9 118.9,-77.2 114.7,-83.3 110.2,-89.2 105.3,-94.8 100.2,-100.2 94.8,-105.3 89.2,-110.2 83.3,-114.7 77.2,-118.9 70.9,-122.8 64.4,-126.3 57.7,-129.5 50.8,-132.3 43.8,-134.8 36.7,-136.9 29.5,-138.7 22.2,-140.0 14.8,-141.0 7.4,-141.6 0.0,-141.8 -7.4,-141.6 -14.8,-141.0 -22.2,-140.0 -29.5,-138.7 -36.7,-136.9 -43.8,-134.8 -50.8,-132.3 -57.7,-129.5 -64.4,-126.3 -70.9,-122.8 -77.2,-118.9 -83.3,-114.7 -89.2,-110.2 -94.8,-105.3 -100.2,-100.2 -105.3,-94.8 -110.2,-89.2 -114.7,-83.3 -118.9,-77.2 -122.8,-70.9 -126.3,-64.4 -128.2,-60.3 -128.2,60.3 -126.3,64.4 -122.8,70.9 -118.9,77.2 -114.7,83.3 -110.2,89.2 -105.3,94.8 -100.2,100.2 -94.8,105.3 -89.2,110.2 -83.3,114.7 -77.2,118.9 -70.9,122.8 -64.4,126.3 -60.3,128.2 60.3,128.2 64.4,126.3 70.9,122.8 77.2,118.9 83.3,114.7 89.2,110.2 94.8,105.3 100.2,100.2 105.3,94.8 110.2,89.2 114.7,83.3 118.9,77.2 122.8,70.9 126.3,64.4 129.5,57.7 132.3,50.8 134.8,43.8 136.9,36.7 138.7,29.5 140.0,22.2 141.0,14.8 141.6,7.4" fill="#c9d2dc" stroke="#6f8095" stroke-width="1.7" stroke-linejoin="round"/><line x1="-128.2" y1="60.4" x2="-128.2" y2="-60.4" stroke="#e07c05" stroke-width="5.5" stroke-linecap="round"/><line x1="-137.7" y1="0.0" x2="-322.8" y2="0.0" stroke="#e07c05" stroke-width="1.2" stroke-dasharray="4 3"/><g><rect x="-474.9" y="-16.0" width="304.2" height="32" rx="8" fill="#fff2df" stroke="#a35c00" stroke-width="1.7"/><text x="-322.8" y="5.9" font-size="14.5" font-weight="700" fill="#a35c00" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">X− · 9 Uhr · 0.50 tief · 4.47 breit</text></g><line x1="-60.4" y1="128.2" x2="60.4" y2="128.2" stroke="#e07c05" stroke-width="5.5" stroke-linecap="round"/><line x1="0.0" y1="137.7" x2="0.0" y2="183.7" stroke="#e07c05" stroke-width="1.2" stroke-dasharray="4 3"/><g><rect x="-152.1" y="167.7" width="304.2" height="32" rx="8" fill="#fff2df" stroke="#a35c00" stroke-width="1.7"/><text x="0.0" y="189.6" font-size="14.5" font-weight="700" fill="#a35c00" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">Y− · 6 Uhr · 0.50 tief · 4.47 breit</text></g><line x1="-11.0" y1="0.0" x2="11.0" y2="0.0" stroke="#6f8095" stroke-width="1.1"/><line x1="0.0" y1="-11.0" x2="0.0" y2="11.0" stroke="#6f8095" stroke-width="1.1"/><line x1="100.2" y1="-100.2" x2="-100.2" y2="100.2" stroke="#0a5fbf" stroke-width="1.9" marker-start="url(#ahb_d)" marker-end="url(#ahb_d)"/><g><rect x="-64.0" y="-16.0" width="127.9" height="32" rx="8" fill="#ffffff" stroke="#0a5fbf" stroke-width="1.7"/><circle cx="-45.0" cy="0.0" r="12" fill="#0a5fbf"/><text x="-45.0" y="5.2" font-size="14.5" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">A</text><text x="17.0" y="5.9" font-size="16.5" font-weight="700" fill="#0a5fbf" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">Ø 10.500</text></g><line x1="-128.2" y1="-3.0" x2="-128.2" y2="-202.8" stroke="#0a5fbf" stroke-width="1.1" opacity=".75"/><line x1="141.8" y1="-3.0" x2="141.8" y2="-202.8" stroke="#0a5fbf" stroke-width="1.1" opacity=".75"/><line x1="-128.2" y1="-193.8" x2="141.8" y2="-193.8" stroke="#0a5fbf" stroke-width="1.9" marker-start="url(#ahb_d)" marker-end="url(#ahb_d)"/><g><rect x="-48.0" y="-235.8" width="109.4" height="32" rx="8" fill="#ffffff" stroke="#0a5fbf" stroke-width="1.7"/><circle cx="-29.0" cy="-219.8" r="12" fill="#0a5fbf"/><text x="-29.0" y="-214.6" font-size="14.5" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">B</text><text x="23.8" y="-213.8" font-size="16.5" font-weight="700" fill="#0a5fbf" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">10.000</text></g><line x1="3.0" y1="128.2" x2="202.8" y2="128.2" stroke="#0a5fbf" stroke-width="1.1" opacity=".75"/><line x1="3.0" y1="-141.8" x2="202.8" y2="-141.8" stroke="#0a5fbf" stroke-width="1.1" opacity=".75"/><line x1="193.8" y1="128.2" x2="193.8" y2="-141.8" stroke="#0a5fbf" stroke-width="1.9" marker-start="url(#ahb_d)" marker-end="url(#ahb_d)"/><g><rect x="215.0" y="-22.8" width="109.4" height="32" rx="8" fill="#ffffff" stroke="#0a5fbf" stroke-width="1.7"/><circle cx="234.0" cy="-6.8" r="12" fill="#0a5fbf"/><text x="234.0" y="-1.5" font-size="14.5" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">C</text><text x="286.8" y="-0.8" font-size="16.5" font-weight="700" fill="#0a5fbf" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">10.000</text></g><line x1="-259.8" y1="237.8" x2="-201.8" y2="237.8" stroke="#5a6b7d" stroke-width="2" marker-end="url(#ahg_d)"/><text x="-185.5" y="242.8" font-size="14" font-weight="700" fill="#5a6b7d" font-family="system-ui,sans-serif" text-anchor="middle">X+</text><line x1="-259.8" y1="237.8" x2="-259.8" y2="179.8" stroke="#5a6b7d" stroke-width="2" marker-end="url(#ahg_d)"/><text x="-259.8" y="163.5" font-size="14" font-weight="700" fill="#5a6b7d" font-family="system-ui,sans-serif" text-anchor="middle">Y+</text></svg>
+      <figcaption><b>Blick auf die Drehachse</b> — hier wird gemessen</figcaption>
+    </figure>
+  </div>
+  <div class="legend">
+    <span><i style="background:#e07c05"></i>Anfräsung</span>
+    <span><i style="background:#c9d2dc"></i>gedrehte Rundfläche</span>
+    <span><i style="background:#f0e2cd;border:1px dashed #e07c05"></i>weggefrästes Material — je dicker die Sichel, desto tiefer die Fläche</span>
+    <span><i style="background:#0a5fbf"></i>Maß mit dem Messschieber</span>
+  </div>
+
+  <div class="callout">
+    <strong>Hier sind die beiden Flächen verwechselbar.</strong> Anders als bei der G58-Tonne sind sie
+    geometrisch identisch: beide 0.500 mm tief, beide 4.47 mm breit, beide mit Sollmaß 10.000.
+    Am Bauteil allein lassen sie sich <em>nicht</em> unterscheiden — nur über die Lage:
+    <strong>9 Uhr = X−, 6 Uhr = Y−</strong>. Der Preform darf zwischen Fräsen und Messen also nicht
+    umgespannt oder verdreht werden; das Programm parkt auf <code>B270</code>, das ist die Referenzlage.
+    Ein Vertauschen kippt ΔX und ΔY gegeneinander.
+  </div>
+
+  <div class="grid">
+    <div class="field soll">
+      <label><span class="bdg">A</span>Ø nach Rundfräsen<span class="soll-pill">Soll 10.500</span></label>
+      <div class="sub">Voller Durchmesser am <strong>unteren glatten Abschnitt</strong> (Z 10–14),
+        unterhalb der beiden Anfräsungen. Messschieber quer über die runde Tonne.</div>
+      <input type="number" id="g59_R" step="0.001" placeholder="10.500">
+    </div>
+    <div class="field">
+      <label><span class="bdg">B</span>X-Fläche zum Ø<span class="soll-pill">Soll 10.000</span></label>
+      <div class="sub">Von der <strong>markierten 9-Uhr-Fläche (X−)</strong> waagerecht quer durch
+        zur runden Gegenseite. Nicht zur anderen Anfräsung.</div>
+      <input type="number" id="g59_X" step="0.001" placeholder="10.000">
+    </div>
+    <div class="field">
+      <label><span class="bdg">C</span>Y-Fläche zum Ø<span class="soll-pill">Soll 10.000</span></label>
+      <div class="sub">Von der <strong>markierten 6-Uhr-Fläche (Y−)</strong> senkrecht dazu quer durch
+        zur runden Gegenseite.</div>
+      <input type="number" id="g59_Y" step="0.001" placeholder="10.000">
+    </div>
+  </div>
+  <div class="probe" id="g59_probe"></div>
+</div>
+
+<!-- ================================================== G58 ====================== -->
+<div class="card">
+  <h2><span class="num">3</span> G58 — Tonne A = 0 <span class="chip">IBN_Testpreform_A0.nc</span></h2>
+  <p class="lead"><strong>Halter gerade, Tonne liegt waagerecht</strong> längs Y und dreht sich um Y.
+     X und Z liegen damit radial und liefern den Versatz. Y ist die Längsachse — daraus kommt hier kein Wert.</p>
+
+  <div class="views">
+    <figure class="fig">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-465.3 -128.7 637.2 437.9" style="width:100%;height:auto;display:block"><defs><marker id="ahb_a" markerWidth="9" markerHeight="9" refX="7.8" refY="4.5" orient="auto"><path d="M0.4,0.8 L8.6,4.5 L0.4,8.2 z" fill="#0a5fbf"/></marker></defs><polygon points="-135.9,118.7 -137.7,119.3 -197.7,133.3 -195.9,132.7" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-175.7,-46.3 -173.8,-46.4 -233.9,-32.4 -235.8,-32.3" fill="#8c949d" stroke="#8c949d" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-134.2,117.9 -135.9,118.7 -195.9,132.7 -194.2,131.9" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-173.8,-46.4 -171.9,-46.4 -231.9,-32.4 -233.9,-32.4" fill="#9098a1" stroke="#9098a1" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-132.5,116.8 -134.2,117.9 -194.2,131.9 -192.5,130.8" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-171.9,-46.4 -169.9,-46.1 -230.0,-32.1 -231.9,-32.4" fill="#939ba5" stroke="#939ba5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-130.9,115.5 -132.5,116.8 -192.5,130.8 -190.9,129.5" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-169.9,-46.1 -167.9,-45.6 -228.0,-31.6 -230.0,-32.1" fill="#979fa9" stroke="#979fa9" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-129.4,114.0 -130.9,115.5 -190.9,129.5 -189.4,128.0" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-167.9,-45.6 -165.9,-44.8 -225.9,-30.8 -228.0,-31.6" fill="#9aa3ad" stroke="#9aa3ad" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-128.0,112.3 -129.4,114.0 -189.4,128.0 -188.0,126.3" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-165.9,-44.8 -163.8,-43.9 -223.9,-29.9 -225.9,-30.8" fill="#9da6b1" stroke="#9da6b1" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-126.6,110.4 -128.0,112.3 -188.0,126.3 -186.6,124.4" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-163.8,-43.9 -161.8,-42.7 -221.8,-28.7 -223.9,-29.9" fill="#a1a9b4" stroke="#a1a9b4" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-125.3,108.3 -126.6,110.4 -186.6,124.4 -185.4,122.3" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-161.8,-42.7 -159.7,-41.3 -219.7,-27.3 -221.8,-28.7" fill="#a3acb7" stroke="#a3acb7" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-124.1,105.9 -125.3,108.3 -185.4,122.3 -184.2,119.9" fill="#6b7178" stroke="#6b7178" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-159.7,-41.3 -157.6,-39.7 -217.6,-25.7 -219.7,-27.3" fill="#a6afba" stroke="#a6afba" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-123.0,103.4 -124.1,105.9 -184.2,119.9 -183.1,117.4" fill="#70767d" stroke="#70767d" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-157.6,-39.7 -155.5,-37.8 -215.6,-23.8 -217.6,-25.7" fill="#a9b2bd" stroke="#a9b2bd" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-122.1,100.7 -123.0,103.4 -183.1,117.4 -182.1,114.7" fill="#747a82" stroke="#747a82" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-155.5,-37.8 -153.4,-35.8 -213.5,-21.8 -215.6,-23.8" fill="#abb4c0" stroke="#abb4c0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-121.2,97.9 -122.1,100.7 -182.1,114.7 -181.2,111.9" fill="#787e87" stroke="#787e87" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-153.4,-35.8 -151.4,-33.6 -211.4,-19.6 -213.5,-21.8" fill="#adb7c2" stroke="#adb7c2" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-235.8,-32.3 -235.0,-32.3 -355.1,-4.4 -355.8,-4.3" fill="#8c949d" stroke="#8c949d" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-195.9,132.7 -197.7,133.3 -317.8,161.3 -316.0,160.7" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-120.4,94.8 -121.2,97.9 -181.2,111.9 -180.4,108.8" fill="#7c838b" stroke="#7c838b" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-151.4,-33.6 -149.3,-31.2 -209.3,-17.2 -211.4,-19.6" fill="#afb9c5" stroke="#afb9c5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-235.0,-32.3 -233.9,-32.4 -231.9,-32.4 -230.0,-32.1 -228.0,-31.6 -225.9,-30.8 -223.9,-29.9 -221.8,-28.7 -219.7,-27.3 -217.6,-25.7 -215.6,-23.8 -213.5,-21.8 -211.4,-19.6 -209.3,-17.2 -207.3,-14.5 -205.3,-11.8 -203.3,-8.8 -201.4,-5.7 -200.3,-3.7" fill="#69727e" stroke="#69727e" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-194.2,131.9 -195.9,132.7 -316.0,160.7 -314.3,159.9" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-119.7,91.6 -120.4,94.8 -180.4,108.8 -179.7,105.6" fill="#808790" stroke="#808790" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-149.3,-31.2 -147.3,-28.5 -207.3,-14.5 -209.3,-17.2" fill="#b1bbc7" stroke="#b1bbc7" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-119.1,88.3 -119.7,91.6 -179.7,105.6 -179.1,102.3" fill="#848b94" stroke="#848b94" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-192.5,130.8 -194.2,131.9 -314.3,159.9 -312.6,158.8" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-147.3,-28.5 -145.3,-25.8 -205.3,-11.8 -207.3,-14.5" fill="#b3bcc9" stroke="#b3bcc9" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-118.6,84.8 -119.1,88.3 -179.1,102.3 -178.6,98.8" fill="#888f99" stroke="#888f99" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-145.3,-25.8 -143.3,-22.8 -203.3,-8.8 -205.3,-11.8" fill="#b4beca" stroke="#b4beca" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-377.6,45.8 -377.6,41.9 -377.4,38.0 -377.1,34.3 -376.8,30.7 -376.3,27.2 -375.7,23.8 -375.0,20.6 -374.2,17.6 -373.3,14.7 -372.3,12.0 -371.2,9.5 -370.0,7.2 -368.7,5.1 -367.4,3.2 -365.9,1.4 -364.4,-0.1 -362.8,-1.4 -361.2,-2.4 -359.5,-3.3 -357.7,-3.9 -355.8,-4.3 -355.1,-4.4 -320.4,24.3 -319.6,25.6 -317.8,29.0 -316.0,32.6 -314.3,36.3 -312.6,40.1 -311.0,44.0 -309.5,48.0 -308.1,52.0 -306.7,56.2 -305.4,60.4 -304.3,64.7 -303.2,69.0 -302.2,73.3 -301.3,77.7 -300.5,82.1 -299.8,86.1 -299.8,133.8 -300.5,136.8 -301.3,139.8 -302.2,142.7 -303.2,145.4 -304.3,147.9 -305.4,150.2 -306.7,152.4 -308.1,154.3 -309.5,156.0 -311.0,157.5 -312.6,158.8 -314.3,159.9 -316.0,160.7 -317.8,161.3 -319.6,161.7 -321.5,161.9 -323.4,161.8 -325.4,161.5 -327.4,161.0 -329.4,160.3 -331.5,159.3 -333.6,158.1 -335.6,156.7 -337.7,155.1 -339.8,153.3 -341.9,151.3 -344.0,149.0 -346.0,146.6 -348.1,144.0 -350.1,141.2 -352.0,138.3 -354.0,135.1 -355.8,131.9 -357.7,128.4 -359.5,124.9 -361.2,121.2 -362.8,117.4 -364.4,113.5 -365.9,109.5 -367.4,105.4 -368.7,101.2 -370.0,97.0 -371.2,92.7 -372.3,88.4 -373.3,84.1 -374.2,79.7 -375.0,75.4 -375.7,71.0 -376.3,66.7 -376.8,62.4 -377.1,58.2 -377.4,54.0 -377.6,49.9" fill="#69727e" stroke="#69727e" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-190.9,129.5 -192.5,130.8 -312.6,158.8 -311.0,157.5" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-118.2,81.2 -118.6,84.8 -178.6,98.8 -178.2,95.2" fill="#8c939d" stroke="#8c939d" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-143.3,-22.8 -141.4,-19.7 -201.4,-5.7 -203.3,-8.8" fill="#b5bfcb" stroke="#b5bfcb" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-117.9,77.4 -118.2,81.2 -178.2,95.2 -178.0,91.4" fill="#9097a1" stroke="#9097a1" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-189.4,128.0 -190.9,129.5 -311.0,157.5 -309.5,156.0" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-141.4,-19.7 -139.5,-16.4 -199.5,-2.4 -201.4,-5.7" fill="#b6c0cd" stroke="#b6c0cd" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-117.8,73.6 -117.9,77.4 -178.0,91.4 -177.8,87.6" fill="#939ba5" stroke="#939ba5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-139.5,-16.4 -137.7,-13.0 -197.7,1.0 -199.5,-2.4" fill="#b7c1cd" stroke="#b7c1cd" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-188.0,126.3 -189.4,128.0 -309.5,156.0 -308.1,154.3" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-117.7,69.6 -117.8,73.6 -177.8,87.6 -177.7,83.6" fill="#979fa9" stroke="#979fa9" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-137.7,-13.0 -135.9,-9.4 -195.9,4.6 -197.7,1.0" fill="#b8c2ce" stroke="#b8c2ce" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-117.8,65.6 -117.7,69.6 -177.7,83.6 -177.8,79.6" fill="#9aa2ad" stroke="#9aa2ad" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-135.9,-9.4 -134.2,-5.7 -194.2,8.3 -195.9,4.6" fill="#b8c2ce" stroke="#b8c2ce" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-186.6,124.4 -188.0,126.3 -308.1,154.3 -306.7,152.4" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-117.9,61.5 -117.8,65.6 -177.8,79.6 -178.0,75.5" fill="#9da6b0" stroke="#9da6b0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-134.2,-5.7 -132.5,-1.9 -192.5,12.1 -194.2,8.3" fill="#b8c2cf" stroke="#b8c2cf" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-118.2,57.3 -117.9,61.5 -178.0,75.5 -178.2,71.3" fill="#a0a9b4" stroke="#a0a9b4" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-132.5,-1.9 -130.9,2.0 -190.9,16.0 -192.5,12.1" fill="#b8c2ce" stroke="#b8c2ce" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-118.6,53.0 -118.2,57.3 -178.2,71.3 -178.6,67.0" fill="#a3acb7" stroke="#a3acb7" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-130.9,2.0 -129.4,6.0 -189.4,20.0 -190.9,16.0" fill="#b8c2ce" stroke="#b8c2ce" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-185.4,122.3 -186.6,124.4 -306.7,152.4 -305.4,150.2" fill="#676d74" stroke="#676d74" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-119.1,48.7 -118.6,53.0 -178.6,67.0 -179.1,62.7" fill="#a6afba" stroke="#a6afba" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-129.4,6.0 -128.0,10.1 -188.0,24.1 -189.4,20.0" fill="#b7c1cd" stroke="#b7c1cd" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-119.7,44.4 -119.1,48.7 -179.1,62.7 -179.7,58.4" fill="#a9b2bd" stroke="#a9b2bd" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-128.0,10.1 -126.6,14.2 -186.6,28.2 -188.0,24.1" fill="#b6c0cd" stroke="#b6c0cd" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-120.4,40.1 -119.7,44.4 -179.7,58.4 -180.4,54.1" fill="#abb4c0" stroke="#abb4c0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-126.6,14.2 -125.3,18.4 -185.4,32.4 -186.6,28.2" fill="#b5bfcb" stroke="#b5bfcb" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-121.2,35.7 -120.4,40.1 -180.4,54.1 -181.2,49.7" fill="#adb7c2" stroke="#adb7c2" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-235.0,-32.3 -200.3,-3.7 -320.4,24.3 -355.1,-4.4" fill="#dc8c24" stroke="#dc8c24" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-125.3,18.4 -124.1,22.7 -184.2,36.7 -185.4,32.4" fill="#b4beca" stroke="#b4beca" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-122.1,31.4 -121.2,35.7 -181.2,49.7 -182.1,45.4" fill="#afb9c5" stroke="#afb9c5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-124.1,22.7 -123.0,27.0 -183.1,41.0 -184.2,36.7" fill="#b3bcc8" stroke="#b3bcc8" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-123.0,27.0 -122.1,31.4 -182.1,45.4 -183.1,41.0" fill="#b1bbc7" stroke="#b1bbc7" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-184.2,119.9 -185.4,122.3 -305.4,150.2 -304.3,147.9" fill="#6b7178" stroke="#6b7178" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-179.7,58.1 -179.7,58.4 -179.1,62.7 -178.6,67.0 -178.2,71.3 -178.0,75.5 -177.8,79.6 -177.7,83.6 -177.8,87.6 -178.0,91.4 -178.2,95.2 -178.6,98.8 -179.1,102.3 -179.7,105.6 -179.7,105.8" fill="#69727e" stroke="#69727e" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-183.1,117.4 -184.2,119.9 -304.3,147.9 -303.2,145.4" fill="#70767d" stroke="#70767d" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-182.1,114.7 -183.1,117.4 -303.2,145.4 -302.2,142.7" fill="#747a82" stroke="#747a82" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-181.2,111.9 -182.1,114.7 -302.2,142.7 -301.3,139.8" fill="#787e87" stroke="#787e87" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-180.4,108.8 -181.2,111.9 -301.3,139.8 -300.5,136.8" fill="#7c838b" stroke="#7c838b" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-179.7,105.8 -180.4,108.8 -300.5,136.8 -299.8,133.8" fill="#808790" stroke="#808790" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-200.3,-3.7 -199.5,-2.4 -319.6,25.6 -320.4,24.3" fill="#b6c0cd" stroke="#b6c0cd" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-179.7,58.1 -179.7,105.8 -299.8,133.8 -299.8,86.1" fill="#c88021" stroke="#c88021" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-199.5,-2.4 -197.7,1.0 -317.8,29.0 -319.6,25.6" fill="#b7c1cd" stroke="#b7c1cd" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-197.7,1.0 -195.9,4.6 -316.0,32.6 -317.8,29.0" fill="#b8c2ce" stroke="#b8c2ce" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-195.9,4.6 -194.2,8.3 -314.3,36.3 -316.0,32.6" fill="#b8c2ce" stroke="#b8c2ce" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-194.2,8.3 -192.5,12.1 -312.6,40.1 -314.3,36.3" fill="#b8c2cf" stroke="#b8c2cf" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-192.5,12.1 -190.9,16.0 -311.0,44.0 -312.6,40.1" fill="#b8c2ce" stroke="#b8c2ce" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-190.9,16.0 -189.4,20.0 -309.5,48.0 -311.0,44.0" fill="#b8c2ce" stroke="#b8c2ce" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-189.4,20.0 -188.0,24.1 -308.1,52.0 -309.5,48.0" fill="#b7c1cd" stroke="#b7c1cd" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-188.0,24.1 -186.6,28.2 -306.7,56.2 -308.1,52.0" fill="#b6c0cd" stroke="#b6c0cd" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-180.4,54.1 -179.7,58.1 -299.8,86.1 -300.5,82.1" fill="#abb4c0" stroke="#abb4c0" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-186.6,28.2 -185.4,32.4 -305.4,60.4 -306.7,56.2" fill="#b5bfcb" stroke="#b5bfcb" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-181.2,49.7 -180.4,54.1 -300.5,82.1 -301.3,77.7" fill="#adb7c2" stroke="#adb7c2" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-185.4,32.4 -184.2,36.7 -304.3,64.7 -305.4,60.4" fill="#b4beca" stroke="#b4beca" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-182.1,45.4 -181.2,49.7 -301.3,77.7 -302.2,73.3" fill="#afb9c5" stroke="#afb9c5" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-184.2,36.7 -183.1,41.0 -303.2,69.0 -304.3,64.7" fill="#b3bcc8" stroke="#b3bcc8" stroke-width="0.7" stroke-linejoin="round"/><polygon points="-183.1,41.0 -182.1,45.4 -302.2,73.3 -303.2,69.0" fill="#b1bbc7" stroke="#b1bbc7" stroke-width="0.7" stroke-linejoin="round"/><line x1="-302.2" y1="20.2" x2="-302.2" y2="-86.7" stroke="#a35c00" stroke-width="1.3" stroke-dasharray="4 3"/><circle cx="-302.2" cy="20.2" r="3" fill="#a35c00"/><g><rect x="-438.7" y="-106.7" width="245.0" height="24" rx="12" fill="#fff2df" stroke="#a35c00" stroke-width="1.3"/><text x="-316.2" y="-89.8" font-family="system-ui,-apple-system,sans-serif" font-size="13.5" font-weight="600" fill="#a35c00" text-anchor="middle">Z+ · 12 Uhr — 0.50 tief, breit</text></g><line x1="-275.8" y1="118.1" x2="-275.8" y2="257.2" stroke="#a35c00" stroke-width="1.3" stroke-dasharray="4 3"/><circle cx="-275.8" cy="118.1" r="3" fill="#a35c00"/><g><rect x="-443.3" y="265.2" width="275.0" height="24" rx="12" fill="#fff2df" stroke="#a35c00" stroke-width="1.3"/><text x="-305.8" y="282.1" font-family="system-ui,-apple-system,sans-serif" font-size="13.5" font-weight="600" fill="#a35c00" text-anchor="middle">X− · 9 Uhr — nur 0.25 tief, schmal</text></g><g><rect x="-125.1" y="28.7" width="275.0" height="24" rx="12" fill="#eef2f7" stroke="#33455c" stroke-width="1.3"/><text x="12.4" y="45.6" font-family="system-ui,-apple-system,sans-serif" font-size="13.5" font-weight="600" fill="#33455c" text-anchor="middle">A = 0 · liegt waagerecht · Achse Y</text></g><line x1="-157.9" y1="12.6" x2="-133.5" y2="-56.8" stroke="#0a5fbf" stroke-width="1.3" stroke-dasharray="4 3"/><circle cx="-157.9" cy="12.6" r="3" fill="#0a5fbf"/><g><rect x="-147.0" y="-80.8" width="155.0" height="24" rx="12" fill="#e8f1fc" stroke="#0a5fbf" stroke-width="1.3"/><text x="-69.5" y="-63.9" font-family="system-ui,-apple-system,sans-serif" font-size="13.5" font-weight="600" fill="#0a5fbf" text-anchor="middle">hier Ø rund messen</text></g></svg>
+      <figcaption><b>Lage im Raum</b> — wo die beiden Anfräsungen sitzen</figcaption>
+    </figure>
+    <figure class="fig">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-526.4 -211.9 858.5 484.9" style="width:100%;height:auto;display:block"><defs><marker id="ahb_b" markerWidth="9" markerHeight="9" refX="7.8" refY="4.5" orient="auto"><path d="M0.4,0.8 L8.6,4.5 L0.4,8.2 z" fill="#0a5fbf"/></marker><marker id="ahg_b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0.4,0.7 L7.6,4 L0.4,7.3 z" fill="#5a6b7d"/></marker></defs><circle cx="0" cy="0" r="135.0" fill="#f0e2cd" stroke="#e07c05" stroke-width="1.3" stroke-dasharray="6 4"/><polygon points="135.0,-0.0 134.8,-7.1 134.3,-14.1 133.3,-21.1 132.0,-28.1 130.4,-34.9 128.4,-41.7 126.0,-48.4 123.3,-54.9 120.3,-61.3 116.9,-67.5 113.2,-73.5 109.2,-79.4 104.9,-85.0 100.3,-90.3 95.5,-95.5 90.3,-100.3 85.0,-104.9 79.4,-109.2 73.5,-113.2 67.5,-116.9 61.3,-120.3 58.7,-121.5 -58.7,-121.5 -61.3,-120.3 -67.5,-116.9 -73.5,-113.2 -79.4,-109.2 -85.0,-104.9 -90.3,-100.3 -95.5,-95.5 -100.3,-90.3 -104.9,-85.0 -109.2,-79.4 -113.2,-73.5 -116.9,-67.5 -120.3,-61.3 -123.3,-54.9 -126.0,-48.4 -128.2,-42.1 -128.2,42.1 -126.0,48.4 -123.3,54.9 -120.3,61.3 -116.9,67.5 -113.2,73.5 -109.2,79.4 -104.9,85.0 -100.3,90.3 -95.5,95.5 -90.3,100.3 -85.0,104.9 -79.4,109.2 -73.5,113.2 -67.5,116.9 -61.3,120.3 -54.9,123.3 -48.4,126.0 -41.7,128.4 -34.9,130.4 -28.1,132.0 -21.1,133.3 -14.1,134.3 -7.1,134.8 -0.0,135.0 7.1,134.8 14.1,134.3 21.1,133.3 28.1,132.0 34.9,130.4 41.7,128.4 48.4,126.0 54.9,123.3 61.3,120.3 67.5,116.9 73.5,113.2 79.4,109.2 85.0,104.9 90.3,100.3 95.5,95.5 100.3,90.3 104.9,85.0 109.2,79.4 113.2,73.5 116.9,67.5 120.3,61.3 123.3,54.9 126.0,48.4 128.4,41.7 130.4,34.9 132.0,28.1 133.3,21.1 134.3,14.1 134.8,7.1" fill="#c9d2dc" stroke="#6f8095" stroke-width="1.7" stroke-linejoin="round"/><line x1="-128.2" y1="42.2" x2="-128.2" y2="-42.2" stroke="#e07c05" stroke-width="5.5" stroke-linecap="round"/><line x1="-137.7" y1="0.0" x2="-339.0" y2="0.0" stroke="#e07c05" stroke-width="1.2" stroke-dasharray="4 3"/><g><rect x="-507.4" y="-16.0" width="336.7" height="32" rx="8" fill="#fff2df" stroke="#a35c00" stroke-width="1.7"/><text x="-339.0" y="5.9" font-size="14.5" font-weight="700" fill="#a35c00" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">X− · 9 Uhr · nur 0.25 tief · 3.12 breit</text></g><line x1="-58.8" y1="-121.5" x2="58.8" y2="-121.5" stroke="#e07c05" stroke-width="5.5" stroke-linecap="round"/><line x1="0.0" y1="-130.9" x2="0.0" y2="-176.9" stroke="#e07c05" stroke-width="1.2" stroke-dasharray="4 3"/><g><rect x="-156.2" y="-192.9" width="312.3" height="32" rx="8" fill="#fff2df" stroke="#a35c00" stroke-width="1.7"/><text x="0.0" y="-171.0" font-size="14.5" font-weight="700" fill="#a35c00" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">Z+ · 12 Uhr · 0.50 tief · 4.36 breit</text></g><line x1="-11.0" y1="0.0" x2="11.0" y2="0.0" stroke="#6f8095" stroke-width="1.1"/><line x1="0.0" y1="-11.0" x2="0.0" y2="11.0" stroke="#6f8095" stroke-width="1.1"/><line x1="95.5" y1="-95.5" x2="-95.5" y2="95.5" stroke="#0a5fbf" stroke-width="1.9" marker-start="url(#ahb_b)" marker-end="url(#ahb_b)"/><g><rect x="-64.0" y="-16.0" width="127.9" height="32" rx="8" fill="#ffffff" stroke="#0a5fbf" stroke-width="1.7"/><circle cx="-45.0" cy="0.0" r="12" fill="#0a5fbf"/><text x="-45.0" y="5.2" font-size="14.5" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">A</text><text x="17.0" y="5.9" font-size="16.5" font-weight="700" fill="#0a5fbf" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">Ø 10.000</text></g><line x1="-128.2" y1="3.0" x2="-128.2" y2="196.0" stroke="#0a5fbf" stroke-width="1.1" opacity=".75"/><line x1="135.0" y1="3.0" x2="135.0" y2="196.0" stroke="#0a5fbf" stroke-width="1.1" opacity=".75"/><line x1="-128.2" y1="187.0" x2="135.0" y2="187.0" stroke="#0a5fbf" stroke-width="1.9" marker-start="url(#ahb_b)" marker-end="url(#ahb_b)"/><g><rect x="-46.7" y="197.0" width="100.2" height="32" rx="8" fill="#ffffff" stroke="#0a5fbf" stroke-width="1.7"/><circle cx="-27.7" cy="213.0" r="12" fill="#0a5fbf"/><text x="-27.7" y="218.2" font-size="14.5" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">B</text><text x="20.4" y="218.9" font-size="16.5" font-weight="700" fill="#0a5fbf" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">9.750</text></g><line x1="3.0" y1="-121.5" x2="196.0" y2="-121.5" stroke="#0a5fbf" stroke-width="1.1" opacity=".75"/><line x1="3.0" y1="135.0" x2="196.0" y2="135.0" stroke="#0a5fbf" stroke-width="1.1" opacity=".75"/><line x1="187.0" y1="-121.5" x2="187.0" y2="135.0" stroke="#0a5fbf" stroke-width="1.9" marker-start="url(#ahb_b)" marker-end="url(#ahb_b)"/><g><rect x="212.9" y="-9.2" width="100.2" height="32" rx="8" fill="#ffffff" stroke="#0a5fbf" stroke-width="1.7"/><circle cx="231.9" cy="6.8" r="12" fill="#0a5fbf"/><text x="231.9" y="11.9" font-size="14.5" font-weight="800" fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">C</text><text x="280.0" y="12.7" font-size="16.5" font-weight="700" fill="#0a5fbf" font-family="system-ui,-apple-system,sans-serif" text-anchor="middle">9.500</text></g><line x1="-253.0" y1="231.0" x2="-195.0" y2="231.0" stroke="#5a6b7d" stroke-width="2" marker-end="url(#ahg_b)"/><text x="-178.8" y="236.0" font-size="14" font-weight="700" fill="#5a6b7d" font-family="system-ui,sans-serif" text-anchor="middle">X+</text><line x1="-253.0" y1="231.0" x2="-253.0" y2="173.0" stroke="#5a6b7d" stroke-width="2" marker-end="url(#ahg_b)"/><text x="-253.0" y="156.8" font-size="14" font-weight="700" fill="#5a6b7d" font-family="system-ui,sans-serif" text-anchor="middle">Z+</text></svg>
+      <figcaption><b>Blick auf die Drehachse</b> — hier wird gemessen</figcaption>
+    </figure>
+  </div>
+  <div class="legend">
+    <span><i style="background:#e07c05"></i>Anfräsung</span>
+    <span><i style="background:#c9d2dc"></i>gedrehte Rundfläche</span>
+    <span><i style="background:#f0e2cd;border:1px dashed #e07c05"></i>weggefrästes Material — je dicker die Sichel, desto tiefer die Fläche</span>
+    <span><i style="background:#0a5fbf"></i>Maß mit dem Messschieber</span>
+  </div>
+
+  <div class="callout" style="border-left-color:var(--ok);background:var(--ok-bg);color:#0b4f28">
+    <strong>Hier sind die beiden Flächen nicht verwechselbar.</strong> Sie unterscheiden sich doppelt:
+    die X−-Fläche ist 0.250 mm tief und 3.12 mm breit, die Z+-Fläche 0.500 mm tief und 4.36 mm breit —
+    der Unterschied ist mit bloßem Auge sichtbar. Und die Sollmaße liegen 0.250 mm auseinander
+    (9.750 gegen 9.500). Wer sie vertauscht, sieht das sofort am Ergebnis.
+  </div>
+
+  <div class="grid">
+    <div class="field soll">
+      <label><span class="bdg">A</span>Ø nach Rundfräsen<span class="soll-pill">Soll 10.000</span></label>
+      <div class="sub">Voller Durchmesser am <strong>hinteren Abschnitt ohne Anfräsungen</strong>
+        (Y −14.5 → −10.5). Messschieber quer über die runde Tonne.</div>
+      <input type="number" id="g58_R" step="0.001" placeholder="10.000">
+    </div>
+    <div class="field">
+      <label><span class="bdg">B</span>X-Fläche zum Ø<span class="soll-pill">Soll 9.750</span></label>
+      <div class="sub">Von der <strong>schmalen 9-Uhr-Fläche (X−)</strong> quer durch zur runden
+        Gegenseite. Die schmalere der beiden — 3.12 mm breit.</div>
+      <input type="number" id="g58_X" step="0.001" placeholder="9.750">
+    </div>
+    <div class="field">
+      <label><span class="bdg">C</span>Z-Fläche zum Ø<span class="soll-pill">Soll 9.500</span></label>
+      <div class="sub">Von der <strong>breiten 12-Uhr-Fläche (Z+)</strong> quer durch zur runden
+        Gegenseite. Die breitere — 4.36 mm, doppelt so tief gefräst.</div>
+      <input type="number" id="g58_Z" step="0.001" placeholder="9.500">
+    </div>
+  </div>
+  <div class="probe" id="g58_probe"></div>
+</div>
+
+<!-- ================================================== ERGEBNIS ================== -->
+<div class="card result">
+  <h2>Eintrag in die Nullpunkttabelle</h2>
+  <p class="lead">Absolute Werte inklusive des aktuellen G57 — genau so über die normale CNC-Oberfläche
+     in die Nullpunkttabelle schreiben. Nur X, Y und Z; <strong>A und B bleiben bei beiden auf 0</strong>.
+     Kleine Zeile darunter = der reine Korrekturbetrag Δ.</p>
+
+  <div class="rrow">
+    <div class="np">G58</div>
+    <div class="rcell"><div class="ax">X</div><div class="v" id="o58X">—</div><div class="d" id="d58X">&nbsp;</div></div>
+    <div class="rcell"><div class="ax">Y</div><div class="v" id="o58Y">—</div><div class="d" id="d58Y">&nbsp;</div></div>
+    <div class="rcell"><div class="ax">Z</div><div class="v" id="o58Z">—</div><div class="d" id="d58Z">&nbsp;</div></div>
+    <button class="btn-copy" data-copy="58">kopieren</button>
+  </div>
+  <div class="rrow">
+    <div class="np">G59</div>
+    <div class="rcell"><div class="ax">X</div><div class="v" id="o59X">—</div><div class="d" id="d59X">&nbsp;</div></div>
+    <div class="rcell"><div class="ax">Y</div><div class="v" id="o59Y">—</div><div class="d" id="d59Y">&nbsp;</div></div>
+    <div class="rcell"><div class="ax">Z</div><div class="v" id="o59Z">—</div><div class="d" id="d59Z">&nbsp;</div></div>
+    <button class="btn-copy" data-copy="59">kopieren</button>
+  </div>
+</div>
+
+<!-- ================================================== RECHENLOGIK =============== -->
+<details>
+  <summary>Rechenlogik und Programm-Geometrie</summary>
+  <div class="dbody">
+
+    <p style="margin-top:0;font-size:14.5px">Bezugsgröße ist immer der <strong>gemessene Ist-Radius</strong>
+       <code>r = Ø_rund / 2</code>, nicht der Soll-Radius. Dadurch fällt ein gleichmäßiger
+       Aufmaß- oder Werkzeugfehler automatisch heraus und stört die Flächenrechnung nicht.</p>
+
+    <div class="formula">
+r        = Ø_rund / 2
+
+<b>G58 (A = 0)</b>
+ΔX       = X-Fläche − ( r + 4.750 )
+ΔZ       = ( 4.500 + r ) − Z-Fläche
+ΔZ_probe = 5.000 − r                     ← Querprobe aus dem Rund-Ø
+
+<b>G59 (A = −90)</b>
+ΔX       = X-Fläche − ( r + 4.750 )
+ΔY       = Y-Fläche − ( r + 4.750 )
+ΔX_probe = r − 5.250                     ← Querprobe aus dem Rund-Ø
+
+<b>Eintrag</b>
+G58 = ( G57_X + ΔX₅₈ , G57_Y + ΔY₅₉ , G57_Z + ΔZ₅₈ )
+G59 = ( G57_X + ΔX₅₉ , G57_Y + ΔY₅₉ , G57_Z + ΔZ₅₈ )
+    </div>
+
+    <p style="font-size:14.5px"><strong>Woher die Konstanten kommen — direkt aus dem NC-Code:</strong></p>
+    <table class="geo">
+      <tr><th>Element</th><th>Werkzeugbahn im Programm</th><th>Erzeugte Ebene</th><th>Soll-Messwert</th></tr>
+      <tr><td>G58 · Rund</td><td>Stirn bei <code>Z 5</code>, <code>X 0</code>, Y −21 → −12, B 360°</td><td>r = 5.000</td><td>Ø 10.000</td></tr>
+      <tr><td>G58 · Z+ (12 Uhr)</td><td>Stirn bei <code>Z 4.5</code>, X ±6.75</td><td>Z = +4.500</td><td>9.500</td></tr>
+      <tr><td>G58 · X− (9 Uhr)</td><td>Seite bei <code>X −6.25</code> + R 1.5</td><td>X = −4.750</td><td>9.750</td></tr>
+      <tr><td>G59 · Rund</td><td>Seite bei <code>X −6.75</code> + R 1.5, Z 21 → 10, B 360°</td><td>r = 5.250</td><td>Ø 10.500</td></tr>
+      <tr><td>G59 · X− (9 Uhr)</td><td>Seite bei <code>X −6.25</code> + R 1.5, Z 20 → 14</td><td>X = −4.750</td><td>10.000</td></tr>
+      <tr><td>G59 · Y− (6 Uhr)</td><td>Seite bei <code>Y −6.25</code> + R 1.5, Z 20 → 14</td><td>Y = −4.750</td><td>10.000</td></tr>
+    </table>
+
+    <p style="font-size:14.5px"><strong>Warum die beiden Querproben unterschiedliche Vorzeichen haben:</strong>
+       Bei G58 entsteht der Rundkörper mit der Werkzeug<em>stirn</em> auf der <strong>Z-plus</strong>-Seite
+       (Z = 5) — liegt die Drehachse zu hoch, wird der Radius kleiner, also <code>Δ = 5.000 − r</code>.
+       Bei G59 schneidet die Werkzeug<em>seite</em> auf der <strong>X-minus</strong>-Seite
+       (X = −5.25) — liegt die Achse weiter in +X, wird der Radius größer, also <code>Δ = r − 5.250</code>.
+       Der Rund-Ø der G59-Tonne ist damit eine echte zweite Bestimmung von ΔX; für ΔY gibt es
+       keine Entsprechung, weil der Rund-Ø keine Y-Information trägt.</p>
+
+    <div class="callout">
+      <strong>Noch offen:</strong> Für G59 lässt sich Z aus der Tonne nicht bestimmen (Längsachse).
+      Aktuell wird Z aus der G58-Tonne übernommen. Der Vorschlag, dafür den Deckel bei
+      <code>Z 19.500</code> anzufräsen und die Werkstückhöhe zu messen, ist weder im NC-Programm
+      noch hier umgesetzt.
+    </div>
+  </div>
+</details>
+
+<footer>
+  Alle Werte in mm, drei Nachkommastellen. Geometrie abgeleitet aus
+  <code>IBN_Testpreform_A0.nc</code> und <code>IBN_Testpreform_A-90.nc</code>.<br>
+  Für die Nullpunkte G54 / G55 (B = 0 / B = 180) gilt der separate Kreuz-Rechner.
+</footer>
+
+</div>
+</section>
+
+</div>
+
+<script>
+"use strict";
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('.pane').forEach(p =>
+    p.classList.toggle('active', p.id === b.dataset.pane));
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}));
+</script>
+
+<script>
+/* ================= Testkreuz · G54 / G55 ================= */
+(function(){
+"use strict";
+const T_SOLL = 1.810;     // Soll-Wandstaerke
+const H_SOLL = 10.000;    // Soll-Gesamthoehe des Kreuzes
+const TOL    = 0.010;     // brauchbare Toleranz auf die Asymmetrie
+
+const $ = id => document.getElementById(id);
+const val = id => { const v = parseFloat($(id).value); return isNaN(v) ? null : v; };
+const sgn = n => (n >= 0 ? "+" : "−") + Math.abs(n).toFixed(3);
+const have = (...ids) => ids.every(i => val(i) !== null);
+
+function mark(x, tol){
+  const a = Math.abs(x);
+  if (a <= tol)      return '<span class="badge b-ok">in Toleranz</span>';
+  if (a <= tol * 4)  return '<span class="badge b-warn">nachkorrigieren</span>';
+  return '<span class="badge b-err">deutlich daneben</span>';
+}
+function ln(k, html){ return '<div class="ln"><span class="k">' + k + '</span>' + html + '</div>'; }
+
+function calcWand(){
+  const out = { dX: null, dYdiff: null };
+  let h = "";
+
+  // --- X aus den Armen 12 und 6 Uhr ---
+  const p12 = have('wA','wB') ? val('wB') - val('wA') : null;   // rechts − links
+  const p6  = have('wC','wD') ? val('wD') - val('wC') : null;
+  if (p12 !== null) h += ln("Asymmetrie Arm 12 Uhr  (B − A, rechts − links)",
+      '<span class="val">' + sgn(p12) + '</span>' + mark(p12, TOL * 2));
+  if (p6 !== null) h += ln("Asymmetrie Arm 6 Uhr  (D − C, rechts − links)",
+      '<span class="val">' + sgn(p6) + '</span>' + mark(p6, TOL * 2));
+  if (p12 !== null && p6 !== null){
+    const diff = Math.abs(p12 - p6);
+    h += ln("Querprobe — beide Arme sollten gleich sein",
+      '<span class="val">Δ ' + diff.toFixed(3) + '</span>' +
+      (diff <= TOL ? '<span class="badge b-ok">deckt sich</span>'
+                   : '<span class="badge b-warn">Kreuz verdreht oder Wände nicht parallel</span>'));
+    out.dX = (p12 + p6) / 8;
+  } else if (p12 !== null) { out.dX = p12 / 4; }
+  else if (p6 !== null)    { out.dX = p6 / 4; }
+  if (out.dX !== null) h += ln("<strong>ΔX</strong>",
+      '<span class="val">' + sgn(out.dX) + ' mm</span>' + mark(out.dX, 0.005));
+
+  // --- Y: nur Konsistenz G54 gegen G55 ---
+  const p3 = have('wE','wF') ? val('wE') - val('wF') : null;
+  const p9 = have('wG','wH') ? val('wG') - val('wH') : null;
+  if (p3 !== null || p9 !== null){
+    const parts = [p3, p9].filter(v => v !== null);
+    out.dYdiff = parts.reduce((a,b) => a+b, 0) / (2 * parts.length);
+    h += ln("Y-Asymmetrie der Arme 3 und 9 Uhr",
+      '<span class="val">' + sgn(out.dYdiff) + ' mm</span>' + mark(out.dYdiff, TOL));
+    h += ln("", '<span class="muted">Nur Kontrollwert. Das Merkblatt kennt keinen Y-Fehler — ' +
+      'die Drehung um Y spiegelt Y nicht, ein Y-Versatz hebt sich heraus und ist aus dem Kreuz ' +
+      'nicht bestimmbar.</span>');
+  }
+
+  // --- Absolutniveau der Waende, nur als Hinweis ---
+  const all = ['wA','wB','wC','wD','wE','wF','wG','wH'].map(val).filter(v => v !== null);
+  if (all.length >= 4){
+    const m = all.reduce((a,b) => a+b, 0) / all.length;
+    const d = m - T_SOLL;
+    h += ln("Mittelwert aller Wände",
+      '<span class="val">' + m.toFixed(3) + ' mm</span>' +
+      '<span class="muted">Soll ' + T_SOLL.toFixed(3) + ', Abweichung ' + sgn(d) +
+      (Math.abs(d) > 0.02 ? ' — Werkzeugabdrängung, für die Rechnung ohne Bedeutung' : '') +
+      '</span>');
+  }
+
+  $('probe_wand').innerHTML = h ||
+    '<span class="muted">Wandstärken eintragen. Ein einzelner Arm genügt für ΔX, zwei sind besser.</span>';
+  return out;
+}
+
+function calcHoehe(){
+  const I = val('hI'), J = val('hJ'), K = val('hK'), L = val('hL'), a = val('armR') ?? 38;
+  const out = { dL: null, dA: null, dB: null };
+  let h = "";
+  const vals = [I, J, K, L].filter(v => v !== null);
+  if (vals.length){
+    const m = vals.reduce((x,y) => x+y, 0) / vals.length;
+    out.dL = (m - H_SOLL) / 2;
+    h += ln("Mittlere Gesamthöhe (" + vals.length + " Werte)",
+      '<span class="val">' + m.toFixed(3) + ' mm</span><span class="muted">Soll ' +
+      H_SOLL.toFixed(3) + ', Fehler ' + sgn(m - H_SOLL) + '</span>');
+    h += ln("<strong>auf WZ-Längenoffset addieren</strong>",
+      '<span class="val">' + sgn(out.dL) + ' mm</span>' + mark(out.dL, 0.005));
+    h += ln("", '<span class="muted">HMI → BACK / Maschinenparameter, danach ' +
+      '„Übertragen in SPS". <strong>Nicht</strong> in die Nullpunkttabelle.</span>');
+  }
+  if (K !== null && L !== null){
+    const q = K - L;
+    out.dB = Math.atan(q / (4 * a)) * 180 / Math.PI;
+    h += ln("<strong>B-Fehler</strong> — Keil 3 Uhr − 9 Uhr",
+      '<span class="val">' + sgn(q) + ' mm</span><span class="val">' + sgn(out.dB) + '°</span>' +
+      (Math.abs(q) <= TOL ? '<span class="badge b-ok">unkritisch</span>'
+        : '<span class="badge b-warn">laut Merkblatt nicht korrigierbar</span>'));
+  }
+  if (I !== null && J !== null && a > 0){
+    const w = I - J;
+    out.dA = Math.atan(w / (4 * a)) * 180 / Math.PI;
+    h += ln("Keil 12 Uhr − 6 Uhr",
+      '<span class="val">' + sgn(w) + ' mm</span><span class="muted">über ' +
+      (2 * a).toFixed(0) + ' mm Armabstand, halber Fehler ' + sgn(w / 2) + ' mm</span>');
+    h += ln("<strong>ΔA — auf die A-Achs-Referenz</strong>",
+      '<span class="val">' + sgn(out.dA) + '°</span>' + mark(out.dA, 0.01));
+    h += ln("", '<span class="muted">In die <strong>A-Spalte</strong> von G54 und G55, ' +
+      'derselbe Wert mit demselben Vorzeichen. Merkblatt: „12 zu dick → positiver Wert".</span>');
+  }
+  $('probe_hoehe').innerHTML = h ||
+    '<span class="muted">Gesamthöhen eintragen — daraus kommen ΔZ und die A-Verkippung.</span>';
+  return out;
+}
+
+function put(idAbs, idDelta, base, delta, note){
+  if (delta === null || delta === undefined){
+    $(idAbs).textContent = "—";
+    $(idDelta).innerHTML = note ? '<span>' + note + '</span>' : "&nbsp;";
+    return;
+  }
+  const v = base + delta;
+  $(idAbs).textContent = (v >= 0 ? "" : "−") + Math.abs(v).toFixed(3);
+  $(idDelta).textContent = "Δ " + sgn(delta);
+}
+
+function recalc(){
+  const cX = val('k_X') ?? 0, cY = val('k_Y') ?? 0, cZ = val('k_Z') ?? 0;
+  const w = calcWand(), z = calcHoehe();
+
+  put('o54X','d54X', cX, w.dX);
+  put('o55X','d55X', cX, w.dX);
+  put('o54Z','d54Z', cZ, 0); $('d54Z').textContent = "nicht aus dem Kreuz";
+  put('o55Z','d55Z', cZ, 0); $('d55Z').textContent = "nicht aus dem Kreuz";
+
+  // Y kennt das Merkblatt nicht -> bei beiden unveraendert lassen
+  put('o54Y','d54Y', cY, 0); $('d54Y').textContent = "unverändert";
+  put('o55Y','d55Y', cY, 0); $('d55Y').textContent = "unverändert";
+
+  $('oL').textContent = z.dL === null ? "—" : sgn(z.dL) + " mm";
+  const cA = val('k_A') ?? 0;
+  if (z.dA === null){
+    $('oAabs').textContent = "—"; $('oA').textContent = "—";
+  } else {
+    const nA = cA + z.dA;
+    $('oAabs').textContent = (nA >= 0 ? "" : "−") + Math.abs(nA).toFixed(4) + "°";
+    $('oA').textContent = "aktuell " + cA.toFixed(4) + "°  ·  Δ " + sgn(z.dA) + "°";
+  }
+  $('oB').textContent = z.dB === null ? "—" : sgn(z.dB) + "°";
+  $('oYdiff').textContent = w.dYdiff === null ? "—" : sgn(w.dYdiff) + " mm";
+}
+
+document.querySelectorAll("input").forEach(el => el.addEventListener("input", recalc));
+recalc();
+})();
+</script>
+
+<script>
+/* ================= Drehfräsnullpunkte · G58 / G59 ================= */
+(function(){
+"use strict";
+const PLANE   = 4.750;   // alle Mantel-Anfraesungen: Werkzeug -6.25 + R1.5
+const Z_PLANE = 4.500;   // G58 Stirn-Anfraesung 12 Uhr
+const R58     = 5.000;   // Soll-Radius A=0   (Stirn bei Z=5)
+const R59     = 5.250;   // Soll-Radius A=-90 (Seite bei X=-6.75 + R1.5)
+const TOL     = 0.005;   // Messtoleranz
+
+const $ = id => document.getElementById(id);
+const val = id => { const v = parseFloat($(id).value); return isNaN(v) ? null : v; };
+const fmt = n => (n >= 0 ? "+" : "−") + Math.abs(n).toFixed(3);
+const abs = n => n.toFixed(3);
+
+function badge(d){
+  const a = Math.abs(d);
+  if (a <= TOL)      return '<span class="badge b-ok">in Toleranz</span>';
+  if (a <= 0.020)    return '<span class="badge b-warn">nachkorrigieren</span>';
+  return '<span class="badge b-err">deutlich daneben</span>';
+}
+function line(k, html){ return '<div class="ln"><span class="k">' + k + '</span>' + html + '</div>'; }
+
+function computeG58(){
+  const D = val("g58_R"), X = val("g58_X"), Z = val("g58_Z");
+  const r = D !== null ? D / 2 : null;
+  const dX = (r !== null && X !== null) ? X - r - PLANE : null;
+  const dZ = (r !== null && Z !== null) ? (Z_PLANE + r) - Z : null;
+  const dZp = r !== null ? R58 - r : null;
+
+  let h = "";
+  if (r === null){
+    h = '<span class="muted">Rund-Ø eintragen — er ist die Bezugsgröße für beide Flächen.</span>';
+  } else {
+    h += line("Ist-Radius aus Ø",
+      '<span class="val">' + abs(r) + ' mm</span><span class="muted">Soll 5.000</span>');
+    if (dX !== null) h += line("ΔX aus der X-Fläche",
+      '<span class="val">' + fmt(dX) + '</span>' + badge(dX));
+    if (dZ !== null) h += line("ΔZ aus der Z-Fläche",
+      '<span class="val">' + fmt(dZ) + '</span>' + badge(dZ));
+    h += line("ΔZ aus dem Rund-Ø (Querprobe)",
+      '<span class="val">' + fmt(dZp) + '</span>' +
+      (dZ !== null
+        ? (Math.abs(dZ - dZp) <= TOL
+            ? '<span class="badge b-ok">deckt sich (Δ ' + Math.abs(dZ - dZp).toFixed(3) + ')</span>'
+            : '<span class="badge b-warn">weicht ab (Δ ' + Math.abs(dZ - dZp).toFixed(3) +
+              ') — Werkzeuglänge oder Messung prüfen</span>')
+        : ""));
+  }
+  $("g58_probe").innerHTML = h;
+  return { dX: dX, dZ: dZ !== null ? dZ : dZp };
+}
+
+function computeG59(){
+  const D = val("g59_R"), X = val("g59_X"), Y = val("g59_Y");
+  const r = D !== null ? D / 2 : null;
+  const dX = (r !== null && X !== null) ? X - r - PLANE : null;
+  const dY = (r !== null && Y !== null) ? Y - r - PLANE : null;
+  const dXp = r !== null ? r - R59 : null;
+
+  let h = "";
+  if (r === null){
+    h = '<span class="muted">Rund-Ø eintragen — er ist die Bezugsgröße für beide Flächen.</span>';
+  } else {
+    h += line("Ist-Radius aus Ø",
+      '<span class="val">' + abs(r) + ' mm</span><span class="muted">Soll 5.250</span>');
+    if (dX !== null) h += line("ΔX aus der X-Fläche",
+      '<span class="val">' + fmt(dX) + '</span>' + badge(dX));
+    if (dY !== null) h += line("ΔY aus der Y-Fläche",
+      '<span class="val">' + fmt(dY) + '</span>' + badge(dY));
+    h += line("ΔX aus dem Rund-Ø (Querprobe)",
+      '<span class="val">' + fmt(dXp) + '</span>' +
+      (dX !== null
+        ? (Math.abs(dX - dXp) <= TOL
+            ? '<span class="badge b-ok">deckt sich (Δ ' + Math.abs(dX - dXp).toFixed(3) + ')</span>'
+            : '<span class="badge b-warn">weicht ab (Δ ' + Math.abs(dX - dXp).toFixed(3) +
+              ') — Werkzeugradius oder Messung prüfen</span>')
+        : ""));
+    h += line("ΔZ", '<span class="muted">nicht aus dieser Tonne bestimmbar — Z ist hier die Längsachse. Wird aus der G58-Tonne übernommen.</span>');
+  }
+  $("g59_probe").innerHTML = h;
+  return { dX: dX, dY: dY };
+}
+
+function put(idAbs, idDelta, base, delta){
+  if (delta === null || delta === undefined){
+    $(idAbs).textContent = "—";
+    $(idDelta).innerHTML = "&nbsp;";
+    return null;
+  }
+  const v = base + delta;
+  $(idAbs).textContent = (v >= 0 ? "" : "−") + Math.abs(v).toFixed(3);
+  $(idDelta).textContent = "Δ " + fmt(delta);
+  return v;
+}
+
+let last = {};
+function recalc(){
+  const cX = val("t_X") ?? 0, cY = val("t_Y") ?? 0, cZ = val("t_Z") ?? 0;
+  const a = computeG58(), b = computeG59();
+
+  last = {
+    58: [ put("o58X","d58X",cX,a.dX), put("o58Y","d58Y",cY,b.dY), put("o58Z","d58Z",cZ,a.dZ) ],
+    59: [ put("o59X","d59X",cX,b.dX), put("o59Y","d59Y",cY,b.dY), put("o59Z","d59Z",cZ,a.dZ) ]
+  };
+}
+
+document.querySelectorAll("input").forEach(el => el.addEventListener("input", recalc));
+document.querySelectorAll(".btn-copy").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const v = last[btn.dataset.copy];
+    if (!v || v.some(x => x === null)) return;
+    const txt = "X" + v[0].toFixed(3) + " Y" + v[1].toFixed(3) + " Z" + v[2].toFixed(3);
+    navigator.clipboard.writeText(txt).then(() => {
+      const old = btn.textContent;
+      btn.textContent = "kopiert ✓";
+      setTimeout(() => btn.textContent = old, 1400);
+    });
+  });
+});
+recalc();
+})();
+</script>
+</body>
+</html>

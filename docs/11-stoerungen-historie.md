@@ -5,6 +5,19 @@
 
 - 07/2026: Fehler ID 70020 „Dynamischer Schleppabstand zu groß“
 - 07/2026: Nullpunkt-Kalibrierung G58/G59 (02-koordinaten-nullpunkte.md)
+- Lose Auflage im Nullpunktspannsystem der B-Achse (Schunk) – **OFFEN**, erfasst 09.11.2026
+  - ✅ Seit einem früheren Crash sitzt eine der beiden Auflagen (Andreas: „Auflagemulde“ / „Backe“) lose im Spannsystem und fällt sehr häufig heraus (Andreas)
+  - ✅ Aussage Hersteller: in Ordnung, einfach wieder einsetzen (Andreas)
+  - ✅ Nullpunkte G58/G59 wurden 07/2026 MIT der Auflage kalibriert; in der Woche vor dem 09.11.2026 wurde OHNE sie gefräst (Andreas)
+  - ❓ Vermutung Andreas: daher kommt eine kleine Abweichung der Nullpunkte. Plausibel (Halter liegt ohne Auflage anders auf), Größe nicht gemessen
+  - ✅ Spannsystem laut Gravur: SCHUNK VERO-S NSE mini 90-25-V4, Pmax 6 bar (Andreas, Foto 09.11.2026)
+  - 🌐 V4 = vier Verdrehsicherungsnuten im 90°-Raster in der Stirnfläche (Schunk-Produktseite); die Höhe bestimmt bei VERO-S die Planfläche des Moduls, die Lage der Spannbolzen
+  - ✅ Foto: in den Nuten bei 3 und 9 Uhr sitzen die beiden Auflagen, in den Nuten bei 12 und 6 Uhr je eine Schraube. Die Auflage ist ein kleiner Block mit Grundplatte, halbrunder Mulde (läuft radial) und zwei Längsbohrungen neben der Mulde, jede mit einem Schlitz zur Außenseite (federnde Lippen)
+  - ✅ Befund Andreas 09.11.2026: kein Gewinde, keine Bohrung zum Schrauben, keine Klebstoffreste, kein Spiel, kippelt nicht, lässt sich bis zum Anschlag einsetzen – bleibt aber nicht fest. Zweite Auflage baugleich und fest
+  - ❓ Deutung (Foto, nicht bestätigt): Die Auflage klemmt sich über die geschlitzten Lippen selbst in der Nut. Auf dem Foto ist ein Schlitz deutlich weiter und die Lippe unregelmäßig (verbogen oder ausgebrochen), in der anderen Bohrung hängt ein schwarzer Rest (Gummi oder Span). Dann fehlt nach dem Crash die Vorspannung → neues Teil ist die saubere Reparatur
+  - ❓ Deutung Funktion: sitzt in der Verdrehsicherungsnut → vermutlich Winkelanschlag für einen Querstift am Halter, nicht Höhenauflage. Dann würde eine fehlende Auflage den Winkel und die Steifigkeit um B betreffen, nicht direkt G58-Y. Prüfen mit Filzstift-Probe (Mulde und Planfläche anmalen, Halter spannen, Abrieb ansehen)
+  - ✅ Entscheidung Andreas 09.11.2026 (ersetzt „erst befestigen“): nicht kleben, Auflage lose einsetzen und so kalibrieren; der Maschinentechniker kommt am Do 19.11.2026 und soll die Auflage befestigen. Nach der Befestigung ein MESS_ABS-Lauf zur Kontrolle
+  - Vorschlag (nicht umgesetzt): 1. zwei neue Auflagen bei HEDS bestellen (vermutlich HEDS-Teil, kein Schunk-Normteil). 2. Falls geklebt wird: Auflage trocken einsetzen, mit gespanntem Halter auf Anschlag halten, erst dann kapillaren Klebstoff (Loctite 290) sparsam an die Fuge der Langseiten – so kann sie nicht höher sitzen. Schlitze, Bohrungen und Mulde frei lassen, nichts Richtung Mittelbohrung. 24 h aushärten, danach kalibrieren
 - 30.10.2026: HEDS-Update (Sicherung der Unterprogramme in `old20261030\`, TwinCAT-Projektsicherung von Freitag); danach drei Störungen am Blankwechsel (siehe unten) und Achsdynamik-Warnungen (21-achsdynamik-50120.md)
 - 11/2026: Preformhalter wurde beim Blankwechsel zu hoch gegriffen → Automatisierung blockiert
   - ✅ GELÖST 01.11.2026: V.P.ZOffsetPreformC in setVPVars −17.7 → −28.2 (Schließpunkt und Holen-Position je 10,5 mm tiefer)
