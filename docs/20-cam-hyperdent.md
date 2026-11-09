@@ -15,6 +15,7 @@
 
 ## Allgemein
 - ✅ CAM: hyperDENT (Follow-Me); Postprozessor setzt Nullpunkte G58/G59 automatisch, kein NC-Text nötig
+- ✅ Hedmill verteilt Maschinendefinition, Postprozessor, Templates, Rohteile und Halter über das hyperDENT Update Center (`https://update.heds.dental/hyperdent/MASTER/index.xml`, Prüfung täglich). Andreas schaltet das ab (10.11.2026), Anleitung und Kontrolle: `../fraesstrategien-hyperdent/docs/hyperdent_updatecenter.md`. Letzter Hedmill-Lauf, der den PP-Ordner neu schrieb: 14.08.2026
 - ✅ CAD: exocad DentalCAD
 - ✅ hyperDENT-Optimierung von PMMA-Schienen-Innenflächen mit Hinterschnitten war Thema
 - ✅ SLM+CNC-Hybridfertigung (TruPrint 1000, Starbond Easy Powder) → siehe 22-hybrid-express-halter.md und Andreas' eigene Offset-Software (separates Repo)
@@ -35,7 +36,7 @@
 - ✅ 05.11.2026 (Andreas, aus `../fraesstrategien-hyperdent/docs/grundsaetze.md`): 50120 ist nicht erledigt. Bei großen Molaren (6er, 7er) kommt „Beschleunigung überschritten“ trotz Drehfräs-Genauigkeit 0,01, nur am MKD (T4126), bei keinem anderen Werkzeug
 - Regel für die Vorlagen (Genauigkeit in Drehfräsjobs 0,01, enger erst nach der Verbesserung durch den Hersteller): `../fraesstrategien-hyperdent/docs/grundsaetze.md`
 - ✅ Die Maschine fräst mit HSC-Glättung der Steuerung (`#HSC ON`, `#SLOPE[TYPE=HSC]`, z. B. nach M6 und Home.nc); in setVPVars steht als Standardwert für die HSC-Bahnabweichung `V.P.PathDev = 0.04` (mm, „Path_DEV für HSC-Funktion … DYN1 … DYNvar“)
-- ❓ Welche DYN-Einstellung (DYN-Standard / DYN1 / DYNvar …) die hyperDENT-Programme im NC-Kopf aufrufen und mit welcher Bahnabweichung sie fräsen, noch nicht geprüft
+- ✅ 10.11.2026 geklärt: die hyperDENT-Programme rufen nach jedem Werkzeugwechsel `LDYNn` auf (Abschnitt „Dynamiksätze aus hyperDENT“ unten)
 
 ## Wege, um feine Toleranz zu nutzen bzw. Reserve zu schaffen (besprochen 01.11.2026)
 1. Vorschub nur im betroffenen Job senken (Beschleunigung steigt etwa mit dem Quadrat der Geschwindigkeit: 70 % Vorschub ≈ halbe Beschleunigung); Test vorab mit Override 70–80 % in diesem Job
@@ -44,3 +45,11 @@
 4. Nicht empfohlen: B-Beschleunigungsgrenze (P-AXIS-00008) oder Schwellen (P-AXIS-00441/00442) erhöhen – Schutz für Antrieb/Mechanik
 5. Look-ahead wieder auf den Stand vor dem Update – Entscheidung liegt bei HEDS (21-achsdynamik-50120.md)
 - Beobachten: Bei welchem Satz / Job kommt die Warnung, wie oft, Verhältnis-Wert in der Meldung; tritt zusätzlich 50120 auf → Vorschub im Job senken
+
+## Dynamiksätze aus hyperDENT (LDYN, Stand 10.11.2026)
+- ✅ Der hyperDENT-Postprozessor schreibt nach jedem `T… M6` die Zeile `LDYNn` (Aufruf von `maschine/sub/DYNn`). Die Nummer kommt aus `ldyn.cfg` im PP-Ordner am CAM-PC: Materialklasse (CoCr_Blank, Titanium_Blank, CoCr_Bar, Ti_Bar, WAX, Plastic, ZR) × Werkzeug-Ø in Hundertstel. Tabellen und Materialzuordnung: `../fraesstrategien-hyperdent/maschine/hedmill_postprozessor.md`.
+- ✅ Inhalt der Sätze (`V.L.AccXYZ`/`V.L.AccAB` in mm/s² bzw. °/s², Rampe in ms, `#HSC [SURFACE PATH_DEV …]` in mm): DYN-Standard 1000 / 65 / –; DYN1 3000 / 50 / 0,04; DYN2 und DYN3 3000 / 50 / 0,03; DYN4 3000 / 55 / 0,016; DYN5 3000 / 60 / 0,016; DYN12 2000 / 45 / 0,016; **DYN60 5000 / 30 / 0,2** (Kommentar „Plastic“); DYN99 4000 / 45 bzw. 30 / 0,04 („Plastic“); DYNvar nimmt `V.P.AccXYZ`, `V.P.AccAB`, `V.P.RampXYZ`, `V.P.RampAB`, `V.P.PathDev`.
+- ✅ NC-Beispiel `maschine/nc-beispiele/2007-24__SA13.nc` (08.11.2026, CoCr Powder One Step): T4081/T4083/T4090 → LDYN1, T4085/T4086/T4088/T4089/T4098 → LDYN2, T4093 (Ø1,01) → LDYN12, **T4126 MKD (Ø2,01) → LDYN60**. Das ist die Tabelle Ti_Bar, obwohl das Material CoCr ist: die Materialnamen wurden am 06.11.2026 umbenannt und stehen nicht mehr in `hdmaterialtypes.ini` des PP; vorher (Name `Remanium Star Powder One Step` = CoCr_Bar) wäre Ø ≤ 2 mm auf LDYN60 gelaufen.
+- ❓ Der MKD läuft mit DYN60 (5000 mm/s², Rampe 30 ms, 0,2 mm Bahnabweichung) in jeder Stangen-Klasse. Das passt zu „50120/50121 nur am MKD“ (21-achsdynamik-50120.md). Vorschlag CAM-seitig: `MAT8_201`/`MAT9_201` in `ldyn.cfg` auf LDYN1 oder LDYN12; Entscheidung und Test stehen aus. Nach einem Test hier eintragen.
+- ❓ Rückfall auf Ti_Bar bei unbekanntem Namen ist Schlussfolgerung aus dem Vergleich, nicht aus dem PP-Code. Beweis: NC-Programm von vor dem 06.11.2026 ansehen.
+
