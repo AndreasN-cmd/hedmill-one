@@ -15,6 +15,7 @@
 - ✅ Beckhoff: maximale Achsbeschleunigung (P-AXIS-00008) über Fehlerschwelle (P-AXIS-00442) → 50120, Stopp Klasse 6; über Warnschwelle (P-AXIS-00441) → 50121, kein Stopp
 - ✅ Verwandte IDs: 50118 / 50119 Geschwindigkeit, 50123 Ruck, 51069 Singularität, 110498 Warnfaktor > Fehlerfaktor, 50612 Look-ahead-Satzanzahl zu groß (Steuerung korrigiert)
 - ✅ Stelle 50120: Programm `C:\CNC\wp\1714-22__26_SA_5.nc`; Satznummer laut Ereignisprotokoll N2848140 (Andreas hatte N24848140 abgelesen – ❓ Tippfehler?); Satz `Y-23.07982 Z5.57765 B235.12500`, davor `Z5.57759 B235.0000` → B dreht 0,125°, Z fast nichts
+- ✅ 05.11.2026 (Andreas, aus `../fraesstrategien-hyperdent/docs/grundsaetze.md`): 50120 kommt weiterhin bei großen Molaren (6er, 7er) trotz Drehfräs-Genauigkeit 0,01, nur am MKD (T4126), bei keinem anderen Werkzeug
 - ✅ Das Problem gab es vor langer Zeit schon einmal; damals hat Beckhoff es mit einem Update gelöst; Andreas hat seitdem nichts daran verändert
 - ✅ **Vor dem HEDS-Update (30.10.2026) kam mit 0,01 mm KEINE Warnung, jetzt schon** (Andreas)
 

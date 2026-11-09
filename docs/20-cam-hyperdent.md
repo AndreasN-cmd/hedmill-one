@@ -3,6 +3,10 @@
 > Kennzeichnung: ✅ bestätigt · 🌐 Beckhoff-Doku / allgemein · ❓ offen oder Annahme
 > Stand: 09.11.2026
 
+## Zuständigkeit (seit 09.11.2026)
+- **Vorlagen, Jobs, Schnittwerte, Aufmaße gehören ins Nachbar-Repo `../fraesstrategien-hyperdent`** (Start dort: `README.md`, `docs/grundsaetze.md`). Dort steht der gültige Stand, hier wird er nicht doppelt gepflegt.
+- Hier bleibt nur, was Maschine und Steuerung betrifft (Toleranz gegen Achsdynamik, HSC-Glättung, Nullpunkte, NC-seitige Wege).
+
 ## Allgemein
 - ✅ CAM: hyperDENT (Follow-Me); Postprozessor setzt Nullpunkte G58/G59 automatisch, kein NC-Text nötig
 - ✅ CAD: exocad DentalCAD
@@ -10,26 +14,20 @@
 - ✅ SLM+CNC-Hybridfertigung (TruPrint 1000, Starbond Easy Powder) → siehe 22-hybrid-express-halter.md und Andreas' eigene Offset-Software (separates Repo)
 
 ## Prefab-Abutments (Drehfräsen)
-- ✅ CoCr/Titan-Prefab-Abutments per Drehfräsen, hyperDENT-Vorlage „Präfabriziertes Abutment MASTER“
-- ✅ Rohteile Ø11,5 und Ø16 mm, zu 99 % Ø11,5
-- ✅ Ziel: EINE Vorlage, die den Rohteildurchmesser selbst erkennt; manuelles Umschalten oder Pflege von Rohteilgruppen (MA-abhängig, fehleranfällig) kommt nicht infrage; Verzweigung in der Maschine (`$IF` im NC-Text) ist Andreas derzeit zu experimentell
-- ✅ Gewählter Weg (Okt 2026): zwei rohteilbasierte axiale 3D-Schruppjobs („Schruppen – beliebige Seite“, Rohteilnachführung) VOR der Drehfräs-Kaskade:
-  - T5051 Ø3 FS8 (8 mm Hals) für die ersten 7,5 mm
-  - T5052 Ø3 (13 mm Hals) für den Rest
-- ✅ Bei seinen Abutments gibt es keine großen Schulterradien (Hinterschnitt kein Thema)
+- Gültiger Stand: `../fraesstrategien-hyperdent/indikationen/abutment/titan-prefab-drehfraesen/` (V5.7 vom 06.11.2026: seitlich schruppen nur mit T5051, T5052 soll aus der Maschine).
+- Überholt: Stand Okt 2026 mit zwei axialen Schruppjobs (T5051 für die ersten 7,5 mm, T5052 für den Rest).
+- ✅ Rohteile Ø11,5 und Ø16 mm, zu 99 % Ø11,5 (siehe 08-rohteile-halter.md); EINE Vorlage für beide, kein manuelles Umschalten, keine Rohteilgruppen
+- ✅ Verzweigung in der Maschine (`$IF` im NC-Text) ist Andreas derzeit zu experimentell
 
 ## Job 1.5 „Vorschlichten Prep-Grenzenband Torus“
-- ✅ Früherer Stand: Band bis 3 mm außerhalb der Präparationsgrenze erweitert, Start 3 mm außen
-- ✅ 01.11.2026: Andreas gefällt die Fräsrichtung beim Start 3 mm außen nicht → Aufteilung in zwei Jobs:
-  - Job 1: Bearbeitungsrichtung von außen nach innen, Band 0,1 mm innerhalb bis 3 mm innerhalb der Grenze
-  - Job 2: Bearbeitungsrichtung von innen nach außen, Band 0,1 mm innerhalb bis 3 mm außerhalb der Grenze
-- ✅ Prinzip: Beide Jobs beginnen an der Grenze und arbeiten von ihr weg
-- ❓ Hinweise zur Prüfung: kleine Überlappung an der Trennlinie (0,1 mm innen), damit kein Grat stehen bleibt; Gleich-/Gegenlauf in beiden Jobs gleich; Anfahren nicht direkt auf der Grenzkante
-- ❓ Name der Vorlage, in der der Job liegt, noch nicht notiert
+- Gültige Regel: `../fraesstrategien-hyperdent/docs/grundsaetze.md` (Präpgrenzenjobs von innen nach außen, nie 3 mm tief innen starten).
+- Überholt: Aufteilung vom 01.11.2026 in zwei Jobs (einer davon mit Band bis 3 mm innerhalb der Grenze).
 
 ## Bearbeitungstoleranz
 - ✅ Im Template wurde die Bearbeitungstoleranz testweise auf 0,005 mm gesetzt – so fein wie nie zuvor; Andreas wollte die 0,005 mm möglichst behalten
 - ✅ Ergebnis 01.11.2026 abends: 0,005 mm → Fehler 50120 (Maschine stoppt); 0,01 mm → nur Warnschwelle Achsbeschleunigung (50121), Maschine stoppt nicht → **Andreas läuft mit 0,01 mm und beobachtet**
+- ✅ 05.11.2026 (Andreas, aus `../fraesstrategien-hyperdent/docs/grundsaetze.md`): 50120 ist nicht erledigt. Bei großen Molaren (6er, 7er) kommt „Beschleunigung überschritten“ trotz Drehfräs-Genauigkeit 0,01, nur am MKD (T4126), bei keinem anderen Werkzeug
+- Regel für die Vorlagen (Genauigkeit in Drehfräsjobs 0,01, enger erst nach der Verbesserung durch den Hersteller): `../fraesstrategien-hyperdent/docs/grundsaetze.md`
 - ✅ Die Maschine fräst mit HSC-Glättung der Steuerung (`#HSC ON`, `#SLOPE[TYPE=HSC]`, z. B. nach M6 und Home.nc); in setVPVars steht als Standardwert für die HSC-Bahnabweichung `V.P.PathDev = 0.04` (mm, „Path_DEV für HSC-Funktion … DYN1 … DYNvar“)
 - ❓ Welche DYN-Einstellung (DYN-Standard / DYN1 / DYNvar …) die hyperDENT-Programme im NC-Kopf aufrufen und mit welcher Bahnabweichung sie fräsen, noch nicht geprüft
 

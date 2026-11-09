@@ -2,6 +2,8 @@
 
 Alles, was bisher über die HEDmill One (Erhardt NextGen Dental) herausgefunden wurde – exportiert aus dem claude.ai-Projekt „Hedmill Maschine“ am 09.11.2026. Für Claude Code gilt `CLAUDE.md`.
 
+Nachbar-Repo: `../fraesstrategien-hyperdent` (Frässtrategien in hyperDENT). Beide Ordner liegen nebeneinander unter `claudecode/`.
+
 ## Ordner
 - `docs/` – das Wissen, nach Themen (Start: `00-stand-und-ueberblick.md`)
 - `maschine/` – Kopien von Dateien des Steuerungs-PCs (Unterprogramme, Log, Parameterdateien, TwinCAT-Sicherungen) – **noch zu befüllen, siehe unten**

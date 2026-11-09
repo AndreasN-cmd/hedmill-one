@@ -38,12 +38,18 @@ Ziel: **Alles an der Maschine selbst lösen können, ohne Hersteller-Support.**
 | Störungen und Lösungen | `docs/11-stoerungen-historie.md` |
 | Änderungsprotokoll (Rückweg) | `docs/12-aenderungsprotokoll.md` |
 | Offene Fragen | `docs/13-offene-fragen.md` |
-| hyperDENT-Vorlagen, Toleranzen | `docs/20-cam-hyperdent.md` |
+| hyperDENT: Toleranz, HSC, Maschinenseite (Vorlagen selbst: `../fraesstrategien-hyperdent`) | `docs/20-cam-hyperdent.md` |
 | Fehler 50120/50121, Look-ahead, TwinCAT-Projekt | `docs/21-achsdynamik-50120.md` |
 | Hybrid-Express-Halter (SLM nachfräsen) | `docs/22-hybrid-express-halter.md` |
 | Hersteller-Unterprogramme (Kopie) | `maschine/sub/` |
 | Eigene NC-Programme | `eigene-programme/` |
 | Skripte für den Steuerungs-PC | `skripte/` |
+
+## Nachbar-Repo Frässtrategien
+- `../fraesstrategien-hyperdent` (liegt im selben Ordner `claudecode/`): hyperDENT-Vorlagen, Jobs, Schnittwerte, Aufmaße, Werkzeug-DB-Export. Dort gilt die dortige `CLAUDE.md` – vor Arbeit an Frässtrategien zuerst lesen.
+- Jede Tatsache hat ein Zuhause: CAM-Wissen dort, Maschine/Steuerung/Wechsler/Störungen hier. Im anderen Repo nur verweisen, nicht doppelt pflegen.
+- Die Regeln dieses Repos (Override-Tests, kleinster Schritt, Kennzeichnung ✅ 🌐 ❓) gelten nur hier, nicht für Frässtrategien – und umgekehrt.
+- Betrifft eine Erkenntnis beide Seiten (z. B. Toleranz gegen Fehler 50120, Achsgrenzen, Nullpunkte): hier eintragen und im Frässtrategien-Repo in `maschine/hedmill_one_wissensdatenbank.md` verweisen.
 
 ## Abgrenzung
 - Andere Fräsmaschinen im Labor (Zfx PI5 mit Rexroth-Steuerung, 650i) sind NICHT Thema dieses Repos.

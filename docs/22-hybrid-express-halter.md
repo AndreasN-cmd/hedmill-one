@@ -12,6 +12,9 @@
 - ✅ Zusammenhang: Andreas' eigene Offset-Software für SLM-Hybridteile (Hybridwege 1–3, MicroImp-Spinne, Teleskophalter; Gesamthöhe inkl. 3 mm Supports max. 30 mm) – eigenes Repo
 - 🌐 Im bekannten HEDS-Halterprogramm (Blank-/C-Klemmringhalter, Drehfräshalter) taucht kein Hybridhalter auf
 
+## Frässtrategien dazu
+- Vorlagen für SLM-Hybridteile (Primärteleskop SLM-Hybrid, Sekundär Hybrid): `../fraesstrategien-hyperdent`. Regel dort: kein rohteilbasiertes Schruppen für SLM-Hybridteile (hyperDENT kennt den 0,5-mm-Offset nicht).
+
 ## Offene Rückfragen (an Andreas, 05.11.2026)
 1. Spannung / Artikelnummer des Halters (Rondenformat in der B-Achse? welcher Haltertyp für den Wechsler?)
 2. Befestigung des SLM-Teils bzw. der Bauplatte auf dem Halter – sind Pins vorhanden?

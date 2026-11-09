@@ -20,3 +20,4 @@
 - G58-Y / G59-Z: Bestätigung per Wiederholteil
 - Antwort von HEDS zu Look-ahead (`interpolator.parameter 200`), CNC 4.34 und Meldung 70222
 - Hybrid-Express-Halter: sechs Rückfragen offen (22-hybrid-express-halter.md)
+- Herkunft der Schnittwerte T4090 (S8000 / S18500, HL 8) und T4081 (S11500) in 06-werkzeuge-schnittwerte.md: eigene NC-Programme oder alter Stand? (weichen von der Werkzeug-DB ab)
