@@ -3,6 +3,7 @@
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
 > Stand: 09.11.2026 (Export aus dem claude.ai-Projekt „Hedmill Maschine“)
 
+- ⚠️ **G58-Z-Versatz (gemessen 09.11.2026, dauerhaft zu beachten):** Drehfräsen bei A0 kommt 0,125 mm im Durchmesser kleiner als programmiert (T4081 und T4090 gleich → Maschine). G58-Z bleibt bewusst −0,025, weil alle Passungen der Primärteleskope, Abutments und Sekundärteile darauf eingestellt sind. Nicht ändern ohne Andreas' Ansage und ohne neue Frässtrategie-Version (02-koordinaten-nullpunkte.md, CLAUDE.md Regel 9)
 - ✅ Nach dem HEDS-Update (30.10.2026) gab es drei Störungen am Blankwechsel – alle am 01.11.2026 selbst behoben:
   1. Preformhalter zu hoch gegriffen → setVPVars `V.P.ZOffsetPreformC` −17.7 → −28.2
   2. Rondenhalter-Laserprüfung M199 → SPS `stCheckPosZLaser1[3].MinValue` 505 → 480; danach Rondenhalter 5 mm zu hoch gegriffen → getBlankFromChanger `V.L.PosZPickOffset` 0 → −4

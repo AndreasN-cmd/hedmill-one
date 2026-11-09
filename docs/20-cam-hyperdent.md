@@ -7,6 +7,12 @@
 - **Vorlagen, Jobs, Schnittwerte, Aufmaße gehören ins Nachbar-Repo `../fraesstrategien-hyperdent`** (Start dort: `README.md`, `docs/grundsaetze.md`). Dort steht der gültige Stand, hier wird er nicht doppelt gepflegt.
 - Hier bleibt nur, was Maschine und Steuerung betrifft (Toleranz gegen Achsdynamik, HSC-Glättung, Nullpunkte, NC-seitige Wege).
 
+## G58-Z-Versatz und Passungen (seit 09.11.2026)
+- ✅ Drehfräsen bei A0 unter G58 kommt real 0,0625 mm im Radius kleiner als programmiert (Messing, Bügelmessschraube, T4081 Ø10,000 → 9,875 und T4090 Ø9,600 → 9,475)
+- ✅ Andreas 09.11.2026: ab sofort werden alle Primärteleskope und Titan-Abutments drehgefräst hergestellt → jedes dieser Teile trägt den Versatz
+- ✅ Die Frässtrategien sind darauf eingestellt; Rechenregel und Folgen stehen in `../fraesstrategien-hyperdent/docs/grundsaetze.md` (hyperDENT / Maschine) und `docs/auslenkung_werkzeuge.md` §25
+- ✅ G58-Z bleibt −0,025; Änderung nur zusammen mit einer neuen Frässtrategie-Version (CLAUDE.md Regel 9)
+
 ## Allgemein
 - ✅ CAM: hyperDENT (Follow-Me); Postprozessor setzt Nullpunkte G58/G59 automatisch, kein NC-Text nötig
 - ✅ CAD: exocad DentalCAD
