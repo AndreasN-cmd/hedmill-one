@@ -1,0 +1,6 @@
+.DS_Store
+Thumbs.db
+*.tmp
+# grosse TwinCAT-Archive nur bei Bedarf einchecken
+maschine/twincat/*.tnzip
+maschine/twincat/*.tszip

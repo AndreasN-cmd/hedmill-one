@@ -1,0 +1,34 @@
+# NC-Programmierung (Beckhoff/ISG)
+
+> Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
+> Stand: 09.11.2026 (Export aus dem claude.ai-Projekt „Hedmill Maschine“)
+
+- ✅ Dialekt: ISG-DIN (G-Code nach DIN 66025 + ISG-Erweiterungen: `$IF/$ELSEIF/$ENDIF`, `$FOR`, `$GOTO [Label]`, `#VAR…#ENDVAR`, `#MSG SYN HMI [...]`, `#MSG SAVE EXCLUSIVE`, `#FLUSH WAIT`, `#WAIT FOR`, `#MCS ON/OFF`, `#HSC ON/OFF`, `#MEAS`, `G100`/`G310` Messfahrten)
+- ✅ Unterprogrammaufruf: `L name` (Datei), `LL name` (lokales UP in derselben Datei, definiert mit `%L name` … `M17`); Hauptteil beginnt mit `%MAIN`
+- ✅ Kommentar beginnt mit `;` und gilt bis Zeilenende (auch `( … )`-Zeilen sind Kommentar); Dezimaltrennzeichen = Punkt; eine Zeile mit `;` am Anfang auskommentieren = Befehl deaktiviert, rückbaubar
+- ✅ Programmrahmen eigene Programme: LSAFEPOS → T.. M6 → S.. M3 → M119 → Nullpunkt (G54–G59) → G1 G90 B0 A<0/-90> FV.E.FEEDFAST → Bearbeitung → M5 → M118 → G53 → LSAFEPOS → G0 G90 B290 → M30
+- ✅ Spindelluft immer paarweise: M119 direkt nach M3, M118 direkt nach M5 – auch bei Werkzeugwechseln, kein Dauerblasen
+- ✅ Vorschub-Variablen: V.E.FEEDFAST / V.E.FEEDSLOW / V.E.FEEDMEASURE / V.E.FEEDMAX (SPS: machinePara.stCNC.stFeed)
+- ✅ Ein `G01` ohne eigenes F übernimmt den zuletzt programmierten Vorschub (modal) – z. B. erbt die Preform-Ablegezeile in giveBlankInChanger das FEEDSLOW der Y-Zeile davor
+- ✅ Endposition B290 (leichteres Herausschrauben des Rohteils; früher B270)
+- ✅ Drehfräsen: B-Rotation = Umfangsvorschub; Schleifen `$FOR P100=1,N,1` … `G1 G91 <Achse±0.05> B360 F1000–1500` … `$ENDFOR`; radial ins volle Material nur MIT laufender B-Rotation (nie statisch eindrücken)
+- ✅ Vollkreis `G3 X<r> Y0 I-<r> J0` (Endpunkt = Startpunkt) funktioniert
+- ✅ Flächen planen auf A-90: konzentrische Vollkreise außen→innen, Eintauchen in Luft
+- ✅ Bewährt: Schruppen mit Aufmaß 0,1, Schlichtfläche über die Werkzeug-FLANKE (Fräserradius in die Zielkoordinate einrechnen, z. B. Torus D2: Flanke = Mitte ± 1,0)
+- ✅ Erste Läufe immer im Einzelsatz mit reduziertem Override; deutsche Kommentar-Header mit Geometrie-Annahmen und Messanweisung haben sich bewährt
+- ✅ Dateinamen eigener NC-Programme: nur Buchstaben, Ziffern, Bindestrich, Unterstrich (keine Leerzeichen, Kommas, Umlaute); Auslieferung direkt als .nc, nicht als ZIP
+- ✅ Variablentypen: V.L. = lokal (`#VAR`), V.P. = programmglobal (deklariert in declareVPVars, Werte in setVPVars), V.S. = selbstdefiniert/dauerhaft (z. B. V.S.FirstStart), V.E. = externe Variable = SPS-Variable (siehe 07-sps-machinepara.md), V.A. = Achswerte (z. B. `V.A.ACT_POS.X`, `V.A.MESS.X`), V.G. = global (z. B. `V.G.TIME_STAMP_FILE_NAME`, `V.G.WZ_AKT.L`)
+- ✅ V.L.-Variablen des rufenden Programms sind in gerufenen Unterprogrammen sichtbar: blankChange deklariert `V.L.BlankPosCheckedInB` und `V.L.DontUseLaser`, giveBlankInChanger benutzt beide ohne eigene Deklaration
+- ✅ V.E.-Werte lassen sich ohne TwinCAT auslesen: kleines NC-Programm, das sie per `#MSG SAVE EXCLUSIVE` ins Log schreibt (LASERCHECK_LESEN.nc, erfolgreich gelaufen 01.11.2026)
+- ✅ V.E.-Werte sind NICHT alle per NC änderbar: `V.E.BC_CheckPosZLaser1[3].MinValue = 480` lief am 01.11.2026 ohne Fehler, der Wert blieb aber 505 → die SPS überschreibt die Laser-Fenster sofort wieder aus machinePara. Ändern geht nur in der SPS (TwinCAT)
+- ✅ SetupChanger schreibt V.E.ToolPos und V.E.BlankPos per NC; ❓ ob diese Werte dauerhaft in die SPS übernommen werden, ungeprüft
+- ✅ Fehlermeldung an SPS: `V.E.MessageText = "…"` + `V.E.MessageNumber = 900`; weitere Nummern: 104 T0 aber WZ in Spindel, 131 keine gültige Werkzeugplatzposition, 132 WZW-Position ungültig, 133 gefordertes WZ ungültig, 134 eingewechseltes WZ ungültig, 135 3D-Messtaster vorher aus Spindel nehmen, 208 Messtaster nicht bereit, 304 Werkzeugplatz enthält nicht das geforderte WZ, 305 WZ zu lang/zu kurz (toolBreakControl), 306 WZ kann nicht abgelegt werden – Platz frei machen, 420 Crash 3D-Taster, 499 kein Messwert, 601 Detektierung Blank in B fehlgeschlagen, 603 undefinierte Messwerte B-Achse, 610 Blank nicht im Spannsystem („Wirklich leer? Dann weiter mit START“), 611 unbekannter Halter im Spannsystem, 613 unbekannte Blankposition, 614 kein freier Blankplatz, 616 Übertragung freie Blankposition an SPS fehlgeschlagen, 617 gewünschtes Material nicht an definierter Wechslerposition, 920 = Hinweis (kein Fehler) mit Text aus V.E.MessageText
+- ✅ `M199=1` + `M0` = Störung mit Weiterfahren per START möglich (z. B. 610, 614, 617); `M199` allein = Programm bleibt stehen
+- ✅ Steuerungsfehler ID 20906: ungültiger Array-Index (z. B. V.E.BlankPos mit ungültiger Position)
+- ✅ Kommunikation NC → SPS: `V.E.FunctionNumber` / `V.E.FunctionValue` setzen, SPS setzt FunctionNumber nach Verarbeitung auf 0 zurück (NC wartet mit `#WAIT FOR V.E.FunctionNumber == 0`); FunctionNumber 1200 = neue Werkzeugplatznummer (M6, mit M198), 3000+Platz = Ergebnis Laserprüfung, 3200 = nächste freie Blankposition an SPS (Antwort −1), 3300 = SetupChanger, 3500 = Rundwechsler positionieren, 6000 = BlankChange-Ende
+- ✅ M-Funktionen mit Rückmeldung: SPS meldet Misserfolg über `V.E.FeedbackMFunc = −<M-Nummer>` (z. B. −92 = Heben Rundwechsler-Lift nicht erfolgreich, −91 = Rundwechsler-Position nicht erreicht) → NC löst M199 aus
+- ✅ start_init.nc läuft vor JEDEM Job (auch MDI und MANUAL): ruft declareVPVars → setVPVars → setVPVars001, DYN-Standard, ToolWeightOn, M35 Messzylinder einfahren, M79 Powerclamp einfahren
+- ✅ Folge: Änderungen in setVPVars wirken ab dem nächsten Programmstart, kein Neustart nötig; Unterprogramme (`L name`) werden beim Aufruf gelesen → Änderung wirkt ab dem nächsten Aufruf
+- ✅ Konvention bei Wertänderung (Hersteller und eigene): alter Wert als Kommentar dahinter, z. B. `V.P.ZOffsetPreformC = -26.2  ;-28.2 ;-17.7`
+- ✅ M6 (Werkzeugwechsel, V1.2.5): erst WZ wegbringen, dann holen; Laserprüfung des Ablageplatzes (checkToolAtPos), bei belegtem Platz findNextFreeToolPos; am Ende Abbruch wenn Werkzeuglänge < 15 mm; Warmlauf falls V.E.WarmUpRequired; M130 Reinigungsluft B-Achse Intervall EIN am Ende, M131 AUS am Anfang; ToolDistFactOff am Ende
+- ✅ ToolDistFactOn/Off: Gewichtungsfaktor Standweg beim Drehfräsen 8,5 % (jede Umdrehung ≈ 10 mm) / zurück auf 100 %

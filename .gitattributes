@@ -1,0 +1,12 @@
+# Maschinendateien unveraendert lassen (CRLF + Kodierung UTF-8/Windows-1252 erhalten)
+maschine/** -text
+eigene-programme/** -text
+*.nc -text
+*.plcstruct binary
+*.tnzip binary
+*.tszip binary
+*.db binary
+
+# Doku normal behandeln
+*.md text eol=lf
+*.ps1 text eol=crlf
