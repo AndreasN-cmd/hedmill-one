@@ -14,7 +14,7 @@
 - ✅ G58-Z bleibt −0,025; Änderung nur zusammen mit einer neuen Frässtrategie-Version (CLAUDE.md Regel 9)
 
 ## Allgemein
-- ✅ CAM: hyperDENT (Follow-Me); Postprozessor setzt Nullpunkte G58/G59 automatisch, kein NC-Text nötig
+- ✅ CAM: hyperDENT (Follow-Me); Postprozessor setzt Nullpunkte G58/G59 automatisch, kein NC-Text nötig. ⚠️ **Aber nur, wenn hyperDENT das Rohteil als Preform führt: NC `1109-59__ED00.nc` (CoCr_Bar, 11.11.2026) kam mit G54/G55 (Rondenmuster: G55 B180 „oben“, G54 B0 „unten“, Drehfräsen unter G55 bei B 180) → Kavität 0,41 mm versetzt. SLM-Teil SA13 (08.11.): G59/G58. Vor jedem Preform-Start Zeile N120 prüfen (`docs/02`, CoCr-Bar-Änderungsplan 15)**
 - ✅ Hedmill verteilt Maschinendefinition, Postprozessor, Templates, Rohteile und Halter über das hyperDENT Update Center (`https://update.heds.dental/hyperdent/MASTER/index.xml`, Prüfung täglich). Andreas schaltet das ab (10.11.2026), Anleitung und Kontrolle: `../fraesstrategien-hyperdent/docs/hyperdent_updatecenter.md`. Letzter Hedmill-Lauf, der den PP-Ordner neu schrieb: 14.08.2026
 - ✅ CAD: exocad DentalCAD
 - ✅ hyperDENT-Optimierung von PMMA-Schienen-Innenflächen mit Hinterschnitten war Thema
