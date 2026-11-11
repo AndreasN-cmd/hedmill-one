@@ -128,3 +128,30 @@
 - ✅ Skript `skripte/nc_konnektor_knicke.py` (Schwellen: flach |dZ/dB| < 0,004 mm/° bei Z < Konnektorradius + 0,06; Knick, wenn innerhalb 5 Sätzen > 0,008 mm/°). Aufruf: `python3 -I skripte/nc_konnektor_knicke.py <nc> T4126 <N …>`
 - **Damit ist der Fehler CAM-seitig vermeidbar, ohne an der Maschine etwas zu ändern.** Für HEDS (falls gewünscht): „Einzelzyklus-Beschleunigungsspitze der B-Achse am Übergang von langen 2°-Sätzen (Z konstant) auf 0,19°-Sätze mit steigendem Z, z. B. 2007-24__SA13.nc N4758370, CNC 4.34, HSC SURFACE PATH_DEV 0,016/0,2, Look-ahead 200“
 - 11.11.2026: Meldungsentwurf an HEDS mit der gefundenen Stelle: `docs/meldung_heds_50120_2026-11-11.md`
+
+## 11.11.2026, 13:00: Fester `bottomoffset` ist nicht robust – Maße der 16 Programme
+- ✅ Andreas (Test in hyperDENT): Bounding-Box-**Minimum** ist die Okklusal-/Konnektorseite (richtig für den MKD-Job), Maximum die Präpgrenzenseite. **Minimum −3 endet bei seinem Testteil mitten in der Friktionsfläche** → bei kurzen Teleskopen nicht möglich
+- ✅ Maße aus den 16 NC-Programmen (`skripte/nc_kuppel_masse.py`; Pol = Jobende − 1 mm; „Konnektor ab“ = erster Ring mit flachem Konnektorbogen; „sicherer Offset“ = Jobende 0,5 mm vor dem Konnektorkontakt):
+
+| Programm | Start Y | Pol Y | Konnektor ab Y | vor dem Pol | sicherer Offset |
+|---|---|---|---|---|---|
+| SA13 | −24,50 | −15,36 | −17,44 | 2,08 | −2,58 |
+| HF46 | −22,46 | −16,00 | −15,46 | −0,54 | +0,04 |
+| HF33 | −24,75 | −13,50 | −13,64 | 0,14 | −0,64 |
+| SA_6 | −21,89 | −16,00 | −15,01 | −0,99 | +0,49 |
+| SA_3 | −24,89 | −16,00 | −17,01 | 1,01 | −1,51 |
+| SA_4 | −24,09 | −16,00 | −17,03 | 1,03 | −1,53 |
+| AS23 | −24,53 | −16,00 | −16,98 | 0,98 | −1,48 |
+| AS12 | −22,26 | −16,00 | −16,83 | 0,83 | −1,33 |
+| AS11 | −23,53 | −16,00 | −17,30 | 1,30 | −1,80 |
+| AS21 | −23,39 | −16,00 | −15,09 | −0,91 | +0,41 |
+| AS22 | −22,63 | −16,00 | −16,01 | 0,01 | −0,51 |
+| AS25 | −22,05 | −16,00 | −15,66 | −0,34 | −0,16 |
+| HF45 | −23,41 | −16,00 | −15,76 | −0,24 | −0,26 |
+| HF43 | −24,95 | −13,50 | −13,96 | 0,46 | −0,96 |
+| HF44 | −23,73 | −16,00 | −16,44 | 0,44 | −0,94 |
+| HF35 | −24,50 | −15,34 | −15,50 | 0,16 | −0,66 |
+
+- ✅ Der Konnektor tritt je nach Neigung der Okklusalfläche zwischen **1,0 mm hinter und 2,1 mm vor dem Pol** aus der Kuppel. Ein fester Offset, der alle 16 abdeckt, wäre −2,6; bei 9 von 16 reichte −1, bei 4 sogar 0. Die Kuppelhöhe über der 0°-Friktion liegt in diesen 16 bei 5,3 bis 10,5 mm, Andreas' Testteil ist kürzer
+- **Folgerung:** Ein fester Wert kann nicht gleichzeitig alle Konnektoraustritte vermeiden und die Friktion kurzer Teleskope schonen. Varianten: (a) **−2** als Master-Wert (deckt alle 16, SA13 mit 0,08 mm knapp) plus Variante „kurz“ (z. B. −1 oder 0) für Teleskope mit niedriger Kuppel, Wahl beim Berechnen; (b) Wert je Teil nach Sichtkontrolle der MKD-Bahn am Konnektor; (c) echte Lösung über HEDS (Steuerung, Mail vom 11.11.). Empfehlung −3/−4 vom Vormittag ist damit zurückgenommen
+- ❓ Mechanik, verfeinert: Die Ereignisse sind alle Austritte (Z beschleunigt aus dem Stand), nie Eintritte. Vermutung: Übergang von langen 2–3°-Sätzen (Konnektorbogen, Satzvorbereitung hat Luft) auf 0,19°-Sätze mit 500 Sätzen/s → Satzvorbereitung (HSC SURFACE) kommt nicht nach, Look-ahead reißt kurz ab → Einzelzyklus-Ausreißer. Passt zu Zufall, zu DYN-Unabhängigkeit, zum Update (Look-ahead 500 → 200, CNC 4.34) und dazu, dass die Kugeljobs (immer kurze Sätze, nie „Luft“) nicht betroffen sind. Für HEDS als Hypothese ergänzt

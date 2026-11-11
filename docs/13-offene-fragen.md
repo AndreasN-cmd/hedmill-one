@@ -29,4 +29,4 @@
 - Antwort von HEDS zu Look-ahead (`interpolator.parameter 200`), CNC 4.34 und Meldung 70222
 - Hybrid-Express-Halter: sechs Rückfragen offen (22-hybrid-express-halter.md)
 - Herkunft der Schnittwerte T4090 (S8000 / S18500, HL 8) und T4081 (S11500) in 06-werkzeuge-schnittwerte.md: eigene NC-Programme oder alter Stand? (weichen von der Werkzeug-DB ab)
-- 50120 am MKD: Ursache bestätigt (Konnektor-Austritt des MKD-Rings, 5 von 5 Ereignissen, 21-achsdynamik-50120.md). Offen: Andreas' Entscheidung zu `bottomoffset` −3/−4 im MKD-Job (Plan SLM 56, CoCr Bar 14), danach Nachtschichten ohne Konnektorkontakt beobachten; HEDS die Stelle melden (optional)
+- 50120 am MKD: Ursache bestätigt (Konnektor-Austritt des MKD-Rings, 5 von 5 Ereignissen, 21-achsdynamik-50120.md). Offen: fester `bottomoffset` nicht robust (Konnektoraustritt je Teil 1,0 mm hinter bis 2,1 mm vor dem Pol, kurze Teleskope); Entscheidung Andreas: Master −2 plus Variante „kurz“ oder Wert je Teil (Plan SLM 56, CoCr Bar 14); HEDS-Mail (`docs/meldung_heds_50120_2026-11-11.md`) abschicken
