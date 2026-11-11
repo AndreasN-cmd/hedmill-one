@@ -70,3 +70,4 @@
 
 ## Suchskript
 - `skripte/DYNSUCHE.ps1` (nur lesend, PowerShell am Steuerungs-PC, erfolgreich gelaufen 01.11.2026)
+- ✅ 09.11.2026: Die Hersteller-Datei `maschine/sub/ToDo.txt` listet die CNC-Parameter, die HEDS für die Steuerung vorsieht: `interpolator.function FCT_LOOK_AHEAD_CUSTOM`, `interpolator.parameter 200`, `path_preparation.function FCT_DEFAULT|FCT_SURFACE`, Kanal SDA `trans_limit_with_curvature 1`, `opt_contour_mode 2`, `hsc.bspline.auto_contour_mode 2`, Achsen `a_trans_weight`/`r_trans_weight` 50–1000, `filter[0].order 6`, `prototype 5`. ❓ Welche davon auf der Maschine aktiv sind, ist nicht geprüft

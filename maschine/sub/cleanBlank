@@ -1,0 +1,94 @@
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird der Blank oder PreForm nach der Bearbeitung
+;  gereinigt
+;
+;	Version		Datum 		Name 				Ã„nderungen
+;	1.0.0		??.??.????	H.-J. Albrecht		Programmerstellung
+;	1.0.1		04.03.2026	H.-J. Albrecht		Preform hinzugeügt
+;	1.0.2		04.03.2026	H.-J. Albrecht		Nach jeder Reinigungsrunde wird jetzt Reinigungsluft Kassette Intervall 
+;												abwechselnd aktiviert bzw. deaktiviert
+;	
+; Auslieferungsversion 1.0.1
+(---------------------------------------------------------------------------)
+
+
+#HSC OFF
+
+$IF V.G.WZ_AKT.L < 15
+	#MSG SYN HMI ["Die Laenge des eingewechselten Werkzeugs T%D ist kleiner als 15mm (ist: %Fmm)", V.G.T_AKT, V.G.WZ_AKT.L]
+	M199
+	#FLUSH WAIT
+$ENDIF
+
+L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+$IF V.P.BlankPosChecked == 2
+      G01 X0 Y-5 FV.E.FEEDMAX
+      G01 Z35 F8000
+   $ELSE
+      G01 X0 Y10 FV.E.FEEDMAX
+      G01 Z35 F8000
+$ENDIF
+#MCS ON EX TOOL
+
+M106
+#FLUSH WAIT
+
+V.E.FunctionNumber = 10117
+ V.E.FunctionValue = 5
+#FLUSH WAIT
+M118  ; Kavitäten ausblasen AUS
+G04 0.2
+#FLUSH WAIT
+V.E.FunctionNumber = 10118
+ V.E.FunctionValue = 100
+#FLUSH WAIT
+M117  ; Kavitäten ausblasen Intervall EIN
+
+
+;M119  ; Kavitäten ausblasen permanent ein
+$IF V.P.BlankPosChecked == 2
+      G91
+      G01 B1080 F30000 
+      B-1080      
+      G90
+   $ELSE
+      G2 X0 Y10 I0 J-10 M110	; Reinigungsluft Kassette Intervall EIN
+      G2 X0 Y-10 I0 J-10 M111	; Reinigungsluft Kassette AUS
+      G2 X0 Y20 I0 J15 M110
+      G2 X0 Y20 I0 J-20 M111
+      G2 X0 Y-30 I0 J-25 M110
+      G2 X0 Y-30 I0 J30 M111 
+      G2 X0 Y40 I0 J35 M110
+      G2 X0 Y40 I0 J-40 M111
+      G2 X0 Y-50 I0 J-45 M110
+      G2 X0 Y-50 I0 J50 M111
+      G2 X0 Y60 I0 J55 M110
+      G2 X0 Y60 I0 J-60 M111
+      G1 X-60 Y0 M110
+      X-47 Y66 M111
+      X47 M110
+      X60 Y0
+      X0 M111
+
+$ENDIF
+
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+
+M112	; Reinigungsluft Kassette EIN
+G04 2
+M111 	; Reinigungsluft Kassette AUS
+
+V.E.FunctionNumber = 10117
+ V.E.FunctionValue = 0
+#FLUSH WAIT
+M118
+G04 0.2
+#FLUSH WAIT
+V.E.FunctionNumber = 10118
+ V.E.FunctionValue = 0
+#FLUSH WAIT
+M118  ; Kavitäten ausblasen aus
+
+L ToolWeightOn	; Werkzeugstandzeitgewichtung aktivieren
+#MCS OFF
+M17

@@ -1,0 +1,48 @@
+(-------------------- 3D-Messpunkt X+ ermitteln ------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird ein Messpunkt mit dem 3D-Taster in 
+;  negativer X-Richtung bestimmt
+;
+;	Version		Datum 		Name 				Aenderungen
+;	1.0.0		26.09.2025	H.-J. Albrecht		Programmerstellung  
+;	1.0.1		14.07.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert    
+;
+; Auslieferungsversion 1.0.0      
+(---------------------------------------------------------------------------)
+#VAR
+   V.L.DistanceX = 10      ; Messdistanz
+   V.L.ActPosX
+#ENDVAR  
+   
+G90   
+#HSC OFF
+#MEAS [TYPE=1 EDGE=NEG INPUT=2]	; Umschaltung der Messsignalauswertung 
+
+T9999 
+D9999	; T- und D-Nummer 3D-Messtaster
+
+
+#MSG SYN HMI ["Warte 3D-Messtaster eingeschaltet"]
+M38	; 3D-Messtaster einschalten
+G04 1
+#FLUSH WAIT
+#MSG SYN HMI [""]
+
+
+V.L.ActPosX = V.A.ACT_POS.X
+G100 X=V.L.ActPosX - V.L.DistanceX FV.E.FEEDMEASURE	
+G01 X=V.L.ActPosX FV.E.FEEDFAST		; Rückzug auf Startposition
+	
+$IF V.A.MERF.X == TRUE
+		#MSG SAVE EXCLUSIVE ["%S --- neg. X-Messung, Messwert = %Fmm", V.G.TIME_STAMP_FILE_NAME, V.A.MESS.X]    
+		#MSG SYN HMI ["neg. X-Messung, Messwert = %Fmm", V.A.MESS.X]
+	$ELSE
+		#MSG SAVE EXCLUSIVE ["%S --- neg. X-Messung, kein Messwert", V.G.TIME_STAMP_FILE_NAME]    
+		#MSG SYN HMI ["neg. X-Messung, kein Messwert"]
+$ENDIF
+
+#FLUSH WAIT
+M39	; 3D-Messtaster ausschalten
+M17
+(-------------------- X-Nullpunkt B0 ermitteln ------------------)

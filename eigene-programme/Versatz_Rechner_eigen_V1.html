@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versatz-Rechner eigen V1 – HEDmill One</title>
+<style>
+  body{margin:0;padding:0 16px 60px;background:#f4f4f2;color:#222;font:15px/1.5 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+  .wrap{max-width:1040px;margin:0 auto}
+  h1{font-size:26px;margin:22px 0 4px}
+  h1 small{display:block;font-size:14px;font-weight:400;color:#666;margin-top:4px}
+  h2{font-size:19px;margin:0 0 6px}
+  h3{font-size:15px;margin:16px 0 8px;color:#8a1c3c;text-transform:uppercase;letter-spacing:1px}
+  .tabs{display:flex;gap:10px;margin:18px 0}
+  .tab{flex:1;padding:12px 16px;border:1.5px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;font-weight:700;font-size:17px;text-align:left}
+  .tab small{display:block;font-weight:400;font-size:12.5px;color:#666}
+  .tab.active{background:#222;color:#fff;border-color:#222}
+  .tab.active small{color:#ddd}
+  .pane{display:none}.pane.active{display:block}
+  .card{background:#fff;border:1px solid #d8d8d5;border-radius:10px;padding:18px 20px;margin-bottom:14px}
+  .lead{color:#666;font-size:14px;margin:0 0 12px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:760px){.grid,.grid3{grid-template-columns:repeat(2,1fr)}}
+  .f label{display:block;font-weight:700;font-size:14px}
+  .f .sub{font-size:12px;color:#666;min-height:30px}
+  .f input{width:100%;box-sizing:border-box;font:600 19px ui-monospace,Menlo,Consolas,monospace;padding:9px 10px;border:1.5px solid #ccc;border-radius:7px;text-align:right;background:#fbfbfa}
+  .f input:focus{outline:none;border-color:#8a1c3c}
+  .probe{margin-top:14px;border-top:1px dashed #ccc;padding-top:12px;font-size:14px}
+  .ln{display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;padding:4px 0}
+  .ln .k{color:#555;min-width:270px}
+  .v{font:700 16px ui-monospace,Menlo,Consolas,monospace}
+  .b{font-size:12px;font-weight:700;padding:2px 8px;border-radius:5px}
+  .ok{background:#e4f2e8;color:#226b3c}.warn{background:#fbf1dd;color:#7a4f00}.err{background:#fbe6e4;color:#a8261e}.info{background:#eee;color:#333}
+  .res{background:#222;color:#fff}
+  .res h2{color:#fff}
+  .rrow{display:grid;grid-template-columns:90px repeat(3,1fr);gap:12px;padding:12px 0;border-top:1px solid #555;align-items:center}
+  .rrow .np{font-size:22px;font-weight:700;border-left:3px solid #8a1c3c;padding-left:10px}
+  .rc .ax{font-size:11px;letter-spacing:1px;color:#bbb}
+  .rc .vv{font:700 22px ui-monospace,Menlo,Consolas,monospace}
+  .rc .d{font-size:12px;color:#ccc}
+  .callout{border-left:3px solid #7a4f00;background:#fbf1dd;padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0;font-size:14px}
+  .callout.good{border-left-color:#226b3c;background:#e4f2e8}
+  .callout.grey{border-left-color:#555;background:#eee}
+  ol.steps{margin:0;padding-left:20px;font-size:14px}
+  ol.steps li{margin-bottom:6px}
+  code{font:600 13px ui-monospace,Menlo,Consolas,monospace;background:#eee;padding:1px 5px;border-radius:4px}
+  .chk{display:flex;gap:8px;align-items:center;font-size:14px;margin:10px 0 2px}
+  footer{color:#777;font-size:12.5px;margin-top:24px;text-align:center}
+  @media print{.tabs{display:none}.pane{display:block!important}.res{background:#fff;color:#000;border:1.5px solid #333}.res h2,.rc .vv,.rrow .np{color:#000}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Versatz-Rechner eigen V1 – HEDmill One
+    <small>Für die eigenen Messprogramme in <code>eigene-programme/</code>. Regel überall: <b>neu = alt + (Soll − Ist)</b>. Alle Maße in mm, Bügelmessschraube.</small>
+  </h1>
+
+  <div class="callout grey">
+    <b>Reihenfolge nach HEDS (10.11.2026):</b> 1. Plättchen fräsen → G54/G55-X, A-Kippung, <b>Werkzeug-Längenoffset</b> setzen. 2. G59-Z rechnerisch um die Längenoffset-Korrektur nachführen. 3. Eine Tonne: <code>MESS_REL_PLAN</code> + <code>MESS_G58_XZ</code> ohne Ausspannen → G59-Z, G58-Z/Längenoffset und G58-X prüfen. G58-Y, G59-X und G59-Y ändern sich durch den Längenoffset nicht.
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-pane="p1">Plättchen<small>MESS_RONDE_G54G55_V1 · G54/G55, A, Längenoffset</small></button>
+    <button class="tab" data-pane="p2">Tonnen<small>MESS_ABS · MESS_REL_PLAN · MESS_G58_XZ · MESS_G59_XY · T4090</small></button>
+  </div>
+
+  <!-- ===================== Plättchen ===================== -->
+  <div class="pane active" id="p1">
+    <div class="card">
+      <h2>1 · Aktuelle Werte</h2>
+      <p class="lead">G54 und G55 sind gleich gesetzt. Y und Z kommen nicht aus dem Plättchen.</p>
+      <div class="grid">
+        <div class="f"><label>G54/G55 X</label><div class="sub">Nullpunkttabelle</div><input id="k_X" placeholder="0.140"></div>
+        <div class="f"><label>G54/G55 A (Grad)</label><div class="sub">A-Spalte, beide gleich</div><input id="k_A" placeholder="-0.040"></div>
+        <div class="f"><label>G59 Z (für Folgewert)</label><div class="sub">wird um die Längenoffset-Korrektur nachgeführt</div><input id="k_59Z" placeholder="0.209"></div>
+        <div class="f"><label>Rund-Ø A0-Tonne bisher</label><div class="sub">T4081, Soll 10,000 (09.11.2026: 9,875)</div><input id="k_Dalt" placeholder="9.875"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2 · Zungenbreiten W1–W4 <span class="b info">Soll je 6,000</span></h2>
+      <p class="lead">Reihenfolge 1 → 4 vom Markierungsloch (Y+) aus. Zunge 1 und 4: beide Flanken aus B0 (Referenz). Zunge 2: linke Flanke B0, rechte B180. Zunge 3: linke B180, rechte B0.</p>
+      <div class="grid">
+        <div class="f"><label>W1</label><div class="sub">Zunge am Loch, Referenz</div><input id="w1" placeholder="6.000"></div>
+        <div class="f"><label>W2</label><div class="sub">rechte Flanke aus B180</div><input id="w2" placeholder="5.86"></div>
+        <div class="f"><label>W3</label><div class="sub">linke Flanke aus B180</div><input id="w3" placeholder="6.14"></div>
+        <div class="f"><label>W4</label><div class="sub">Zunge weit vom Loch, Referenz</div><input id="w4" placeholder="6.000"></div>
+      </div>
+      <div class="probe" id="probe_w"></div>
+    </div>
+
+    <div class="card">
+      <h2>3 · Dicken T1–T4 <span class="b info">Soll je 6,000</span></h2>
+      <p class="lead">Dicke auf jeder Zunge, gleiche Reihenfolge. Zunge 1 liegt bei Y +25, Zunge 4 bei Y −25.</p>
+      <div class="grid">
+        <div class="f"><label>T1</label><div class="sub">Y +25 (Lochseite)</div><input id="t1" placeholder="5.925"></div>
+        <div class="f"><label>T2</label><div class="sub">Y +10</div><input id="t2" placeholder="5.925"></div>
+        <div class="f"><label>T3</label><div class="sub">Y −10</div><input id="t3" placeholder="5.925"></div>
+        <div class="f"><label>T4</label><div class="sub">Y −25</div><input id="t4" placeholder="5.925"></div>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div class="f"><label>Abstand Zunge 1/4 von der Mitte</label><div class="sub">mm, aus dem Programm</div><input id="arm" value="25"></div>
+      </div>
+      <div class="probe" id="probe_t"></div>
+    </div>
+
+    <div class="card res">
+      <h2>Ergebnis Plättchen – eintragen</h2>
+      <div class="rrow"><div class="np">G54 + G55</div>
+        <div class="rc"><div class="ax">X NEU</div><div class="vv" id="oX">—</div><div class="d" id="dX"></div></div>
+        <div class="rc"><div class="ax">A NEU (GRAD)</div><div class="vv" id="oA">—</div><div class="d" id="dA"></div></div>
+        <div class="rc"><div class="ax">Y / Z</div><div class="vv">bleiben</div><div class="d">nicht aus dem Plättchen</div></div>
+      </div>
+      <div class="rrow"><div class="np">WZ-Offset</div>
+        <div class="rc"><div class="ax">AUF WZ-LÄNGENOFFSET ADDIEREN</div><div class="vv" id="oL">—</div><div class="d">HMI → BACK / Maschinenparameter → „Übertragen in SPS“ (stToolChange.fToolLengthOffset). Alten Wert vorher notieren.</div></div>
+        <div class="rc"><div class="ax">G59 Z NEU (FOLGEWERT)</div><div class="vv" id="o59Z">—</div><div class="d" id="d59Z">= G59-Z alt + Korrektur (Planfläche wandert mit)</div></div>
+        <div class="rc"><div class="ax">A0-TONNE ERWARTET</div><div class="vv" id="oDerw">—</div><div class="d" id="dDerw">Rund-Ø nach der Korrektur; Rest → G58-Z</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Rechenweg</h3>
+      <ol class="steps">
+        <li><b>ΔX = (W2 − W3) / 4.</b> Zunge 2 und 3 haben je eine Flanke aus B180. Liegt die Drehachse um a neben dem Nullpunkt, verschiebt sich alles aus B180 um 2a → eine Zunge wird um 2a schmaler, die andere um 2a breiter. Probe: (W2 + W3)/2 = (W1 + W4)/2. Werkzeugradius und Abdrängung fallen heraus. Vorzeichen: G54/G55-X neu = alt + ΔX.</li>
+        <li><b>Längenoffset = (Mittel T − 6,000) / 2.</b> Das Werkzeug fährt beide Seiten an, ein Längenfehler geht doppelt in die Dicke. Herkunft im Messzyklus <code>measureTool.nc</code>: <code>ToolLength = MESS.Z − ToolOffset</code>. Plättchen zu dünn → Werkzeug real länger als gespeichert → Offset kleiner (negative Korrektur addieren). Gleiche Konvention wie der HEDS-Rechner.</li>
+        <li><b>ΔA = atan((T1 − T4) / (4 · Abstand)).</b> Eine A-Kippung macht das Plättchen keilförmig, von beiden Seiten gleichsinnig. Vorzeichen wie HEDS: Y+-Seite (Loch) dicker → positiv. A neu = A alt + ΔA, bei G54 und G55 gleich. ❓ Vorzeichen noch nicht am eigenen Teil bestätigt.</li>
+        <li><b>Folgewerte:</b> G59-Z neu = alt + Längenoffset-Korrektur (die Planfläche bei A −90 entsteht mit der Werkzeugspitze). Rund-Ø der A0-Tonne erwartet = bisher − 2 · Korrektur. Bleibt ein Rest zu 10,000, ist das G58-Z: neu = alt + (5,000 − D/2).</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ===================== Tonnen ===================== -->
+  <div class="pane" id="p2">
+    <div class="card">
+      <h2>1 · Aktuelle Nullpunkttabelle</h2>
+      <div class="grid3">
+        <div class="f"><label>G58 X</label><div class="sub">A 0, Drehfräsen</div><input id="a58X" placeholder="0.069"></div>
+        <div class="f"><label>G58 Y</label><div class="sub">axial (Anschlag)</div><input id="a58Y" placeholder="-0.230"></div>
+        <div class="f"><label>G58 Z</label><div class="sub">radial, bewusst −0,025</div><input id="a58Z" placeholder="-0.025"></div>
+        <div class="f"><label>G59 X</label><div class="sub">A −90, Kavität</div><input id="a59X" placeholder="0.079"></div>
+        <div class="f"><label>G59 Y</label><div class="sub">radial</div><input id="a59Y" placeholder="-0.663"></div>
+        <div class="f"><label>G59 Z</label><div class="sub">axial (Anschlag)</div><input id="a59Z" placeholder="0.209"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2 · MESS_REL_PLAN_A-90_V3 → G59-Z <span class="b info">Soll 19,500</span></h2>
+      <p class="lead">Gesamtlänge hinteres Ende → Planfläche, Bügelmessschraube. Unabhängig von der Rohlingslänge (Planfläche absolut bei Z 19,5). Braucht ein frisch vermessenes T4090.</p>
+      <div class="grid"><div class="f"><label>L nach (Gesamtlänge)</label><div class="sub">Soll 19,500</div><input id="relL" placeholder="19.484"></div></div>
+      <div class="probe" id="probe_rel"></div>
+    </div>
+
+    <div class="card">
+      <h2>3 · MESS_ABS_G58Y_A0_V3 → G58-Y <span class="b info">Schulter bei 15,000 vom Anschlag</span></h2>
+      <p class="lead">Stirnfläche → Schulter, Messschieber (±0,02). Soll hängt von der Tonnenlänge ab: ohne REL vorher Soll = Länge − 15,000; nach REL Soll = L nach − 15,000.</p>
+      <div class="grid">
+        <div class="f"><label>Tonnenlänge vor dem Fräsen</label><div class="sub">nur ohne REL nötig</div><input id="absLen" placeholder="20.024"></div>
+        <div class="f"><label>Stirn → Schulter Ist</label><div class="sub">Messschieber</div><input id="absIst" placeholder="5.00"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="absRel" checked> MESS_REL_PLAN lief vorher in derselben Aufspannung (Soll = L nach − 15,000)</label>
+      <div class="probe" id="probe_abs"></div>
+    </div>
+
+    <div class="card">
+      <h2>4 · MESS_G58_XZ_A0_V1 → G58-X, G58-Z <span class="b info">T4081</span></h2>
+      <p class="lead">D diagonal zwischen den Flächen (Soll 10,000). M1 lange Fläche (6 mm, Flanke X−) → runde Gegenseite, M2 kurze Fläche (3,5 mm, Flanke X+) → runde Gegenseite, Soll je 9,750.</p>
+      <div class="grid3">
+        <div class="f"><label>D rund</label><div class="sub">Soll 10,000</div><input id="xzD" placeholder="9.875"></div>
+        <div class="f"><label>M1 lange Fläche</label><div class="sub">Soll 9,750</div><input id="xzM1" placeholder="9.647"></div>
+        <div class="f"><label>M2 kurze Fläche</label><div class="sub">Soll 9,750</div><input id="xzM2" placeholder="9.729"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="xzOffsetDone"> Werkzeug-Längenoffset wurde vorher über das Plättchen gesetzt (dann darf der Rest in G58-Z)</label>
+      <div class="probe" id="probe_xz"></div>
+    </div>
+
+    <div class="card">
+      <h2>5 · MESS_G59_XY_A-90_V1 → G59-X, G59-Y <span class="b info">T4081</span></h2>
+      <p class="lead">Flächen nur über die Länge unterscheidbar: M1 = 5 mm (X−), M2 = 4 mm (X+, direkt neben der langen), M3 = 3 mm (Y−, 90° entfernt), je Fläche → runde Gegenseite, Soll 10,250. D wo keine Fläche ist, Soll 10,500.</p>
+      <div class="grid">
+        <div class="f"><label>D rund</label><div class="sub">Soll 10,500</div><input id="xyD" placeholder="10.392"></div>
+        <div class="f"><label>M1 (5 mm)</label><div class="sub">Soll 10,250</div><input id="xyM1" placeholder="10.142"></div>
+        <div class="f"><label>M2 (4 mm)</label><div class="sub">Soll 10,250</div><input id="xyM2" placeholder="10.245"></div>
+        <div class="f"><label>M3 (3 mm)</label><div class="sub">Soll 10,250</div><input id="xyM3" placeholder="10.216"></div>
+      </div>
+      <div class="probe" id="probe_xy"></div>
+    </div>
+
+    <div class="card">
+      <h2>6 · MESS_G58_Z_T4090_V1 → Gegenprobe <span class="b info">Soll 9,600</span></h2>
+      <p class="lead">Band mit der Torusstirn T4090. Gleiche Abweichung wie T4081 = Maschine (Längenoffset oder G58-Z), andere Abweichung = Längenmessung des einzelnen Werkzeugs.</p>
+      <div class="grid"><div class="f"><label>D Band</label><div class="sub">Soll 9,600</div><input id="t90D" placeholder="9.475"></div></div>
+      <div class="probe" id="probe_t90"></div>
+    </div>
+
+    <div class="card res">
+      <h2>Ergebnis Tonnen – eintragen</h2>
+      <div class="rrow"><div class="np">G58</div>
+        <div class="rc"><div class="ax">X</div><div class="vv" id="o58X">—</div><div class="d" id="d58X"></div></div>
+        <div class="rc"><div class="ax">Y</div><div class="vv" id="o58Y">—</div><div class="d" id="d58Y"></div></div>
+        <div class="rc"><div class="ax">Z</div><div class="vv" id="o58Z">—</div><div class="d" id="d58Z"></div></div>
+      </div>
+      <div class="rrow"><div class="np">G59</div>
+        <div class="rc"><div class="ax">X</div><div class="vv" id="o59X">—</div><div class="d" id="d59X"></div></div>
+        <div class="rc"><div class="ax">Y</div><div class="vv" id="o59Y">—</div><div class="d" id="d59Y"></div></div>
+        <div class="rc"><div class="ax">Z</div><div class="vv" id="o59Zt">—</div><div class="d" id="d59Zt"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Rechenweg und Grenzen</h3>
+      <ol class="steps">
+        <li>G59-Z neu = alt + (19,500 − L nach). Planfläche zu tief (Teil kurz) → Z nach +.</li>
+        <li>G58-Y neu = alt + (Soll − Ist) mit Soll = Länge − 15,000. Schulter zu nah an der Stirn → Y nach +. Messschieber: unter 0,02 Abweichung nicht korrigieren, lieber zwei Läufe mitteln.</li>
+        <li>G58-X neu = alt + (M1 − M2)/2; Kontrolle (M1 + M2)/2 − D/2 − 4,750 ≈ 0. G58-Z: Abweichung = 5,000 − D/2. Darin steckt der Werkzeug-Längenoffset 1:1 – erst Plättchen, dann der Rest in G58-Z.</li>
+        <li>G59-X neu = alt + (M1 − M2)/2; G59-Y neu = alt + M3 − (M1 + M2)/2; Kontrolle (M1 + M2)/2 − D/2 − 5,000 ≈ 0.</li>
+        <li>Der Werkzeug-Längenoffset wirkt nur auf Maße, die mit der Werkzeugspitze entstehen: Rund-Ø bei A0 (G58-Z), Planfläche bei A −90 (G59-Z), Plättchendicke. Flanken-Maße (G58-X, G58-Y, G59-X, G59-Y) bleiben unverändert.</li>
+      </ol>
+    </div>
+  </div>
+
+  <footer>Eigener Rechner, Stand 10.11.2026. Geometrie aus den Programmköpfen in <code>eigene-programme/</code>; Auswertung dokumentiert in <code>docs/02-koordinaten-nullpunkte.md</code>.</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  function val(id){ var el=$(id); if(!el) return null; var v=parseFloat(String(el.value).replace(",", ".")); return isNaN(v)?null:v; }
+  function sgn(n,dig){ dig = dig===undefined?3:dig; return (n>=0?"+":"−")+Math.abs(n).toFixed(dig); }
+  function abs3(n,dig){ dig = dig===undefined?3:dig; return (n<0?"−":"")+Math.abs(n).toFixed(dig); }
+  function have(){ for(var i=0;i<arguments.length;i++){ if(val(arguments[i])===null) return false; } return true; }
+  function badge(x,tol){ var a=Math.abs(x); if(a<=tol) return '<span class="b ok">in Toleranz</span>'; if(a<=tol*4) return '<span class="b warn">korrigieren</span>'; return '<span class="b err">deutlich daneben</span>'; }
+  function ln(k,html){ return '<div class="ln"><span class="k">'+k+'</span>'+html+'</div>'; }
+  function put(idAbs,idD,base,delta,note){
+    if(delta===null||delta===undefined||base===null){ $(idAbs).textContent="—"; $(idD).textContent=note||""; return; }
+    $(idAbs).textContent=abs3(base+delta); $(idD).textContent="Δ "+sgn(delta)+(note?" · "+note:"");
+  }
+
+  // Tabs
+  var tabs=document.querySelectorAll(".tab");
+  for(var i=0;i<tabs.length;i++){ tabs[i].addEventListener("click", function(){
+    for(var j=0;j<tabs.length;j++){ tabs[j].className = (tabs[j]===this)?"tab active":"tab"; }
+    var panes=document.querySelectorAll(".pane");
+    for(var k=0;k<panes.length;k++){ panes[k].className = (panes[k].id===this.getAttribute("data-pane"))?"pane active":"pane"; }
+  }); }
+
+  // ---------- Plättchen ----------
+  function calcPlate(){
+    var W=6.000, T=6.000;
+    var h="", dX=null;
+    if(have("w2","w3")){
+      dX=(val("w2")-val("w3"))/4;
+      h+=ln("ΔX = (W2 − W3) / 4",'<span class="v">'+sgn(dX,4)+' mm</span>'+badge(dX,0.005));
+    }
+    if(have("w1","w2","w3","w4")){
+      var p=(val("w2")+val("w3"))/2-(val("w1")+val("w4"))/2;
+      h+=ln("Probe (W2 + W3)/2 − (W1 + W4)/2",'<span class="v">'+sgn(p)+'</span>'+(Math.abs(p)<=0.01?'<span class="b ok">deckt sich</span>':'<span class="b warn">Zungen 2/3 passen nicht zu 1/4 – Messung oder Plättchen prüfen</span>'));
+      var mW=(val("w1")+val("w2")+val("w3")+val("w4"))/4;
+      h+=ln("Mittel aller Breiten",'<span class="v">'+mW.toFixed(3)+'</span><span class="b info">Soll 6,000 · Abweichung '+sgn(mW-W)+' = Werkzeug/Abdrängung, ohne Bedeutung</span>');
+    }
+    $("probe_w").innerHTML=h||'<span style="color:#777">W2 und W3 eintragen – daraus kommt ΔX.</span>';
+
+    var h2="", dL=null, dA=null;
+    var ts=[]; var ids=["t1","t2","t3","t4"];
+    for(var i=0;i<4;i++){ if(val(ids[i])!==null) ts.push(val(ids[i])); }
+    if(ts.length){
+      var s=0; for(var j=0;j<ts.length;j++) s+=ts[j];
+      var m=s/ts.length;
+      dL=(m-T)/2;
+      h2+=ln("Mittlere Dicke ("+ts.length+" Werte)",'<span class="v">'+m.toFixed(4)+'</span><span class="b info">Soll 6,000 · Fehler '+sgn(m-T,4)+'</span>');
+      h2+=ln("Auf WZ-Längenoffset addieren = Fehler / 2",'<span class="v">'+sgn(dL,4)+' mm</span>'+badge(dL,0.005));
+    }
+    var arm=val("arm")||25;
+    if(have("t1","t4")){
+      var w=val("t1")-val("t4");
+      dA=Math.atan(w/(4*arm))*180/Math.PI;
+      h2+=ln("Keil T1 − T4 (Y +25 gegen Y −25)",'<span class="v">'+sgn(w)+' mm</span>');
+      h2+=ln("ΔA = atan(Keil / (4 · "+arm+"))",'<span class="v">'+sgn(dA,4)+'°</span>'+badge(dA,0.01)+'<span class="b info">Y+ dicker = positiv (HEDS)</span>');
+    }
+    if(have("t2","t3","t1","t4")){
+      var mid=(val("t2")+val("t3"))/2, out=(val("t1")+val("t4"))/2;
+      h2+=ln("Probe Mitte (T2, T3) gegen außen (T1, T4)",'<span class="v">'+sgn(mid-out)+'</span>'+(Math.abs(mid-out)<=0.01?'<span class="b ok">eben</span>':'<span class="b warn">Plättchen gewölbt oder Messung</span>'));
+    }
+    $("probe_t").innerHTML=h2||'<span style="color:#777">Dicken eintragen – daraus kommen Längenoffset und A-Kippung.</span>';
+
+    put("oX","dX",val("k_X"),dX,"G54-X und G55-X gleich");
+    if(dA===null){ $("oA").textContent="—"; $("dA").textContent=""; }
+    else { var cA=val("k_A"); if(cA===null){ $("oA").textContent="—"; $("dA").textContent="A alt eintragen (Δ "+sgn(dA,4)+"°)"; } else { $("oA").textContent=abs3(cA+dA,4)+"°"; $("dA").textContent="Δ "+sgn(dA,4)+"° · G54 und G55 gleich"; } }
+    $("oL").textContent = dL===null?"—":sgn(dL,4)+" mm";
+    if(dL===null){ $("o59Z").textContent="—"; $("oDerw").textContent="—"; $("dDerw").textContent="Rund-Ø nach der Korrektur; Rest → G58-Z"; }
+    else {
+      var z59=val("k_59Z");
+      $("o59Z").textContent = z59===null?"G59-Z alt?":abs3(z59+dL);
+      $("d59Z").textContent = "= G59-Z alt "+sgn(dL,4)+" (Teil wird um "+Math.abs(dL).toFixed(4)+" länger)";
+      var Dalt=val("k_Dalt");
+      if(Dalt===null){ $("oDerw").textContent="Ø bisher?"; }
+      else {
+        var Derw=Dalt-2*dL; var rest=5.000-Derw/2;
+        $("oDerw").textContent=Derw.toFixed(4);
+        $("dDerw").textContent = Math.abs(rest)<=0.005 ? "Soll 10,000 erreicht → G58-Z bleibt" : "Rest "+sgn(rest,4)+" → G58-Z neu = alt "+sgn(rest,4)+" (erst nach der Kontroll-Tonne)";
+      }
+    }
+  }
+
+  // ---------- Tonnen ----------
+  function calcTonnen(){
+    var d58={X:null,Y:null,Z:null}, d59={X:null,Y:null,Z:null};
+    // REL
+    var h="";
+    if(have("relL")){ var dz=19.500-val("relL"); d59.Z=dz; h+=ln("G59-Z: 19,500 − L nach",'<span class="v">'+sgn(dz)+'</span>'+badge(dz,0.005)); }
+    $("probe_rel").innerHTML=h||'<span style="color:#777">Gesamtlänge eintragen.</span>';
+    // ABS
+    h="";
+    if(have("absIst")){
+      var soll=null, src="";
+      if($("absRel").checked){ if(have("relL")){ soll=val("relL")-15.000; src="L nach − 15,000"; } else { h+=ln("",'<span class="b warn">L nach aus Block 2 fehlt</span>'); } }
+      else { if(have("absLen")){ soll=val("absLen")-15.000; src="Länge − 15,000"; } else { h+=ln("",'<span class="b warn">Tonnenlänge fehlt</span>'); } }
+      if(soll!==null){
+        var dy=soll-val("absIst"); d58.Y=dy;
+        h+=ln("Soll ("+src+")",'<span class="v">'+soll.toFixed(3)+'</span>');
+        h+=ln("G58-Y: Soll − Ist",'<span class="v">'+sgn(dy)+'</span>'+(Math.abs(dy)<0.02?'<span class="b ok">unter Messschieber-Rauschen – nicht korrigieren</span>':badge(dy,0.02)));
+      }
+    }
+    $("probe_abs").innerHTML=h||'<span style="color:#777">Stirn → Schulter eintragen.</span>';
+    // G58 XZ
+    h="";
+    if(have("xzM1","xzM2")){
+      var dx=(val("xzM1")-val("xzM2"))/2; d58.X=dx;
+      h+=ln("G58-X: (M1 − M2) / 2",'<span class="v">'+sgn(dx,4)+'</span>'+badge(dx,0.005));
+    }
+    if(have("xzD")){
+      var dzz=5.000-val("xzD")/2;
+      var allowed=$("xzOffsetDone").checked;
+      if(allowed) d58.Z=dzz;
+      h+=ln("Abweichung Z: 5,000 − D/2",'<span class="v">'+sgn(dzz,4)+'</span>'+(allowed?badge(dzz,0.005):'<span class="b warn">enthält den Werkzeug-Längenoffset – erst Plättchen, dann G58-Z</span>'));
+      if(have("xzM1","xzM2")){ var k=(val("xzM1")+val("xzM2"))/2-val("xzD")/2-4.750; h+=ln("Kontrolle Werkzeug (M1 + M2)/2 − D/2 − 4,750",'<span class="v">'+sgn(k,4)+'</span>'+(Math.abs(k)<=0.005?'<span class="b ok">stimmig</span>':'<span class="b warn">Werkzeugradius oder Messung prüfen</span>')); }
+    }
+    $("probe_xz").innerHTML=h||'<span style="color:#777">D, M1, M2 eintragen.</span>';
+    // G59 XY
+    h="";
+    if(have("xyM1","xyM2")){ var dx9=(val("xyM1")-val("xyM2"))/2; d59.X=dx9; h+=ln("G59-X: (M1 − M2) / 2",'<span class="v">'+sgn(dx9,4)+'</span>'+badge(dx9,0.005)); }
+    if(have("xyM1","xyM2","xyM3")){ var dy9=val("xyM3")-(val("xyM1")+val("xyM2"))/2; d59.Y=dy9; h+=ln("G59-Y: M3 − (M1 + M2) / 2",'<span class="v">'+sgn(dy9,4)+'</span>'+badge(dy9,0.005)); }
+    if(have("xyM1","xyM2","xyD")){ var k9=(val("xyM1")+val("xyM2"))/2-val("xyD")/2-5.000; h+=ln("Kontrolle Werkzeug (M1 + M2)/2 − D/2 − 5,000",'<span class="v">'+sgn(k9,4)+'</span>'+(Math.abs(k9)<=0.005?'<span class="b ok">stimmig</span>':'<span class="b warn">Werkzeugradius oder Messung prüfen</span>')); }
+    $("probe_xy").innerHTML=h||'<span style="color:#777">D, M1, M2, M3 eintragen.</span>';
+    // T4090
+    h="";
+    if(have("t90D")){
+      var d90=4.800-val("t90D")/2;
+      h+=ln("Abweichung Z (T4090): 4,800 − D/2",'<span class="v">'+sgn(d90,4)+'</span>');
+      if(have("xzD")){ var d81=5.000-val("xzD")/2; var diff=d90-d81; h+=ln("Vergleich mit T4081",'<span class="v">'+sgn(d81,4)+'</span>'+(Math.abs(diff)<=0.005?'<span class="b ok">gleich → Maschine (Längenoffset / G58-Z)</span>':'<span class="b warn">verschieden ('+sgn(diff,4)+') → Längenmessung des einzelnen Werkzeugs</span>')); }
+    }
+    $("probe_t90").innerHTML=h||'<span style="color:#777">Band-Ø eintragen (optional).</span>';
+
+    put("o58X","d58X",val("a58X"),d58.X);
+    put("o58Y","d58Y",val("a58Y"),d58.Y);
+    put("o58Z","d58Z",val("a58Z"),d58.Z, d58.Z===null?"nur nach gesetztem Längenoffset":"");
+    put("o59X","d59X",val("a59X"),d59.X);
+    put("o59Y","d59Y",val("a59Y"),d59.Y);
+    put("o59Zt","d59Zt",val("a59Z"),d59.Z);
+  }
+
+  function recalc(){ calcPlate(); calcTonnen(); }
+  var inputs=document.querySelectorAll("input");
+  for(var n=0;n<inputs.length;n++){ inputs[n].addEventListener("input",recalc); inputs[n].addEventListener("change",recalc); }
+  recalc();
+})();
+</script>
+</body>
+</html>

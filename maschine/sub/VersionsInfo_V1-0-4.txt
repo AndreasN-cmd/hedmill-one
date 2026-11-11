@@ -1,0 +1,76 @@
+aktuelle Version
+V1.0.4
+	- giveBlankInB V1.0.3
+		- Reinigung der Npkt-Spannfläche vor dem Einsetzen
+	- cleanBlank V1.0.1
+		- Reinigungszykklus abhängig vom Halter Blank oder Preform
+	- setVPVars V1.0.2
+		- Offset-Werte für das Holen und Ablegen von Blanks hinzugefügt
+	- getBlankFromChanger V1.0.4
+		- Jetzt werden die Offsetwerte aus setVPVars für die 
+		  Positionierung der Blankpositionen verrechnet
+	- giveBlankInChanger V1.0.4
+		- Jetzt werden die Offsetwerte aus setVPVars für die 
+		  Positionierung der Blankpositionen verrechnet
+	- checkToolAtPos V1.0.2
+		- es werden jetzt die Messwerte auf den jeweiligen Positionen mitgeloggt 
+	- getTool V1.1.1
+		- Vor dem Aufnehmen, wird jetzt mit Kavitäten ausblasen der Fräser gereinigt
+	- checkBlankAtPos V1.0.3
+		- es werden jetzt die Messwerte auf den jeweiligen Positionen mitgeloggt 
+	- checkBlankInB V1.0.3
+		- es werden jetzt die Messwerte auf den jeweiligen Positionen mitgeloggt 
+	- blankChange
+		- cleanBlank wird bei Preforms nur einmal aufgerufen
+	- IBN-Ordner	
+		- IBN_Testpreform_A0.nc
+		- IBN_Testpreform_A-90.nc
+		- IBN_ToolChangePosTest.nc
+
+
+V1.0.3
+	- SetupChanger
+		- über eine Variable (V.L.CalcBlanlkPos) ist es jetzt möglich nur die Fräserplätze zu berechnen.
+		  Um beides zu berechnen muss diese True gesetzt werden
+	- IBN_BlankChangePosTest.nc
+		- kommt in den Ordner C:\CNC\IBN
+		- mit diesem Programm können alle oder nur bestimmte Blankwechslerpositionen getestet werden
+	- DYNvar im Ordner DYN erstellt
+	- setVPVars
+		- um Variablen für DYNvar erweitert
+	- checkBlankAtPos V1.2.4
+		- Blank an Position wird jetzt über beide Ini's abgefragt
+	- blankChange
+		- Anpassungen für das Holen vom Preformhalter aus RC
+	- getBlankFromChanger V1.0.3
+		- Anpasssungen für das Wegbringen von Preformhalter in RC
+	- giveBlankInChanger V1.0.3
+		- Anpasssungen für das Wegbringen von Preformhalter in RC
+	
+	
+V1.0.2
+	- setVPVars erstellt V1.0.0
+		- dieses Programm dient zum Setzen der V.P.-Variablen der Maschine und wird
+		  in start_init aufgerufen
+	- start_init V1.1.2
+		- den Deklarationsteil der V.P.-Variablen entfernt und den Aufruf für 
+		  setVPVars eingefügt
+	- blankchange V1.2.3
+		- Das Auslesen des Blankmaterials aus der Blankbezeichnung
+			um die Funktion FIND erweitert.  
+			Für HolderTypM und HolderTypC
+	- aktuelle dyn-Programme
+
+
+ältere Versionen
+
+
+V1.0.1
+	- M6 angepasst
+		- Am Ende wird jetzt überprüft, ob die aktuelle Werkzeuglänge < 15mm ist,
+			wenn ja, dann ABBRUCH. Vermutlich wurde der Längenmesswert nicht an die 
+			CNC übertragen
+			
+			
+V1.0.0
+	- aktueller Stand vom 28.01.2026 als Basis für folgende Versionen

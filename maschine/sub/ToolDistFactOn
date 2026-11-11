@@ -1,0 +1,13 @@
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird der Blank oder PreForm nach der Bearbeitung
+;  gereinigt
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		23.04.2026	H.-J. Albrecht		Programmerstellung
+;	
+; Auslieferungsversion 1.0.1
+(---------------------------------------------------------------------------)
+
+V.TLM.DIST_FACT = 0.085
+
+M17

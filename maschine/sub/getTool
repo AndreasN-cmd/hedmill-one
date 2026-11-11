@@ -1,0 +1,108 @@
+(------------------------------ WZ HOLEN -----------------------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird das gewünschte Werkzeugs in der Frässpindel 
+;  aus dem Werkzeugwechsler geholt
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		28.11.2024	H.-J. Albrecht		Programmerstellung bis Auslieferung HM1.00000
+;	1.1.0		15.05.2025	H.-J. Albrecht		Optimierung bis Auslieferung HM1.XXXXX
+;	1.1.1		26.03.2026	H.-J. Albrecht		Vor dem Aufnehmen, wird jetzt mit Kavitäten ausblasen der Fräser gereinigt
+;	1.1.2		28.04.2026	H.-J. Albrecht		Z-PrePos eingefügt, damit soll verhindert werden, dass die Z-Haube auf den
+;                                         Wechslerdeckel fahren kann
+;	1.1.3		24.06.2026	H.-J. Albrecht		Z-PrePos wird jetzt auch beim Rausfahren verwendet
+;
+; Auslieferungsversion 1.0.0
+(---------------------------------------------------------------------------)
+
+( ------ Unterprogramm Reaktion auf WZ-Halter runter gedrückt --------------)
+%L UP_ZDriveUp	
+
+#MSG SAVE EXCLUSIVE ["%S --- Werkzeughalter wurde runter gedrückt", V.G.TIME_STAMP_FILE_NAME] 
+#MSG SYN HMI ["Werkzeughalter wurde runter gedrückt"]
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDSLOW	;Z hoch
+
+V.E.MessageNumber = 130 (Werkzeughalter wurde runter gedrückt)
+M199
+
+M17
+
+
+( ---------------------------------------------------------------------- )
+( ----------------- Hauptprogramm -------------------------------------- )
+( ---------------------------------------------------------------------- )
+%MAIN
+#VAR
+   V.L.TimeAfterCloseCone = 1
+   V.L.ZPrePos = 80          ; auf diese Höhe wird die Z-Achse während der Positionierung in XY gefahren
+#ENDVAR
+
+V.E.ToolChangeActiveNo = 90
+
+#MSG SYN HMI ["Warte auf Wechslerklappe geöffnet"]
+M61		; Wechslerklappe öffnen
+#MSG SYN HMI [""]
+#HSC OFF
+#MCS ON EX TOOL
+#MEAS [TYPE=1 SIGNAL=PLC EDGE=NEG]
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+
+;L checkToolExist
+G01 X=V.P.TC_PosX Y=V.P.TC_PosY Z=V.L.ZPrePos FV.E.FEEDMAX
+
+M70		;Konus auf
+
+G01 Z=V.P.TC_PosZ+32 FV.E.FEEDMAX
+M119  ; Kavitäten ausblasen ein
+G04 0.5		; Wartezeit
+M117  ; Intervall-Kavitäten ausblasen ein
+G100 Z=V.P.TC_PosZ+21 FV.E.FEEDMEASURE	; Positionieren mittel, mit Überwachung ob WZ-Halter runtergedrückt wird
+$IF V.A.MERF.Z == TRUE
+	LL UP_ZDriveUp
+	M0
+$ENDIF
+G100 Z=V.P.TC_PosZ FV.E.FEEDSLOW	; Positionieren langsam, mit Überwachung ob WZ-Halter runtergedrückt wird
+$IF V.A.MERF.Z == TRUE
+	LL UP_ZDriveUp
+	M0
+$ENDIF
+
+M71		;Konus zu
+TV.G.T_AKT DV.G.T_AKT
+G04 V.L.TimeAfterCloseCone
+#FLUSH WAIT
+
+G01 Z=V.L.ZPrePos FV.E.FEEDMAX		;Z hoch
+Y=V.E.TouchProbePos.Y-30 Z=V.A.+SWE.Z-1	
+X=V.E.TouchProbePos.X Y=V.E.TouchProbePos.Y Z=V.A.+SWE.Z-1			;auf XY-TouchProbePosition fahren)
+
+$IF V.G.WZ_AKT.P[0] > 0
+   L toolBreakControl	; WZ Verschleiß oder Bruch ermitteln
+$ELSE
+   L measureTool	; WZ Länge ermitteln
+$ENDIF 
+
+#HSC OFF
+#MCS ON EX TOOL
+
+$IF V.P.ToolExist != 1			;kein WZ in Frässpindel
+	L SAFEPOS
+	M70		;Konus auf
+	#MSG SYN HMI ["Warte auf Wechslerklappe geschlossen"]
+	M62		;Wechslerklappe schließen
+	#MSG SYN HMI [""]
+	#MSG SAVE EXCLUSIVE ["%S --- T%D wurde nicht erfolgreich aus dem Werkzeugwechsler geholt", V.G.TIME_STAMP_FILE_NAME, V.G.T_AKT] 
+	#MSG SYN HMI ["T%D wurde nicht erfolgreich aus dem Werkzeugwechsler geholt", V.G.T_AKT]
+	V.E.MessageNumber = 110 (WZ blieb im WZW)
+	T0D0
+	M199
+$ENDIF
+#MSG SAVE EXCLUSIVE ["%S --- T%D wurde aus dem Werkzeugwechsler geholt", V.G.TIME_STAMP_FILE_NAME, V.G.T_AKT]
+
+#MEAS DEFAULT	; Wiederherstellen der Messeinstellungen aus den Achsparametern für alle Bahnachsen
+
+#FLUSH WAIT
+V.E.ToolChangeActiveNo = 100
+
+M17
+(----------------- ENDE WZ HOLEN -----------------)

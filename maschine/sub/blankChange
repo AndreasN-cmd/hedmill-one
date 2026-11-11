@@ -1,0 +1,612 @@
+(--------------------------- Blankwechsel-Ablauf ---------------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird der komplette Blankwechsel gesteuert.
+;  - Ablegen, holen oder beides
+;  - pruefen ob die benoetigten Wechslerplaetze belegt oder frei sind
+;
+;	Version		Datum 		Name 				aenderungen
+;	1.0.0		28.11.2024	H.-J. Albrecht		Programmerstellung
+;	1.1.0		13.01.2025	H.-J. Albrecht		Gueltigkeitsbereich fuer geforderte
+;												Blankpos eingefuegt
+;												Rundwechsleraufruf eingefuegt
+;	1.2.0		05.06.2025	H.-J. Albrecht		gesamten Ablauf ueberarbeitet
+;												UP eingefuegt
+;												Ablauf immer Ablegen --> Holen
+;												Notfalls immer im Kreis
+;	1.2.1		26.06.2025	H.-J. Albrecht		Pruefung, welcher Haltertyp gefordert
+;												oder vorhanden. Alle Kombinationen ueberwacht
+;	1.2.2		11.12.2025	H.-J. Albrecht		die Auswertung mit dem Laser zur Blankueberpruefung 
+;												kann jetzt aktiviert/deaktiviert werden
+;	1.2.3		30.01.2026	H.-J. Albrecht		Das Auslesen des Blankmaterials aus der Blankbezeichnung
+;												um die Funktion FIND erweitert.  
+;												Fuer HolderTypM und HolderTypC
+;	1.2.4		03.03.2026	H.-J. Albrecht		Anpassungen fuer das HOlen eines Preformhalter aus RC
+;	1.2.5		11.05.2026	H.-J. Albrecht		Fehlende Meldungen hinzugefuegt, 
+;												SYN PLC in SYN HMI geaendert,
+;												Weitere Protokollierung hinzugefuegt
+;	1.2.6		30.06.2026	H.-J. Albrecht		Nach dem Ablegen in den Wechsler oder in das Nullpunktspannsystem,
+;												wird mit dem Laser geprueft, ob der Blank im Wechlser/Nullpunktspannsystem ist 
+;	1.2.7		31.07.2026	L. Felzmann			VORSCHLAG ZUR PRUEFUNG - noch nicht freigegeben
+;												Ablagekontrolle nach dem Einlagern (Abschnitt "pruefen ob der
+;												Blank im Wechsler ist") rief checkBlankAtPos ohne Fall-
+;												unterscheidung auf. Bei einer Rundwechslerposition (101-130)
+;												in V.P.BlankPosToCheck wird dort V.E.BlankPos[101..130]
+;												indiziert, obwohl das Array nur 0-7 kennt --> ID 20906.
+;												Jetzt gleiche Fallunterscheidung wie in den Abschnitten
+;												"pruefen, ob die benoetigte Position im Wechsler frei ist"
+;												und Label_Load. Zusaetzlich #FLUSH WAIT vor der Auswertung
+;												von V.P.BlankPosChecked ergaenzt (fehlte als einzige Stelle).
+;												Am Rundwechsler messen die beiden Induktivsensoren, nicht der
+;												Laser. Deren Codierung weicht ab (Preformhalter = 3 statt 2),
+;												deshalb dort getrennte Auswertung.
+;	1.2.7		19.08.2026	H.-J. Albrecht		Vorschlaege geprueft und teilweise angepasst.
+;												Bei Fehlermeldungen V.E.MessageNumber = 900 verwendet
+;	1.2.8		25.08.2026	H.-J. Albrecht		Nach dem ersten Reinigen des Blanks, wird kurz die Reinigungsluft 
+;												für den Kassettendeckel und das Kavitätenausblasen aktiviert,
+;												damit Späne zwischen Maschinengestell und A-Achse ausgeblasen werden 
+;   1.2.9		26.08.2026	H.-J. Albrecht		cleanWS hinter cleanBAxis eingefügt
+;   1.3.0		03.09.2026	H.-J. Albrecht		C-Halter holen/ablegen/erkennen eingefügt
+;												- Fehlermeldung werden jetzt mit V.E.MessageText definiert
+;
+(---------------------------------------------------------------------------)
+
+
+( ------ Unterprogramm Wechsler-Kassette und Loadertuer pruefen ---------)
+%L UP_CheckBeforeStart
+
+$IF V.E.HWInput.ToolCassetteAvailable == FALSE
+	#MSG SYN HMI ["Wechsler-Kassette bitte richtig rein schieben"]
+$ENDIF
+#WAIT FOR V.E.HWInput.ToolCassetteAvailable == TRUE
+#FLUSH WAIT
+;M112	; Reinigungsluft Kassette EIN
+;G04 2
+;M111 	; Reinigungsluft Kassette AUS
+#MSG SYN HMI ["Loadertuer bitte schließen"]
+M51   	; Loadertuer verriegeln
+#MSG SYN HMI [""]
+
+M17
+
+
+( ------ Unterprogramm SAFEPOS und Wechslerklappe schließen ---------)
+%L UP_SafeAndWait
+
+L SAFEPOS
+#MSG SYN HMI ["Warte auf Wechslerklappe geschlossen"]
+M62	; Wechslerklappe schließen
+#MSG SYN HMI [""]
+M50   ; Loadertuer entriegeln
+
+M17
+
+
+
+
+( ---------------------------------------------------------------------- )
+( ----------------- Hauptprogramm -------------------------------------- )
+( ---------------------------------------------------------------------- )
+%MAIN
+
+#VAR
+	V.L.WhatToDo ; 1 = Unload, 2 = Load, 3 = Unload/Load
+	V.L.TrialsFindBlank = 0
+	V.L.BCMinValue = 1
+	V.L.BCMaxValue = V.P.NumberOfBlankPos	;7
+	V.L.RotaryBCMinValue = V.P.MinPosRC		;101
+	V.L.RotaryBCMaxValue = V.P.MaxPosRC		;130
+	V.L.HolderTypM = 0	; HalterTyp in der Maschine 1=Blank 2=Preform
+	V.L.HolderTypC = 0	; HalterTyp im Wechsler 1=Blank 2=Preform
+	V.L.HolderTypSTR : STRING[5]	; wird benötigt um Buchstaben in der Artikelnummer für den Haltertyp abzufangen
+	V.L.BlankPosCheckedInB = 0 ;Merker fuer checkBlankInB am Anfang, um spaeter diesen fuer das holen aus B zu schreiben 
+	V.L.DontUseLaser = 0	; 0=der Laser wird verwendet um die Blankplaetze im Wechsler und den vom Spannsystem zu ueberpruefen, 1=ueberpruefung wird deaktiviert
+	V.L.PointPos = 0		; Position an der der Punkt in der Blankbezeichnung (003.40012-1234) sitzt
+#ENDVAR
+
+
+#MSG SAVE EXCLUSIVE ["%S --- BlankChange wurde aufgerufen", V.G.TIME_STAMP_FILE_NAME]
+#FLUSH WAIT
+
+; wenn kein Blank im Job definiert ist, an das Ende springen
+$IF V.E.BlankRequest.Pos == -1 
+	#MSG SAVE EXCLUSIVE ["%S --- kein Blank im Job definiert", V.G.TIME_STAMP_FILE_NAME]
+	#FLUSH WAIT
+	$GOTO [Label_End]
+$ENDIF
+
+L SAFEPOS
+
+L DYN-Standard
+L cleanBAxis
+
+L cleanWS
+
+(-----------------------------------------------------------------------------------)
+; Haltertyp aus Artikelnummer bestimmen
+$IF V.E.BlankInMachine.Pos != 0
+	V.L.PointPos = FIND[V.E.BlankInMachine.Name, "."] + 1
+	V.L.HolderTypSTR = MID[V.E.BlankInMachine.Name,1,V.L.PointPos]	; das erste Zeichen hinter dem "." auslesen
+	$IF V.L.HolderTypSTR == "C"
+			V.L.HolderTypM = 6	; C-Halter in (M)aschine
+		$ELSE
+			V.L.HolderTypM = STR_TO_INT[MID[V.E.BlankInMachine.Name,1,V.L.PointPos]] ; erste Ziffer der Artikelnummer auslesen 1-7=Blank 8-9=Preform
+			$IF V.L.HolderTypM >= 1 AND V.L.HolderTypM <= 7 
+					V.L.HolderTypM = 1	; Blankhalter in (M)aschine
+				$ELSEIF V.L.HolderTypM >= 8 AND V.L.HolderTypM <= 9
+					V.L.HolderTypM = 2	; Preformhalter in (M)aschine
+				$ELSE
+					V.E.MessageText = "Artikelnummer des Materials im Spannsystem ist nicht richtig definiert"
+					#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+					#MSG SYN HMI ["%S", V.E.MessageText]
+					V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+					M199
+			$ENDIF
+	$ENDIF
+$ENDIF
+
+V.P.ExpectedBlankTyp = V.L.HolderTypM	; = 1; 2; 6
+(-----------------------------------------------------------------------------------)
+
+$IF V.L.DontUseLaser == 0	; der Laser wird fuer die ueberpruefung der Blanks verwendet
+	L checkBlankInB
+	#FLUSH WAIT
+	$IF V.P.BlankPosChecked == 0
+			#MSG SAVE EXCLUSIVE ["%S --- Detektierung ob ein Blank im B-Achsenullpunktspannsystem ist, ist fehlgeschlagen", V.G.TIME_STAMP_FILE_NAME] 
+			#MSG SYN HMI ["Detektierung ob ein Blank im B-Achsenullpunktspannsystem ist, ist fehlgeschlagen"]
+			V.E.MessageNumber = 601 (Detektierung Blank in B-Achse fehlgeschlagen)
+			M199
+		$ELSEIF V.P.BlankPosChecked == 5
+			#MSG SAVE EXCLUSIVE ["%S --- Detektierung ob ein Blank im B-Achsenullpunktspannsystem ist, lieferte undefinierte Messwerte", V.G.TIME_STAMP_FILE_NAME] 
+			#MSG SYN HMI["Detektierung ob ein Blank im B-Achsenullpunktspannsystem ist, lieferte undefinierte Messwerte"]
+			V.E.MessageNumber = 603 (Detektierung Blank in B-Achse, undefinierte Messwerte)
+			M199
+	$ENDIF
+	V.L.BlankPosCheckedInB = V.P.BlankPosChecked    ; BlankPosChecked-Ergebnis merken
+$ENDIF
+
+
+#HSC OFF
+#MCS ON EX TOOL
+#FLUSH WAIT
+
+
+
+
+
+(-----------------------------------------------------------------------------------)
+; geforderter Blank ist gleich dem im B-Achsenullpunktspannsystem
+$IF V.L.DontUseLaser == 0	; der Laser wird fuer die ueberpruefung der Blanks verwendet
+		$IF V.E.BlankRequest.Pos == V.E.BlankInMachine.Pos
+				$IF V.E.BlankInMachine.Pos > 0 AND [V.P.BlankPosChecked == 1 OR V.P.BlankPosChecked == 2 OR V.P.BlankPosChecked == 6]; gewuenschter Blank in B-Achse
+						$IF V.L.HolderTypM == V.P.BlankPosChecked	; Blank, Preform oder C-Halter im Spannsystem
+								V.E.BlankRequest.Pos = 0
+								V.E.BlankRequest.Name = ""
+								$GOTO [Label_End]
+							$ELSE	; das falsche im Spannsystem
+								$GOTO [Label_WrongHolder]
+						$ENDIF
+					$ELSEIF V.E.BlankInMachine.Pos == 0 AND V.P.BlankPosChecked == 4	; kein Blank in B-Achse
+						$GOTO [Label_End]
+				$ENDIF
+		; es soll ein Halter im Spannsystem sein, ist aber keiner
+			$ELSEIF V.E.BlankInMachine.Pos > 0 AND V.P.BlankPosChecked == 4
+				#MSG SAVE EXCLUSIVE ["%S --- '%S' ist nicht im B-Achsenullpunktspannsystem", V.G.TIME_STAMP_FILE_NAME, V.E.BlankRequest.Name]
+				#MSG SYN HMI ["'%S' ist nicht im B-Achsenullpunktspannsystem. Wirklich leer? Dann weiter mit START", V.E.BlankRequest.Name]
+				V.E.MessageNumber = 610 (Blank '%S' ist nicht im B-Achsenullpunktspannsystem)
+				M199=1
+				#FLUSH WAIT
+				M0
+				#FLUSH WAIT
+				V.E.MessageNumber = 0	; Meldung zurueck setzen
+				;  Bediener pruefen lassen, ob der Arbeitraum frei ist und weiter gearbeitet werden kann
+				;  --> weiter
+				;  --> Abbruch
+				;  ?????
+				;  ?????
+		; es soll kein Halter im Spannsystem sein, ist aber einer
+			$ELSEIF V.E.BlankInMachine.Pos == 0 AND V.P.BlankPosChecked >= 1 AND V.P.BlankPosChecked <= 2
+				[Label_WrongHolder]
+				#MSG SAVE EXCLUSIVE ["%S --- Im B-Achsenullpunktspannsystem ist ein unbekannter Halter", V.G.TIME_STAMP_FILE_NAME]
+				#MSG SYN HMI["Im B-Achsenullpunktspannsystem ist ein unbekannter Halter"]
+				V.E.MessageNumber = 611 (Im B-Achsenullpunktspannsystem ist ein unbekannter Blank)
+				M199
+				;  ????? pruefen ob noch ein Platz im Wechsler frei ist, und den unbekannten dort ablegen --> Platz mit unbekannter Blank beshreiben
+				;  ????? 
+				;  ?????
+				;  ?????
+				;  ?????
+		$ENDIF
+	$ELSE
+		$IF V.E.BlankRequest.Pos == V.E.BlankInMachine.Pos
+			$GOTO [Label_End]
+		$ENDIF
+		$IF V.E.BlankInMachine.Pos == 0
+		      V.P.BlankPosChecked = 4
+		   $ELSE
+		      V.P.BlankPosChecked = V.L.HolderTypM
+		$ENDIF
+$ENDIF
+(-----------------------------------------------------------------------------------)
+
+
+(-----------------------------------------------------------------------------------)
+; Gueltigkeitsbereich der gewuenschten Blankposition pruefen 
+$IF V.E.RotaryChangerAvailable == TRUE
+		$IF [V.E.BlankRequest.Pos < 0 OR [V.E.BlankRequest.Pos > V.L.BCMaxValue AND V.E.BlankRequest.Pos < V.L.RotaryBCMinValue] OR V.E.BlankRequest.Pos > V.L.RotaryBCMaxValue]
+			#MSG SAVE EXCLUSIVE ["%S --- Eine unbekannte Blankposition %U wurde angefragt", V.G.TIME_STAMP_FILE_NAME, V.E.BlankRequest.Pos]
+			#MSG SYN HMI ["Eine unbekannte Blankposition %U wurde angefragt", V.E.BlankRequest.Pos]
+			V.E.MessageNumber = 613 (Eine unbekannte Blankposition wurde angefragt)
+			M199
+		$ENDIF
+	$ELSE
+		$IF V.E.BlankRequest.Pos < 0 OR V.E.BlankRequest.Pos > V.L.BCMaxValue
+			#MSG SAVE EXCLUSIVE ["%S --- Eine unbekannte Blankposition %U wurde angefragt", V.G.TIME_STAMP_FILE_NAME, V.E.BlankRequest.Pos]
+			#MSG SYN HMI ["Eine unbekannte Blankposition %U wurde angefragt", V.E.BlankRequest.Pos]
+			V.E.MessageNumber = 613 (Eine unbekannte Blankposition wurde angefragt)
+			M199
+		$ENDIF
+$ENDIF
+(-----------------------------------------------------------------------------------)
+
+
+(-----------------------------------------------------------------------------------)
+LL UP_CheckBeforeStart	; Wechsler-Kassette und Loadertuer pruefen
+(-----------------------------------------------------------------------------------)
+
+
+
+(-----------------------------------------------------------------------------------)
+(----- einen Blank aus dem B-Achsenullpunktspannsystem in den Wechsler bringen -----)
+(-----------------------------------------------------------------------------------)
+[Label_Unload]
+(-----------------------------------------------------------------------------------)
+; kein Halter im Spannsystem --> gleich neuen holen
+$IF V.P.BlankPosChecked == 4
+   M107  ; Absaugung aus
+	$GOTO [Label_Load]
+$ENDIF
+(-----------------------------------------------------------------------------------)
+
+(-----------------------------------------------------------------------------------)
+; Blank in Nullspunktspannsystem reinigen
+L Safepos
+L cleanBlank
+;L Safepos180
+
+#HSC OFF
+#MCS ON EX TOOL
+L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+X-120 Y0
+
+M112  ; Reinigungsluft Kassette permanent EIN
+M119  ; Ausblasen Kavitaet permanent EIN
+G04 1
+M118  ; Ausblasen Kavitaet permanent AUS
+M111  ; Reinigungsluft Kassette permanent AUS
+
+$IF V.P.BlankPosChecked == 1 OR V.P.BlankPosChecked == 6	; Blankhalter oder C-Halter im Nullpunktspannsystem --> 2. Seite reinigen
+   A0 B180
+   #MCS OFF
+   
+   L cleanBlank
+$ENDIF
+
+M107  ; Absaugung aus
+
+(-----------------------------------------------------------------------------------)
+
+
+
+(-----------------------------------------------------------------------------------)
+; pruefen, ob die benoetigte Position im Wechsler frei ist
+V.P.BlankPosToCheck = V.E.BlankInMachine.Pos
+
+$IF V.L.DontUseLaser == 0	; der Laser wird fuer die ueberpruefung der Blanks verwendet
+		$IF V.P.BlankPosToCheck >= V.L.BCMinValue AND V.P.BlankPosToCheck <= V.L.BCMaxValue
+				L checkBlankAtPos
+			$ELSEIF V.P.BlankPosToCheck >= V.L.RotaryBCMinValue AND V.P.BlankPosToCheck <= V.L.RotaryBCMaxValue
+			   G01 X-120 FV.E.FEEDMAX
+				L checkBlankAtPosRC
+		$ENDIF
+		#FLUSH WAIT
+	   
+		; es ist schon ein Halter auf der geprueften Position, oder eine Preformbasis im Weg oder sie wird benoetigt 
+		V.P.ExpectedBlankTyp = 0	; somit wird nicht auf C-Halter geprueft, dieser ergibt dann auch den WERT 1
+		$IF V.P.BlankPosChecked == 1 OR V.P.BlankPosChecked == 2 OR [V.P.BlankPosChecked == 3 AND V.L.HolderTypM == 1] OR [V.P.BlankPosChecked == 4 AND V.L.HolderTypM == 2]
+			[Label_FindNextFreeBlankPos]
+			V.P.SearchForTyp = V.L.HolderTypM	; Definition, fuer welchen Haltertyp ein freier Platz gefunden werden soll
+			$IF V.E.RotaryChangerAvailable == FALSE
+					L FindNextFreeBlankPos
+				$ELSE
+					L FindNextFreeBlankPos
+					;$IF V.P.NextFreeBlankPos == 0
+					;	L FindNextFreeBlankPosRC
+					;$ENDIF
+			$ENDIF
+			
+			#FLUSH WAIT
+			
+			$IF V.P.NextFreeBlankPos == 0 
+				LL UP_SafeAndWait
+				#MSG SAVE EXCLUSIVE ["%S --- Es wurde kein freier Blankplatz gefunden, bitte einen in der Kassette frei machen.", V.G.TIME_STAMP_FILE_NAME]    
+				#MSG SYN HMI ["Es wurde kein freier Blankplatz gefunden, bitte einen in der Kassette frei machen."]
+				V.E.MessageNumber = 614 (Es wurde kein freier Blankplatz gefunden, bitte einen in der Kassette frei machen.)
+				M199=1
+				M0
+				#FLUSH WAIT
+				V.E.MessageNumber = 0	; Meldung zurueck setzen
+				LL UP_CheckBeforeStart	; Wechsler-Kassette und Loadertuer pruefen
+				
+				$GOTO [Label_FindNextFreeBlankPos]
+			$ENDIF
+			
+			
+			V.E.FunctionNumber = 3200		; naechste freie Blankpos an die SPS
+			V.E.FunctionValue = V.P.NextFreeBlankPos
+			#MSG SYN HMI ["Warte auf SPS-Rueckmeldung"]
+			#WAIT FOR V.E.FunctionNumber == -1
+			#MSG SYN HMI [""]
+			#FLUSH WAIT
+			$IF V.E.BlankInMachine.Pos != V.P.NextFreeBlankPos
+				#MSG SAVE EXCLUSIVE ["%S --- uebertragung der freien Blankposition an die SPS war nicht erfolgreich", V.G.TIME_STAMP_FILE_NAME]   
+				#MSG SYN HMI["uebertragung der freien Blankposition an die SPS war nicht erfolgreich"]
+				V.E.MessageNumber = 616 (?????)
+				M199
+				;  ?????
+				;  uebertragung der freien Blankposition an die SPS war nicht erfolgreich
+				;  ?????
+				;  ?????
+				;  ?????
+			$ENDIF
+			V.P.BlankPosToCheck = V.P.NextFreeBlankPos	; fuer die Nachtraegliche Praesenzpruefung die Pruefposition anpassen
+		$ENDIF 
+	$ELSE
+		#HSC OFF
+		#MCS ON EX TOOL
+		L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+		G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+		X-120 Y0
+		#MCS OFF
+$ENDIF
+
+V.P.BlankPosChecked = V.L.BlankPosCheckedInB
+#FLUSH WAIT
+
+L getBlankFromB
+L giveBlankInChanger
+
+;						; pruefen ob der Blank im Wechsler ist
+;
+;						(=== 1.2.7 VORSCHLAG === NEU: Kontrolle nur wenn der Laser genutzt wird ===========)
+;						; V.L.BlankPosCheckedInB wird ausschliesslich im Laser-Zweig gesetzt. Ohne diese
+;						; Klammer liefe der Vergleich bei V.L.DontUseLaser == 1 gegen den Initwert 0 und
+;						; wuerde immer fehlschlagen - ausserdem wuerde der Laser trotz Abwahl verfahren.
+;						$IF V.L.DontUseLaser == 0
+;						(==================================================================================)
+;						(=== 1.2.7 VORSCHLAG =========================================== NEU ===============)
+;							$IF V.P.BlankPosToCheck >= V.L.BCMinValue AND V.P.BlankPosToCheck <= V.L.BCMaxValue
+;									; Standardwechsler - der Laser unterscheidet Blank- und Preformhalter
+;									V.P.ExpectedBlankTyp = V.L.BlankPosCheckedInB	; der zu erwartende Blankhaltertyp
+;									L checkBlankAtPos
+;									#FLUSH WAIT
+;									$IF V.P.BlankPosChecked != V.L.BlankPosCheckedInB
+;											; beim Ablegen ist ein Fehler aufgetreten, eventuell ist der Blankhalter noch in der Maschine
+;											V.E.MessageText = "Beim Ablegen Pos " + INT_TO_STR[V.P.BlankPosToCheck] + " ist ein Fehler aufgetreten, Blankhalter eventuell noch in der Maschine!"
+;											#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+;											#MSG SYN HMI["%S", V.E.MessageText]
+;											V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+;											M199
+;										$ELSE
+;											V.E.MessageText = "Blankhalter erfolgreich im Wechlser abgelegt. Pos " + INT_TO_STR[V.P.BlankPosToCheck]
+;											#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+;											#MSG SYN HMI["%S", V.E.MessageText]
+;											V.E.MessageNumber = 920	; Hinweis in SPS erzeugen mit Text aus V.E.MessageText
+;									$ENDIF
+;
+;								$ELSEIF V.P.BlankPosToCheck >= V.L.RotaryBCMinValue AND V.P.BlankPosToCheck <= V.L.RotaryBCMaxValue
+;									; Rundwechsler - hier misst kein Laser, sondern die beiden Induktivsensoren
+;									; V.E.HWInput.BlankExistRC und V.E.HWInput.PreformHolderOnPlace.
+;									; checkBlankAtPosRC kennt nur die Ergebnisse 1, 3 und 4 - den Wert 2
+;									; (belegt mit Preformhalter) gibt es dort nicht. Ein Vergleich gegen
+;									; V.L.BlankPosCheckedInB (1 oder 2) kann deshalb nicht funktionieren.
+;									;
+;									; ACHTUNG: der Wert 3 bedeutet in den beiden Pruefprogrammen NICHT dasselbe
+;									;   checkBlankAtPos   (Laser): 3 = LEER mit Preformbasis      --> Platz frei
+;									;   checkBlankAtPosRC (RC)   : 3 = belegt mit Preformbasis    --> Platz belegt
+;									;
+;									; Da die Preformbasis im Rundwechsler verbleibt und nur der Drehhalter
+;									; bewegt wird (M92 HEBEN / M93 SENKEN), kann die 3 sowohl "Basis mit Halter"
+;									; als auch "Basis ohne Halter" bedeuten - genau das steht auch als Kommentar
+;									; in checkBlankAtPosRC. Deshalb wird hier nur die 4 (LEER) als eindeutiger
+;									; Ablagefehler gewertet und die 3 protokolliert.
+;									;
+;									; ---> HEDmill / Joerg: bitte die richtige Bedingung fuer Drehhalter festlegen.
+;									;      Wenn die Sensorik "Basis ohne Halter" von "Basis mit Halter"
+;									;      unterscheiden kann, gehoert die 3 hier als Fehler gewertet.
+;									L checkBlankAtPosRC2
+;									#FLUSH WAIT
+;									$IF V.L.BlankPosCheckedInB == 1
+;											; Blankhalter abgelegt - beide Sensoren muessen anziehen, eindeutig pruefbar
+;											$IF V.P.BlankPosChecked != 1
+;													#MSG SAVE EXCLUSIVE ["%S --- Beim Ablegen auf Rundwechsler-Pos %U ist ein Fehler aufgetreten, Blankhalter eventuell noch in der Maschine", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck]
+;													#MSG SYN HMI["Beim Ablegen auf Rundwechsler-Pos %U ist ein Fehler aufgetreten, Blankhalter eventuell noch in der Maschine", V.P.BlankPosToCheck]
+;													$IF EXIST[V.E.MessageText] == TRUE
+;														V.E.MessageText = "Beim Ablegen auf Rundwechsler-Pos " + INT_TO_STR[V.P.BlankPosToCheck] + " ist ein Fehler aufgetreten!"
+;														V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+;													$ENDIF
+;													M199
+;												$ELSE
+;													#MSG SAVE EXCLUSIVE ["%S --- Blankhalter erfolgreich im Rundwechsler Pos %U abgelegt", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck]
+;													#MSG SYN HMI["Blankhalter erfolgreich im Rundwechsler abgelegt"]
+;											$ENDIF
+;										$ELSE
+;											; Preformhalter abgelegt - die Sensorik sieht nur die Basis (=3) und kann
+;											; nicht aufloesen, ob der Halter darin sitzt. 1 = Blankhalter und 4 = LEER fuehrt zum Fehler
+;											$IF V.P.BlankPosChecked != 3
+;													#MSG SAVE EXCLUSIVE ["%S --- Beim Ablegen auf Rundwechsler-Pos %U ist ein Fehler aufgetreten, Preformhalter eventuell noch in der Maschine", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck]
+;													#MSG SYN HMI["Beim Ablegen auf Rundwechsler-Pos %U ist ein Fehler aufgetreten, Preformhalter eventuell noch in der Maschine", V.P.BlankPosToCheck]
+;													$IF EXIST[V.E.MessageText] == TRUE
+;														V.E.MessageText = "Beim Ablegen auf Rundwechsler-Pos " + INT_TO_STR[V.P.BlankPosToCheck] + " ist ein Fehler aufgetreten!"
+;														V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+;													$ENDIF
+;													M199
+;												$ELSE
+;													#MSG SAVE EXCLUSIVE ["%S --- Preformbasis auf Rundwechsler-Pos %U erkannt, Ablegen des Preformhalters nicht eindeutig pruefbar", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck]
+;													#MSG SYN HMI["Preformhalter im Rundwechsler abgelegt"]
+;											$ENDIF
+;									$ENDIF
+;
+;								$ELSE
+;									; weder Kassetten- noch Rundwechslerposition - darf nicht vorkommen
+;									#MSG SAVE EXCLUSIVE ["%S --- Ablagekontrolle mit ungueltiger Blankposition %U aufgerufen", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck]
+;									#MSG SYN HMI["Ablagekontrolle mit ungueltiger Blankposition %U aufgerufen", V.P.BlankPosToCheck]
+;									$IF EXIST[V.E.MessageText] == TRUE
+;										V.E.MessageText = "Ablagekontrolle mit ungueltiger Blankposition " + INT_TO_STR[V.P.BlankPosToCheck] + " aufgerufen!"
+;										V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+;									$ENDIF
+;									M199
+;							$ENDIF
+;						(=== 1.2.7 VORSCHLAG ================================== ENDE AENDERUNG =============)
+;						$ENDIF	; V.L.DontUseLaser == 0
+;						(-----------------------------------------------------------------------------------)
+
+
+
+(-----------------------------------------------------------------------------------)
+(----- einen Blank aus dem Wechsler in das B-Achsenullpunktspannsystem bringen -----)
+(-----------------------------------------------------------------------------------)
+[Label_Load]
+$IF V.E.BlankRequest.Pos <= 0 
+	$GOTO [Label_End]
+$ENDIF
+
+
+; Haltertyp aus Artikelnummer bestimmen
+$IF V.E.BlankRequest.Pos != 0
+	V.L.PointPos = FIND[V.E.BlankRequest.Name, "."] + 1
+	V.L.HolderTypSTR = MID[V.E.BlankRequest.Name,1,V.L.PointPos]	; das erste Zeichen hinter dem "." auslesen
+	$IF V.L.HolderTypSTR == "C"
+			V.L.HolderTypC = 6	; C-Halter in (M)aschine
+		$ELSE
+			V.L.HolderTypC = STR_TO_INT[MID[V.E.BlankRequest.Name,1,V.L.PointPos]] ; erste Ziffer der Artikelnummer auslesen 1-7=Blank 8-9=Preform
+			$IF V.L.HolderTypC >= 1 AND V.L.HolderTypC <= 7 
+					V.L.HolderTypC = 1	; Blankhalter in (C)hanger
+				$ELSEIF V.L.HolderTypC >= 8 AND V.L.HolderTypC <= 9
+					V.L.HolderTypC = 2	; Preformhalter in (C)hanger
+				$ELSE
+			V.E.MessageText = "Artikelnummer des Materials im Wechsler (Position " + INT_TO_STR[V.E.BlankRequest.Pos] + ") ist nicht richtig definiert"
+					#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+					#MSG SYN HMI ["%S", V.E.MessageText]
+					V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+					M199
+			$ENDIF
+	$ENDIF
+$ENDIF
+
+
+V.P.ExpectedBlankTyp = V.L.HolderTypC	; = 1; 2; 6
+V.P.BlankPosToCheck = V.E.BlankRequest.Pos
+
+$IF V.L.DontUseLaser == 0	; der Laser wird fuer die ueberpruefung der Blanks verwendet
+		$IF V.P.BlankPosToCheck >= V.L.BCMinValue AND V.P.BlankPosToCheck <= V.L.BCMaxValue
+				L checkBlankAtPos
+			$ELSEIF V.P.BlankPosToCheck >= V.L.RotaryBCMinValue AND V.P.BlankPosToCheck <= V.L.RotaryBCMaxValue AND V.P.ExpectedBlankTyp != 6
+				L checkBlankAtPosRC
+			$ELSEIF V.P.BlankPosToCheck >= V.L.RotaryBCMinValue AND V.P.BlankPosToCheck <= V.L.RotaryBCMaxValue AND V.P.ExpectedBlankTyp == 6
+				$GOTO [Label_GET]
+		$ENDIF
+		#FLUSH WAIT
+
+
+		$IF NOT [V.P.BlankPosChecked == V.L.HolderTypC] AND NOT [V.P.BlankPosChecked == 3 AND V.L.HolderTypC == 2]		; gesuchtes nicht auf gepruefter Position
+			V.L.TrialsFindBlank = V.L.TrialsFindBlank + 1
+			LL UP_SafeAndWait
+			#MSG SAVE EXCLUSIVE ["%S --- Gewuenschtes Material nicht an definierter Wechsler-Position %U, bitte pruefen!", V.G.TIME_STAMP_FILE_NAME, V.E.BlankRequest.Pos]    
+			#MSG SYN HMI ["Gewuenschtes Material nicht an definierter Wechsler-Position %U, bitte pruefen!", V.E.BlankRequest.Pos]
+			V.E.MessageNumber = 617 (Gewuenschtes Material nicht an definierter Wechsler-Position, bitte pruefen!)
+			M199=1
+			M0		; warten auf Start/Weiter
+			#FLUSH WAIT
+			V.E.MessageNumber = 0	; Meldung zurueck setzen
+			
+			LL UP_CheckBeforeStart	; Wechsler-Kassette und Loadertuer pruefen
+			$GOTO [Label_Load]
+		$ENDIF 
+	$ELSE
+		V.P.BlankPosChecked = V.L.HolderTypC
+$ENDIF
+
+[Label_GET]
+L getBlankFromChanger
+L giveBlankInB
+
+; pruefen ob der Blank im Nullpunktspannsystem ist
+(=== 1.2.7 VORSCHLAG === NEU: Kontrolle nur wenn der Laser genutzt wird ===========)
+$IF V.L.DontUseLaser == 0
+	L checkBlankInB
+	#FLUSH WAIT	; NEU, fehlte hier
+	(==================================================================================)
+	$IF V.P.BlankPosChecked != V.L.HolderTypC
+			; beim Ablegen ist ein Fehler aufgetreten, eventuell ist der Blankhalter noch in der Maschine
+			#MSG SAVE EXCLUSIVE ["%S --- Beim Ablegen ist ein Fehler aufgetreten, Blankhalter eventuell noch im Wechsler Pos %U", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck]   
+			#MSG SYN HMI["Beim Ablegen ist ein Fehler aufgetreten, Blankhalter eventuell noch im Wechsler Pos %U", V.P.BlankPosToCheck]
+			$IF EXIST[V.E.MessageText] == TRUE
+				V.E.MessageText = "Beim Ablegen ist ein Fehler aufgetreten, Blankhalter eventuell noch im Wechsler Pos " + INT_TO_STR[V.P.BlankPosToCheck]
+				V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+			$ENDIF
+			M199
+		$ELSE
+			#MSG SAVE EXCLUSIVE ["%S --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt", V.G.TIME_STAMP_FILE_NAME]   
+			#MSG SYN HMI["Blankhalter erfolgreich im Nullpunktspannsystem abgelegt"]
+	 $ENDIF
+	(=== 1.2.7 VORSCHLAG ==============================================================)
+$ENDIF	; V.L.DontUseLaser == 0
+(==================================================================================)
+(-----------------------------------------------------------------------------------)
+
+
+
+[Label_End]
+
+V.E.FunctionNumber = 6000
+V.E.FunctionValue = -1	; Blank-Platz im Wechsler
+
+#FLUSH WAIT
+V.E.BlankChangeActiveNo = 0
+
+#HSC OFF
+#MCS ON EX TOOL
+
+L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+G01 X-120 
+L SAFEPOS	; alle Achsen auf sichere Position fahren
+
+#MSG SYN HMI ["Warte auf Wechslerklappe geschlossen"]
+M62	; Wechslerklappe schließen
+#MSG SYN HMI [""]
+
+
+$IF V.E.BlankInMachine.Pos > 0 
+	$IF V.P.IBNactive == FALSE	; nur pruefen, wenn das IBN-Flag zurueck gesetzt wurde
+		L AB-Null	; pruefen ob die AB-Achsen gerade ist
+	$ENDIF
+
+	;L checkBlankHeight		; die Blankhoehe pruefen soll=ist 
+
+	; wenn Blankhoehe nicht stimmt, wieder zurueck bringen
+$ENDIF
+
+M107	; Absaugung aus
+   V.P.BlankchangeDone = 1
+
+#MSG SAVE EXCLUSIVE ["%S --- BlankChange wurde abgearbeitet", V.G.TIME_STAMP_FILE_NAME]
+#FLUSH WAIT
+
+#MCS OFF
+#HSC ON
+
+M17
+(--------------------------- Blankwechsel-Ablauf ENDE -----------------------)

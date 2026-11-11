@@ -1,0 +1,114 @@
+(------------------- Blankhalter aus B-Achse holen ------------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird ein Blankhalter aus dem Nullpunktspannsystem
+;  in der B-Achse geholt      
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		28.11.2024	H.-J. Albrecht		Programmerstellung  
+;	1.0.1		05.06.2025	H.-J. Albrecht		BlankPos[0] als Positionen 
+;												verwendet. BlankInGripper.Pos
+;												und BlankInMachine.Pos eingefügt
+;												M85 mit Argument versehen
+;												M83 am Anfang hinzugefügt
+;	1.0.2		29.06.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert
+;	1.1.0		04.09.2026	H.-J. Albrecht		C-Halter holen eingefügt
+;
+; Auslieferungsversion 1.0.0
+(---------------------------------------------------------------------------)
+
+#VAR
+	V.L.PosZPreOffset = 20
+	
+#ENDVAR
+
+V.E.BlankChangeActiveNo = 50		; 50= Blankhalter aus B-Achse holen gestartet
+
+#HSC OFF
+#MCS ON EX TOOL
+
+#MSG SYN HMI ["Warte auf Blankgreifer-Hubzylinder oben"]
+M83		; Blankgreifer-Hubzylinder heben
+#MSG SYN HMI [""]
+
+M85=2		; Blankgreifer schliessen, prüfen ob leer
+
+L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+
+G01 Z= V.A.+SWE.Z-1 FV.E.FEEDMAX	; Z hoch
+G01 A-90 B= V.E.BPosTo.OpenSystem
+
+$IF V.P.BlankPosToCheck < 8 
+   $IF V.A.ACT_POS.Y > 80
+   	; 
+   	$ELSEIF V.A.ACT_POS.Y > -85.0
+   		$IF V.A.ACT_POS.X <= 0
+   				G01 X-25
+   				G01 Y-85
+   			$ELSEIF V.A.ACT_POS.X > 0
+   				G01 X25
+   				G01 Y-85
+   		$ENDIF
+   	$ELSE
+   		$IF V.A.ACT_POS.X <= 0
+   				G01 X-25 Y-85
+   			$ELSEIF V.A.ACT_POS.X > 0
+   				G01 X25 Y-85
+   		$ENDIF
+   $ENDIF
+$ENDIF
+
+G01 Y= V.E.BlankPos[0].Y 
+G01 X= V.E.BlankPos[0].X
+
+#MSG SYN HMI ["Warte auf Blankgreifer geöffnet"]
+M84		; Blankgreifer öffnen
+#MSG SYN HMI [""]
+#FLUSH WAIT
+
+
+#MSG SYN HMI ["Warte auf Blankgreifer-Hubzylinder gesenkt"]
+M82		; Blankgreifer-Hubzylinder senken
+#MSG SYN HMI [""]
+#FLUSH WAIT
+
+
+$IF V.P.BlankPosChecked == 2  ; Preformhalter soll geholt werden
+      M86 = 2000	; Sperrluft Blankgreifer ein, mit Einschaltverzögerung ms  
+      G01 Z= V.E.BlankPos[0].Z + V.P.ZOffsetPreformM + V.P.ZOffsetGetPreform FV.E.FEEDMEASURE
+      M85   ; Greifer schliessen, prüfen auf nicht mehr offen
+      G01 Z= V.E.BlankPos[0].Z + V.P.ZOffsetPreformM FV.E.FEEDMEASURE
+   $ELSE    ; Blankhalter oder C-Halter soll geholt werden
+      M86	; Sperrluft Blankgreifer ein, ohne Einschaltverzögerung ms
+      G01 Z= V.E.BlankPos[0].Z FV.E.FEEDMEASURE
+$ENDIF
+
+M87	= 500	; Sperrluft Blankgreifer aus, mit Ausschaltverzögerung ms
+
+#MSG SYN HMI ["Warte auf Blankgreifer gegriffen"]
+M85=1	; Blankgreifer schließen, 1= auf gegriffen prüfen
+#MSG SYN HMI [""]
+#FLUSH WAIT
+
+M80		; Blankklemmung öffnen
+
+#MSG SYN HMI ["Warte auf Blankgreifer-Hubzylinder oben"]
+G01 Z= V.A.+SWE.Z-1 FV.E.FEEDSLOW M83		; Z hoch, Blankgreifer-Hubzylinder heben
+#MSG SYN HMI [""]
+
+M81		; Blankklemmung schließen
+
+V.E.BlankInGripper.Pos = V.E.BlankInMachine.Pos
+V.E.BlankInGripper.Name = V.E.BlankInMachine.Name
+V.E.BlankInMachine.Pos = 0
+V.E.BlankInMachine.Name = ""
+
+#MSG SAVE EXCLUSIVE ["%S --- Blank '%S' aus B-Achse geholt", V.G.TIME_STAMP_FILE_NAME, V.E.BlankInGripper.Name]    
+
+V.E.BlankChangeActiveNo = 60		; 60= Blankhalter aus B-Achse holen beendet
+
+#MCS OFF
+#HSC ON
+
+M17
+(----------------- ENDE WZ PRÜFEN -----------------)

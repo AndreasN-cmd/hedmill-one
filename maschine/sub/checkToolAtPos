@@ -1,0 +1,180 @@
+(----------------- WZ-Platz PRÜFEN ob WZ vorhanden JA/NEIN -----------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird eine vorgegebene WZW-Position angefahren und     
+;  überprüft, ob an dieser Position ein Werkzeug vorhanden ist 
+;
+;  V.P.ToolPosChecked = 1 --> Platz belegt
+;  V.P.ToolPosChecked = 2 --> Platz leer
+;  V.P.ToolPosChecked = 3 --> undefinierter Zustand
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		19.03.2025	H.-J. Albrecht		Programmerstellung  
+;	1.0.1		04.07.2025	H.-J. Albrecht		UP's, Grenzwert-Variablen,
+;												undefinierter Wert  
+;												hinzugefügt 
+;	1.0.2		29.06.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert          
+;	1.0.3		31.07.2026	L. Felzmann			VORSCHLAG ZUR PRÜFUNG - noch nicht freigegeben
+;												Gleicher Aufbau wie checkBlankAtPos: die Indexzugriffe auf
+;												V.E.ToolPos[V.P.ToolPosToCheck] standen im #VAR-Block und
+;												liefen damit bedingungslos beim Eintritt in das Unter-
+;												programm - vor der Bereichspruefung. Diese pruefte zudem
+;												nur auf <= 0, eine Obergrenze fehlte.
+;												M6 ruft dieses Programm mit V.E.ToolRequestPos auf, ohne
+;												den Wert vorher zu pruefen -> ID 20906 moeglich.
+;												Bisher nicht aufgetreten, gleiche Fehlerklasse wie 20906
+;												im Blankwechsel.
+;	1.0.3		18.08.2026	H.-J. Albrecht		Vorschläge geprüft
+;												$GOTO [Label_Ende] entfernt, es gab kein [Label_Ende], durch M199 ersetzt. 
+;												Es darf nicht einfach weiter gemacht werden
+(---------------------------------------------------------------------------)
+
+
+( ------ Unterprogramm, Pruefen über eine definierte Strecke in X-Richtung auf ZLaser-Wert --------------)
+%L UP_ScanX-X
+V.L.ToolOnPlace = FALSE
+V.L.ToolPlaceEmpty = FALSE
+
+$IF V.P.ToolPosToCheck == 1 OR V.P.ToolPosToCheck == 15
+		V.L.InkrStartX = -1.8
+		V.L.XSteps = 7
+	$ELSE
+		V.L.InkrStartX = -5
+		V.L.XSteps = 10
+$ENDIF
+G91 G01 X=V.L.InkrStartX FV.E.FEEDFAST
+$FOR P50=1,V.L.XSteps,1
+	G91 G01 X1 
+	G04 0.25
+	#FLUSH WAIT
+	$IF V.E.SensorZLaser >= V.L.ToolExistMin AND V.E.SensorZLaser <= V.L.ToolExistMax
+			V.L.ToolOnPlace = TRUE
+			$BREAK
+		$ELSEIF	V.E.SensorZLaser >= V.L.EmptyValue					; Werkzeug nicht auf Position
+			V.L.ToolPlaceEmpty = TRUE
+			$BREAK
+	$ENDIF
+$ENDFOR
+
+M17
+
+
+( ------ Unterprogramm, Pruefen über eine definierte Strecke in Y-Richtung auf ZLaser-Wert --------------)
+%L UP_ScanY-Y
+V.L.ToolOnPlace = FALSE
+V.L.ToolPlaceEmpty = FALSE
+
+G91 G01 Y-5 FV.E.FEEDFAST
+$FOR P50=1,10,1
+	G91 G01 Y1 
+	G04 0.25
+	#FLUSH WAIT
+	$IF V.E.SensorZLaser >= V.L.ToolExistMin AND V.E.SensorZLaser <= V.L.ToolExistMax
+			V.L.ToolOnPlace = TRUE
+			$BREAK
+		$ELSEIF	V.E.SensorZLaser >= V.L.EmptyValue					; Werkzeug nicht auf Position
+			V.L.ToolPlaceEmpty = TRUE
+			$BREAK
+	$ENDIF
+$ENDFOR
+
+M17
+
+( ---------------------------------------------------------------------- )
+( ----------------- Hauptprogramm -------------------------------------- )
+( ---------------------------------------------------------------------- )
+%MAIN
+
+#VAR
+(=== 1.0.3 VORSCHLAG =========================================== NEU ===============)
+	V.L.TC_PosX						; X-Position die zum Pruefen angefahren werden soll, Zuweisung nach der Bereichspruefung
+	V.L.TC_PosY						; Y-Position die zum Pruefen angefahren werden soll, Zuweisung nach der Bereichspruefung
+	V.L.TC_PosZ						; Z-Position die zum Pruefen angefahren werden soll, Zuweisung nach der Bereichspruefung
+(=== 1.0.3 VORSCHLAG ================================== ENDE AENDERUNG =============)
+	V.L.ToolOnPlace = FALSE
+	V.L.ToolPlaceEmpty = FALSE
+	V.L.InkrStartX = -5
+	V.L.XSteps = 10
+	V.L.ToolExistMin = 490
+	V.L.ToolExistMax = 540
+	V.L.EmptyValue = 545
+#ENDVAR
+
+V.P.ToolPosChecked = 0
+
+
+(=== 1.0.3 VORSCHLAG =========================================== NEU ===============)
+; Die Bereichspruefung MUSS vor dem Indexzugriff auf V.E.ToolPos stehen
+$IF V.P.ToolPosToCheck < 1 OR V.P.ToolPosToCheck > V.P.NumberOfToolPos
+	#MSG SAVE EXCLUSIVE ["%S --- checkToolAtPos mit ungueltiger Position %D aufgerufen, zulaessig 1 bis %D", V.G.TIME_STAMP_FILE_NAME, V.P.ToolPosToCheck, V.P.NumberOfToolPos]
+	#MSG SYN HMI ["checkToolAtPos mit ungueltiger Position %D aufgerufen, zulaessig 1 bis %D", V.P.ToolPosToCheck, V.P.NumberOfToolPos]
+	$IF EXIST[V.E.MessageText] == TRUE
+		V.E.MessageText = "checkToolAtPos mit ungueltiger Position " + INT_TO_STR[V.P.ToolPosToCheck] + " aufgerufen!"
+		V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+	$ENDIF
+
+	M199 
+$ENDIF
+
+V.L.TC_PosX = V.E.ToolPos[V.P.ToolPosToCheck].X + V.E.TC_CheckPosOffset.X
+V.L.TC_PosY = V.E.ToolPos[V.P.ToolPosToCheck].Y + V.E.TC_CheckPosOffset.Y
+V.L.TC_PosZ = V.E.ToolPos[V.P.ToolPosToCheck].Z + V.E.TC_CheckPosOffset.Z
+(=== 1.0.3 VORSCHLAG ================================== ENDE AENDERUNG =============)
+
+#HSC OFF
+#MCS ON EX TOOL
+#MEAS MODE [1]
+
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	; Z hoch
+
+#MSG SYN HMI ["Warte auf Wechslerklappe geöffnet"]
+M61		; Wechslerklappe oeffnen
+#MSG SYN HMI [""]
+
+G90 G01 X=V.L.TC_PosX Y=V.L.TC_PosY		; auf XY-TouchProbePosition fahren
+G04 0.25
+#FLUSH WAIT
+
+; Abfrage des Wertes
+
+$IF V.E.SensorZLaser >= V.L.ToolExistMin AND V.E.SensorZLaser <= V.L.ToolExistMax	; Werkzeug auf Position
+		V.E.FunctionValue = 1
+	$ELSEIF	V.E.SensorZLaser >= V.L.EmptyValue					; Werkzeug nicht auf Position
+		V.E.FunctionValue = 2
+	$ELSE
+		LL UP_ScanX-X
+		$IF V.L.ToolOnPlace == TRUE
+				V.E.FunctionValue = 1
+			$ELSEIF V.L.ToolPlaceEmpty == TRUE		; Werkzeug nicht auf Position
+				V.E.FunctionValue = 2
+			$ELSE
+				G90 G01 X=V.L.TC_PosX Y=V.L.TC_PosY		; auf XY-TouchProbePosition fahren
+				LL UP_ScanY-Y
+				$IF V.L.ToolOnPlace == TRUE
+						V.E.FunctionValue = 1	
+					$ELSEIF V.L.ToolPlaceEmpty == TRUE	; Werkzeug nicht auf Position
+						V.E.FunctionValue = 2				
+					$ELSE						
+						V.E.FunctionValue = 3
+				$ENDIF
+		$ENDIF
+$ENDIF
+V.E.FunctionNumber = 1000 + V.P.ToolPosToCheck
+V.P.ToolPosChecked = V.E.FunctionValue
+$IF V.P.ToolPosChecked == 1
+      #MSG SAVE EXCLUSIVE ["%S --- Auf Position %D ist ein Fraeser. Messwert = %F", V.G.TIME_STAMP_FILE_NAME, V.P.ToolPosToCheck, V.E.SensorZLaser] 
+   $ELSEIF V.P.ToolPosChecked ==2 
+      #MSG SAVE EXCLUSIVE ["%S --- Auf Position %D ist kein Fraeser. Messwert = %F", V.G.TIME_STAMP_FILE_NAME, V.P.ToolPosToCheck, V.E.SensorZLaser] 
+   $ELSE
+      #MSG SAVE EXCLUSIVE ["%S --- Fuer Position %D konnte nichts ermittelt werden. Messwert = %F", V.G.TIME_STAMP_FILE_NAME, V.P.ToolPosToCheck, V.E.SensorZLaser] 
+$ENDIF
+M198		; warten bis Werte von SPS verarbeitet
+
+#FLUSH WAIT
+G90
+G01 ZV.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+#FLUSH WAIT
+#MCS OFF
+#HSC ON
+M17
+(----------------- ENDE WZ-Platz PRUEFEN ob WZ vorhanden JA/NEIN -----------------)

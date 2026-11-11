@@ -1,0 +1,45 @@
+(----------------- Den nächsten freien WZW-Platz finden --------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird die nächste freie WZW-Position ermittelt 
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		02.12.2024	H.-J. Albrecht		Programmerstellung            
+;	1.0.1		04.07.2025	H.-J. Albrecht		Wegoptimierung durch
+;												Aufteilung der Schleife         
+(---------------------------------------------------------------------------)
+
+V.P.NextFreeToolPos = 0
+
+$IF V.P.NumberOfToolPos <= 0 
+	#MSG SAVE EXCLUSIVE ["%S --- Anzahl der Werkzeugpositionen  < 1", V.G.TIME_STAMP_FILE_NAME]
+	V.E.MessageNumber = 100002 (Anzahl der Werkzeugpositionen  < 1)
+	M199
+$ENDIF
+
+; Erste WZ-Reihe prüfen
+$FOR P1=1, V.P.NumberOfToolPos/2, 1
+	V.P.ToolPosToCheck = P1
+	L checkToolAtPos
+	#FLUSH WAIT
+	$IF V.P.ToolPosChecked == 2
+		V.P.NextFreeToolPos = P1
+		$GOTO [Label_End]
+		$BREAK
+	$ENDIF
+$ENDFOR
+
+; Zweite WZ-Reihe prüfen
+$FOR P1=V.P.NumberOfToolPos, V.P.NumberOfToolPos/2+1, -1
+	V.P.ToolPosToCheck = P1
+	L checkToolAtPos
+	#FLUSH WAIT
+	$IF V.P.ToolPosChecked == 2
+		V.P.NextFreeToolPos = P1
+		$BREAK
+	$ENDIF
+$ENDFOR
+
+[Label_End]
+M17
+(---------------- ENDE Den nächsten freien WZW-Platz finden ------------------)

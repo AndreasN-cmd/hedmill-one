@@ -1,0 +1,61 @@
+(----------------- Blank-Platz PRÜFEN ob Blank vorhanden JA/NEIN -----------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird eine vorgegebene Position im Rundwechsler
+;  angefahren und überprüft, ob an dieser Position ein Blankhalter vorhanden 
+;  ist  
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		12.01.2025	H.-J. Albrecht		Programmerstellung  
+;	1.0.1		29.06.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert 
+;
+; Auslieferungsversion 1.0.0         
+(---------------------------------------------------------------------------)
+
+
+V.P.BlankPosChecked = 0
+
+$IF V.P.BlankPosToCheck <= 0
+	$GOTO [Label_Ende]
+$ENDIF
+
+#HSC OFF
+#MCS ON EX TOOL
+#MEAS MODE [1]
+
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	; Z hoch
+
+#MSG SYN HMI ["Warte auf Positionierung des Rundwechslers"]
+
+V.E.FunctionNumber = 3500
+V.E.FunctionValue = V.P.BlankPosToCheck
+M51
+#FLUSH WAIT
+M90
+M91
+
+#FLUSH WAIT
+#MSG SYN HMI [""]
+; Abfrage des Wertes
+$IF V.E.HWInput.BlankExistRC == TRUE AND V.E.HWInput.PreformHolderOnPlace == TRUE
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+		V.E.FunctionValue = 1	; belegt mit Blankhalter
+	$ELSEIF V.E.HWInput.PreformHolderOnPlace == TRUE
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+		V.E.FunctionValue = 3	; belegt mit Preformbasis, ob ein Halter in der Basis ist, ist nicht bekannt
+	$ELSE							
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+		V.E.FunctionValue = 4	; LEER
+$ENDIF
+V.P.BlankPosChecked  = V.E.FunctionValue
+#FLUSH WAIT
+M198
+
+#MSG SYN HMI ["Warte auf SPS-Rueckmeldung"]
+#MSG SYN HMI [""]
+
+#MCS OFF
+#HSC ON
+[Label_Ende]
+M17
+(----------------- ENDE Blank-Platz PRÜFEN ob Blank vorhanden JA/NEIN -----------------)

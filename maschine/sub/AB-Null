@@ -1,0 +1,217 @@
+(-------------------- A-/B-Achse auf 0° stellen/setzen ---------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm werden die 0°-Positionen der A- und B-Achse bestimmt
+;  und eingestellt bzw. gesetzt 
+;
+;	Version		Datum 		SYN HMI 				Änderungen
+;	1.0.0		18.02.2025	H.-J. Albrecht		Programmerstellung  
+;	1.0.1		14.07.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert 
+;
+; Auslieferungsversion 1.0.0         
+(---------------------------------------------------------------------------)
+
+
+
+( ----------------- Unterprogramm Messpunkte anfahren und messen --------------------------- )
+%L UP_Measure	
+
+G01 X=V.L.XPos Y=V.L.YPos FV.E.FEEDFAST
+#MSG SYN HMI ["Warte bis Messzylinder ausgefahren"]
+M34									; Messzylinder senken
+#MSG SYN HMI [""]
+G01 Z=V.L.ZPrePos FV.E.FEEDFAST		; Z auf Vorposition
+#FLUSH WAIT
+;$IF V.E.MeasureSignal[1] == FALSE
+;	G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX M35	;Z hoch, Messzylinder heben
+;	V.E.MessageNumber = 414	; Vor dem Messvorgang hat der Messzylinder schon ausgelöst! 
+;	M199
+;$ENDIF
+
+G100 Z=V.L.ZPos FV.E.FEEDMEASURE	; Zmin beim Messen
+G01 Z=V.L.ZPrePos FV.E.FEEDFAST	; Ausheben in Z
+
+$IF V.A.MERF.Z == TRUE
+	V.L.ZMeasured = V.A.MESS.Z
+$ELSE
+	V.E.MessageNumber = 499	; Es wurde kein Messwert ermittelt
+	G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX M35	;Z hoch, Messzylinder heben
+	M199
+$ENDIF
+M17
+
+
+( ---------------------------------------------------------------------- )
+( ----------------- Hauptprogramm -------------------------------------- )
+( ---------------------------------------------------------------------- )
+%MAIN
+
+#VAR
+	; Variablen fuer B-Bestimmung
+	V.L.BX1 = -44				; X-Werte für den ersten Messpunkt fuer drei Messungen 
+	V.L.BY1 = -37				; Y-Werte fuer den ersten Messpunkt fuer drei Messungen 
+	V.L.BX2 = 44				; X-Werte fuer den zweiten Messpunkt fuer drei Messungen
+	V.L.BY2 = -37				; Y-Werte fuer den zweiten Messpunkt fuer drei Messungen
+	V.L.PreBZ = 115				; Z-Vorposition fuer die Messungen
+	V.L.BZ = 95					; Z-Endpunkt fuer die Messungen fuer
+	V.L.BZMeasured[4][2]			; ermittelte Z-Messwerte [0][1-2] = Mittelwert, [1-3]1-2]= Messwerte
+	V.L.BCorrection					; ermittelte B-Winkelfehler der drei Messungen
+	
+	; Variablen fuer A-Bestimmung
+	V.L.AX1 = 0 				; X-Werte fuer den ersten Messpunkt fuer drei Messungen fuer 
+	V.L.AY1 = -21				; Y-Werte fuer den ersten Messpunkt fuer drei Messungen fuer 
+	V.L.AX2 = 0					; X-Werte fuer den zweiten Messpunkt fuer drei Messungen fuer
+	V.L.AY2 = -162.5				; Y-Werte fuer den zweiten Messpunkt fuer drei Messungen fuer
+	V.L.PreAZ = 115				; Z-Vorposition fuer die Messungen
+	V.L.AZ = 95					; Z-Endpunkt fuer die Messungen fuer
+	V.L.AZMeasured[4][2]			; ermittelte Z-Messwerte [0][1-2] = Mittelwert, [1-3]1-2]= Messwerte
+	V.L.ACorrection					; ermittelte A-Winkelfehler der drei Messungen
+	V.L.XSave = -55
+	
+	; Variablen fuer die Berechnung
+	V.L.AK
+	V.L.GK 
+	
+	; Variablen fuer Unterprogramm
+	V.L.XPos
+	V.L.YPos
+	V.L.ZPrePos
+	V.L.ZPos
+	V.L.ZMeasured
+#ENDVAR
+
+L DYN-Standard
+
+M35	; Messzylinder einfahren
+
+; wenn keine IBN, dann G54.AB = G55.AB = 0 setzen und SAFEPOS 
+$IF V.P.IBNactive == FALSE
+   V.G.NP[1].V.A = V.L.ACorrection
+   V.G.NP[1].V.B = -V.L.BCorrection
+   V.G.NP[2].V.A = V.L.ACorrection
+   V.G.NP[2].V.B = -V.L.BCorrection
+   L SAFEPOS
+$ENDIF
+
+#HSC OFF
+#MCS ON EX TOOL
+;#MEAS [TYPE=1 EDGE=NEG INPUT=2]	
+#MEAS [TYPE=1 SIGNAL=PLC EDGE=NEG]	; Umschaltung der Messsignalauswertung für Messzylinder
+
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	; Z hoch
+
+; Bestimmung der B-Achsenlage
+[Label_BMessung]
+$FOR P1=1,3,1
+	V.L.XPos = V.L.BX1
+	V.L.YPos = V.L.BY1
+	V.L.ZPrePos = V.L.PreBZ
+	V.L.ZPos = V.L.BZ
+	LL UP_Measure
+	#FLUSH WAIT
+	V.L.BZMeasured[P1][0] = V.L.ZMeasured
+	#MSG SAVE EXCLUSIVE ["%S --- B-Messung %U, Messwert 1 = %Fmm", V.G.TIME_STAMP_FILE_SYN HMI, P1, V.L.BZMeasured[P1][0]]    
+	#MSG SYN HMI ["B-Messung %U, Messwert 1 = %Fmm", P1, V.L.BZMeasured[P1][0]]
+	V.L.BZMeasured[0][0] = V.L.BZMeasured[0][0] + V.L.BZMeasured[P1][0]
+$ENDFOR	
+
+V.L.BZMeasured[0][0] = V.L.BZMeasured[0][0] / 3
+
+$FOR P1=1,3,1
+	V.L.XPos = V.L.BX2
+	V.L.YPos = V.L.BY2
+	V.L.ZPrePos = V.L.PreBZ
+	V.L.ZPos = V.L.BZ
+	LL UP_Measure
+	#FLUSH WAIT
+	V.L.BZMeasured[P1][1] = V.L.ZMeasured
+	#MSG SAVE EXCLUSIVE ["%S --- B-Messung %U, Messwert 2 = %Fmm", V.G.TIME_STAMP_FILE_SYN HMI, P1, V.L.BZMeasured[P1][1]]    
+	#MSG SYN HMI ["B-Messung %U, Messwert 1 = %Fmm", P1, V.L.BZMeasured[P1][1]]
+	V.L.BZMeasured[0][1] = V.L.BZMeasured[0][1] + V.L.BZMeasured[P1][1]
+
+$ENDFOR	
+
+V.L.BZMeasured[0][1] = V.L.BZMeasured[0][1] / 3
+	
+	; Berechnung des Winkels
+	V.L.AK = V.L.BX2 - V.L.BX1
+	V.L.GK = V.L.BZMeasured[0][1] - V.L.BZMeasured[0][0]
+	V.L.BCorrection = ATAN[V.L.GK/V.L.AK]
+	;V.L.BCorrection[P1] = V.L.BCorrection[P1] * 180 / PI
+	#MSG SAVE EXCLUSIVE ["%S --- ermittelter B-Korrekturwert = %F°", V.G.TIME_STAMP_FILE_SYN HMI, V.L.BCorrection] 
+	#MSG SYN HMI ["ermittelter B-Korrekturwert = %F°", V.L.BCorrection]
+G91 B=V.L.BCorrection FV.E.FEEDFAST
+G90
+
+
+; Bestimmung der A-Achsenlage
+[Label_AMessung]
+$FOR P1=1,3,1
+	V.L.XPos = V.L.AX1
+	V.L.YPos = V.L.AY1
+	V.L.ZPrePos = V.L.PreAZ
+	V.L.ZPos = V.L.AZ
+	LL UP_Measure
+	#FLUSH WAIT
+	V.L.AZMeasured[P1][0] = V.L.ZMeasured
+	#MSG SAVE EXCLUSIVE ["%S --- A-Messung %U, Messwert 1 = %Fmm", V.G.TIME_STAMP_FILE_SYN HMI, P1, V.L.AZMeasured[P1][0]]    
+	#MSG SYN HMI ["A-Messung %U, Messwert 1 = %Fmm", P1, V.L.AZMeasured[P1][0]]
+	V.L.AZMeasured[0][0] = V.L.AZMeasured[0][0] + V.L.AZMeasured[P1][0]
+$ENDFOR
+
+V.L.AZMeasured[0][0] = V.L.AZMeasured[0][0] / 3		; Mittelwertbildung
+
+G01 XV.L.XSave FV.E.FEEDFAST
+G01 YV.L.AY2
+
+$FOR P1=1,3,1
+	V.L.XPos = V.L.AX2
+	V.L.YPos = V.L.AY2
+	V.L.ZPrePos = V.L.PreAZ
+	V.L.ZPos = V.L.AZ
+	LL UP_Measure
+	#FLUSH WAIT
+	V.L.AZMeasured[P1][1] = V.L.ZMeasured
+	#MSG SAVE EXCLUSIVE ["%S --- A-Messung %U, Messwert 2 = %Fmm", V.G.TIME_STAMP_FILE_SYN HMI, P1, V.L.AZMeasured[P1][1]]    
+	#MSG SYN HMI ["A-Messung %U, Messwert 1 = %Fmm", P1, V.L.AZMeasured[P1][1]]
+	V.L.AZMeasured[0][1] = V.L.AZMeasured[0][1] + V.L.AZMeasured[P1][1]
+$ENDFOR
+
+V.L.AZMeasured[0][1] = V.L.AZMeasured[0][1] / 3		; Mittelwertbildung
+
+	; Berechnung des Winkels
+	V.L.AK = V.L.AY2 - V.L.AY1
+	V.L.GK = V.L.AZMeasured[0][1] - V.L.AZMeasured[0][0]
+	V.L.ACorrection = ATAN[V.L.GK/V.L.AK]
+	;V.L.ACorrection[P1] = V.L.ACorrection[P1] * 180 / PI
+	#MSG SAVE EXCLUSIVE ["%S --- ermittelter A-Korrekturwert= %F°", V.G.TIME_STAMP_FILE_SYN HMI, V.L.ACorrection]
+	#MSG SYN HMI ["ermittelter A-Korrekturwert= %F°", V.L.ACorrection]
+	
+M35	; Messzylinder einfahren
+G01 G91 A=-V.L.ACorrection FV.E.FEEDFAST
+G90
+#MSG SYN HMI [""]
+#MEAS DEFAULT	; Wiederherstellen der Messeinstellungen aus den Achsparametern fuer alle Bahnachsen
+
+G01 G90 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	; Z hoch
+G01 X-100
+G01 Y0
+
+#FLUSH WAIT
+
+#MCS OFF
+#HSC ON
+
+$IF V.P.IBNactive == TRUE
+   V.E.setAbsoluteValue = 45	; Achsen A und B auf Null Grad setzen
+$ELSE
+   V.G.NP[1].V.A = V.L.ACorrection
+   V.G.NP[1].V.B = -V.L.BCorrection
+   V.G.NP[2].V.A = V.L.ACorrection
+   V.G.NP[2].V.B = -V.L.BCorrection
+$ENDIF
+
+[Label_Ende]
+
+M17
+(------------------ A-/B-Achse auf 0° stellen/setzen ENDE ------------------)

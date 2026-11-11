@@ -1,0 +1,110 @@
+(---------------- WZ Bruch-/Verschleißkontrolle ----------------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird der Verschleiß des aktuellen Werkzeugs in der 
+;  Frässpindel oder ein möglicher Bruch ermittelt
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		28.11.2024	H.-J. Albrecht		Programmerstellung bis Auslieferung HM1.00000
+;	1.1.0		15.05.2025	H.-J. Albrecht		Optimierung bis Auslieferung HM1.XXXXX
+;	1.1.1		23.04.2026  H.-J. Albrecht		Unbekannte VALID-Rueckmeldung aus der SPS wird abgefangen
+;	1.1.2		13.05.2026  H.-J. Albrecht		Es wird jetzt unterschieden, ob das WZ zu lang oder zu kurz ist
+;												Meldung 305 hinzugefügt
+;	1.1.3		29.06.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert
+(---------------------------------------------------------------------------)
+
+#HSC OFF
+#MCS ON EX TOOL
+#MEAS DEFAULT
+#MEAS MODE [1]
+
+V.E.ToolChangeActiveNo = 30
+
+M5    ; Frässpindel stoppen
+M9    ; Kühlmittel aus
+
+$IF V.E.ToolInSpindle.Basic == 0;  V.G.T_AKT == 0			;kein Werkzeug in Frässpindel --> an das Ende springen
+   $GOTO [Label_Ende]
+$ENDIF
+
+;D V.E.ToolInSpindle.Basic ;V.G.T_AKT
+
+V.G.WZ_AKT.P[0] = 1	; muss EINS gesetzt werden, damit die Delta-Länge in der SPS auf die WZ-DeltaLänge geschrieben wird
+
+$IF V.E.MeasureSignal[0] != 1	; prüfen ob der Messtaster ein 1-Signal liefert, 0 --> Störung
+	V.E.MessageNumber = 207 (Messtaster liefert vor der Messung 0-Wert)
+	#MSG SYN HMI ["Messung kann nicht gestartet werden, Messtaster ist schon ausgelaengt"]
+	M199
+$ENDIF
+
+#MSG SYN HMI ["Warte auf Wechslerklappe geöffnet"]
+M61	; Wechslerklappe öffnen
+#MSG SYN HMI [""]
+
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+A0 B0
+
+X=V.E.TouchProbePos.X Y=V.E.TouchProbePos.Y  ; auf XY-Messtasterposition fahren
+;Z=V.E.TouchProbePos.Z+40            ; Vorposition in Z, um Messen starten zu können
+M119  ; Kavitäten ausblasen ein
+G04 0.5		; Wartezeit
+M117  ; Intervall-Kavitäten ausblasen ein
+;G100 Z=V.E.TouchProbePos.Z FV.E.FEEDMEASURE ; Messfahrt starten bis minimal Zmin
+G100 Z=V.E.ToolLengthOffset + 3 FV.E.FEEDMEASURE ; Messfahrt starten bis minimal Zmin 
+M118  ; Kavitäten ausblasen aus
+#FLUSH WAIT
+
+$IF V.A.MERF.Z == TRUE
+	V.P.ToolExist = 1
+	V.E.ToolInSpindle.Exist = 1
+	
+	V.G.WZ_AKT.P[3] = [V.A.MESS.Z - V.E.ToolLengthOffset] - V.G.WZ_AKT.L
+	V.E.FunctionNumber = 2
+	V.E.FunctionValue = 2	; Messwert zur SPS  
+	#MSG SAVE EXCLUSIVE ["%S --- T%D Werkzeugdeltalänge %Fmm ermittelt", V.G.TIME_STAMP_FILE_NAME, V.G.T_AKT, V.G.WZ_AKT.P[3]]  
+	#FLUSH WAIT
+	D0 ; Daten T0 laden, dadurch refresh Werkzeugdaten von TXX
+	#FLUSH WAIT
+	G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	   ;Z hoch 	; warten bis Messwert von SPS verarbeitet
+     
+   #FLUSH WAIT 
+	$IF V.E.ToolInvalid == 0
+			#TOOL DATA [V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Sister, V.E.ToolInSpindle.Variant]
+		$ELSEIF V.E.ToolInvalid == 1
+			#MSG SAVE EXCLUSIVE ["%S --- T%D Werkzeug Verschleißgrenze überschritten. Bitte ersetzen", V.G.TIME_STAMP_FILE_NAME, V.E.ToolInSpindle.Basic] 
+			#MSG SYN HMI ["T%D Werkzeug Verschleißgrenze überschritten. Bitte ersetzen", V.E.ToolInSpindle.Basic]
+			V.E.MessageNumber = 301 (Letztes Werkzeug ist verschlissen)
+			M199=1
+		$ELSEIF V.E.ToolInvalid == 2
+			#MSG SAVE EXCLUSIVE ["%S --- T%D Werkzeug gebrochen. Bitte ersetzen", V.G.TIME_STAMP_FILE_NAME, V.E.ToolInSpindle.Basic] 
+			#MSG SYN HMI ["T%D Werkzeug gebrochen. Bitte ersetzen", V.E.ToolInSpindle.Basic]
+			V.E.MessageNumber = 302 (Letztes Werkzeug ist gebrochen)
+			M199=1
+		$ELSEIF V.E.ToolInvalid == 3
+			#MSG SAVE EXCLUSIVE ["%S --- T%D Werkzeug zu lang. Nicht richtig in der Frässpindel?", V.G.TIME_STAMP_FILE_NAME, V.E.ToolInSpindle.Basic] 
+			#MSG SYN HMI ["T%D Werkzeug zu lang. Nicht richtig in der Frässpindel?", V.E.ToolInSpindle.Basic]
+			V.E.MessageNumber = 305 (Letztes positive Deltalänge zu groß)
+			M199=1
+		$ELSE
+			#MSG SAVE EXCLUSIVE ["%S --- Unbekannte VALID-Rueckmeldung aus der SPS", V.G.TIME_STAMP_FILE_NAME] 
+			#MSG SYN HMI ["Unbekannte VALID-Rueckmeldung aus der SPS"]
+			M199
+	$ENDIF
+	V.E.FunctionNumber = 0
+	V.E.FunctionValue = 0
+$ELSE
+	V.P.ToolExist = 1
+	V.E.ToolInSpindle.Exist = 1
+	V.E.FunctionNumber = 2
+	V.E.FunctionValue = 3	;Kein Messwert -> Werkzeug abgebrochen
+	G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX M198    ;Z hoch 	; warten bis Messwert von SPS verarbeitet 	
+	#MSG SAVE EXCLUSIVE ["%S --- T%D Kein Messwert ermittelt", V.G.TIME_STAMP_FILE_NAME, V.G.T_AKT]    
+$ENDIF
+
+[Label_Ende]
+
+#FLUSH WAIT
+V.E.ToolChangeActiveNo = 40
+#MCS OFF
+#HSC ON
+M17

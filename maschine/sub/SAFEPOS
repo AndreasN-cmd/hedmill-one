@@ -1,0 +1,40 @@
+( Home-Position anfahren )
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird einer vordefinierte Home-/Sicherheitsposition
+;  aller Achsen angefahren
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		28.11.2024	H.-J. Albrecht		Programmerstellung
+;	1.0.1		29.06.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert
+;
+; Auslieferungsversion 1.0.0
+(---------------------------------------------------------------------------)
+
+#VAR
+	V.L.HomeX = -120
+	V.L.HomeY = 0
+#ENDVAR
+
+#HSC OFF
+#MCS ON EX TOOL
+
+L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+
+#MSG SYN HMI ["Achsen fahren auf SAFEPOS"]
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+A0 B0
+X=V.L.HomeX Y=V.L.HomeY 
+#MSG SYN HMI ["Wechslerklappe schliessen"]
+M62
+#MSG SYN HMI ["Loadertuer entriegeln"]
+M50
+#MSG SYN HMI [""]
+
+#MCS OFF
+#HSC ON
+#SLOPE[TYPE=HSC] ; Definition des Beschleunigungsverlaufs, Anwendungsart des Rucks
+
+L ToolWeightOn	; Werkzeugstandzeitgewichtung aktivieren
+
+M17

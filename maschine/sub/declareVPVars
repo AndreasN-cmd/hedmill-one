@@ -1,0 +1,75 @@
+(--Beschreibung-------------------------------------------------------------)
+;  Dieses Programm dient zum Deklarieren der V.P.-Variablen der Maschine.
+;  Dadurch können Änderungen an der start_init vorgenommen werden, ohne dass
+;  spezielle Variablen jeder einzelnen Maschine überschrieben werden.
+;  Die benötigte Wertzuweisung geschieht in setVPVars
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		02.07.2026	H.-J. Albrecht		Programmerstellung
+;	1.0.1		02.07.2026	H.-J. Albrecht		folgende VP’s hinzugefügt
+;    											- V.P.PinLayout = 0
+;    											- V.P.DropPin = -1
+;    											- V.P.SideLength = 0.0
+;    											- V.P.PinDiameter = 0.0
+;    											- V.P.PinHeight = 0.0
+;	1.0.2		03.09.2026	H.-J. Albrecht		folgende VP’s hinzugefügt
+;												- V.P.ExpectedBlankTyp
+;												- V.P.CHolderCheckDif
+;												- V.P.CHolderYPosOffset
+;
+; 
+(---------------------------------------------------------------------------)
+
+#VAR
+	V.P.VPDeclared = TRUE						; wichtig für setVPVars
+    V.P.ToolExist								; 1= Werkzeug in Frässpindel gespannt
+	V.P.TC_PosX									; X-WerkzeugPosition im Werkzeugwechsler
+	V.P.TC_PosY									; Y-WerkzeugPosition im Werkzeugwechsler
+	V.P.TC_PosZ									; Z-WerkzeugPosition im Werkzeugwechsler
+	V.P.BlankXPos								; X-BlankPosition im Wechsler
+	V.P.BlankYPos								; Y-BlankPosition im Wechsler
+	V.P.BlankZPos								; Z-BlankPosition im Wechsler
+	V.P.NumberOfToolPos : SGN16		 			; Anzahl der vorhandenen WerkzeugPositionen
+	V.P.ToolPosToCheck							; Positionsnummer die im Werkzeugwechsler überprüft werden soll
+	V.P.ToolPosChecked							; Ergebnis von V.P.ToolPosToCheck --> 0=nicht gepüft 1=vorhanden 2=nicht vorhanden 
+	V.P.NextFreeToolPos							; Ergebnis aus dem Unterprogramm FindNextFreeToolPos --> Platznummer der ersten freien WZW-Position
+	V.P.NumberOfBlankPos : SGN16	 			; Anzahl der vorhandenen BlankPositionen
+	V.P.BlankPosToCheck							; Positionsnummer die im Blankwechsler überprüft werden soll
+	V.P.BlankPosChecked							; Ergebnis von V.P.BlankPosToCheck --> 0=nicht gepüft 1=vorhanden 2=nicht vorhanden 
+	V.P.NextFreeBlankPos						; Ergebnis aus dem Unterprogramm FindNextFreeBlankPos --> Platznummer der ersten freien Blankposition 
+	V.P.MinPosRC : SGN16 						; minimaler Positionswert des Rundwechslers
+	V.P.MaxPosRC : SGN16	 					; maximaler Positionswert des Rundwechslers
+	V.P.AccBasis = 100 							;[mm/s2]
+	V.P.JerkBasis = 1  							;[ms]
+	V.P.NumberOfRuns : SGN08					; kann bei Programmen verwendet werden um die Anzahl der Iterationsschritte zu definieren
+	V.P.IBNactive : BOOLEAN         			; TRUE = Inbetriebnahme aktiv
+	V.P.SearchForTyp : SGN08					; definiert für welchen HalterTyp ein freier Platz im Wechsler gesucht werden soll
+	V.P.ZOffsetPreformM 		        	    ; Offset wird zum Greifen eines Preformhalters in der Maschine (M=Machine)
+	V.P.ZOffsetPreformC 			            ; Offset wird zum Greifen eines Preformhalters in Wechslerbereich (C=Changer)
+	V.P.ZOffsetGetPreform 			            ; Offset wird zum Greifen eines Preformhalters in Wechslerbereich (C=Changer)
+	V.P.AccXYZ : SGN32							; Beschleunigung für XYZ mit Standardstartwert (DYN1) für die dynamischen Dynamikparameter (DYNvar)
+	V.P.AccAB : SGN32							; Beschleunigung für AB mit Standardstartwert (DYN1) für die dynamischen Dynamikparameter (DYNvar)
+	V.P.RampXYZ : SGN32							; Rampenzeit für XYZ mit Standardstartwert (DYN1) für die dynamischen Dynamikparameter (DYNvar)
+	V.P.RampAB : SGN32							; Rampenzeit für AB mit Standardstartwert (DYN1) für die dynamischen Dynamikparameter (DYNvar)
+	V.P.PathDev									; Path_DEV für HSC-Funktion mit Standardstartwert (DYN1) für die dynamischen Dynamikparameter (DYNvar)
+	V.P.PickBlankOffset[3] = [0, 0, 0]			; [0]=X, [1]=Y, [2]=Z, Holen-Offset-Werte für die BlankPositionen im Wechsler 
+	V.P.PlaceBlankOffset[3] = [0, 0, 0]			; [0]=X, [1]=Y, [2]=Z, Ablegen-Offset-Werte für die BlankPositionen im Wechsler
+	V.P.BlankchangeDone = FALSE					; wird verwendet ob zu analysieren, ob ein Blankchange durchgeführt wurde
+	; Parameter für die PIN-Vermessung für Laser-Melting-Blanks. Die Vorbelegung der Variablen, sind Werte die ungültig sind.
+	; So kann sicher gestellt werden, dass bei Verwendung gültige Werte geschrieben werden. Dies wird im Vermessungsprogramm
+	; im UP_GetVPValues geprüft
+	V.P.PinLayout = 0							; 1=Dreieck, 2=Quadrat auf Spitze, 3=Quadrat auf Seite
+	V.P.DropPin = -1                            ; nur bei Quadrat, welcher Pin wird nicht verwendet. 0=alle verwenden, 1-4 = dieser nicht
+	V.P.SideLength = 0.0                        ; Seitenlaenge des Dreiecks
+	V.P.PinDiameter = 0.0                       ; Durchmesser der Pins
+	V.P.PinHeight = 0.0                         ; Hoehe der Pins bezogen auf Blankmitte
+	V.P.ExpectedBlankTyp = 0					; wird verwendet um den erwarteten Blanktyp an die checkBlank-UPs zu senden
+	V.P.CHolderCheckDif = 0.0					; dieser Wert wird verwendet um feststellen zu können, ob ein C-Halter im Spannsystem ist.
+												; Dieser Wert enspricht der Differenz die mindestens gemessen werden muss zwischen den beiden 
+												; Positionen
+    V.P.CHolderYPosOffset = 0.0					; Dieser Offset wird zur aktuellen Y-Position gerechnet um den zweiten Wert für den C-Halter 
+												; zu ermitteln
+; -------------- Parameter PIN ENDE --------------------------
+#ENDVAR
+
+M17

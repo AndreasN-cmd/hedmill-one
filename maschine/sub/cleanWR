@@ -1,0 +1,144 @@
+(---------------- Reinigung vom Arbeitsraum ----------------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird eine Reinigungsfahrt durch den Arbeitsraum
+;  durchgeführt. Die Maschine fährt über den Wechslerdeckel und schaltet
+;  auf dem Weg zurück Richtung Spannsystem die Reinigungsluft Traverse
+;  und Kassette ein.
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		20.05.2026	H.-J. Albrecht		Programmerstellung 
+;
+(---------------------------------------------------------------------------)
+M9    ; Bohrmilch aus
+L SAFEPOS 	;Achsen auf Sicherheitsposition fahren
+
+#HSC OFF
+#MCS ON EX TOOL
+#MSG SYN HMI ["Loadertuer bitte schliessen"]
+M51   ; Loadertür verriegeln
+M62 	; Wechslerdeckel schließen
+M106  ; Absaugung ein
+G04 2
+M50   ; Loadertür entriegeln
+
+; Reinigung Kassettendeckel
+;---------------------------------------------
+M112	; Reinigungsluft Kassette permanent ein
+M122	; Reinigungsluft Traverse permanent ein
+G04 0.15
+M111	; Reinigungsluft Kassette aus
+M121	; Reinigungsluft Traverse aus
+G04 0.5
+M112	; Reinigungsluft Kassette permanent ein
+M122	; Reinigungsluft Traverse permanent ein
+G04 0.15
+M111	; Reinigungsluft Kassette aus
+M121	; Reinigungsluft Traverse aus
+G04 0.5
+M112	; Reinigungsluft Kassette permanent ein
+M122	; Reinigungsluft Traverse permanent ein
+G04 0.15
+M111	; Reinigungsluft Kassette aus
+M121	; Reinigungsluft Traverse aus
+G04 0.5
+M112	; Reinigungsluft Kassette permanent ein
+M122	; Reinigungsluft Traverse permanent ein
+G04 0.15
+M111	; Reinigungsluft Kassette aus
+M121	; Reinigungsluft Traverse aus
+G04 0.5
+
+
+M119  ; Kavitäten ausblasen permanent ein
+M112	; Reinigungsluft Kassette permanent ein
+M122	; Reinigungsluft Traverse permanent ein
+#FLUSH WAIT
+#MSG SYN HMI [""]
+G01 G90 Z=V.A.+SWE.Z-1 F15000
+G01 A-90
+G01 X-100 Y0
+G01 X-50
+G01 X-140 Y-230
+#FLUSH WAIT
+G04 1
+
+
+M118  ; Kavitäten ausblasen aus
+M111	; Reinigungsluft Kassette aus
+M122	; Reinigungsluft Traverse permanent ein
+G04 1
+M121	; Reinigungsluft Traverse aus
+M112	; Reinigungsluft Kassette permanent ein
+G04 1
+M111	; Reinigungsluft Kassette aus
+M122	; Reinigungsluft Traverse permanent ein
+G01 X-140 Y-110
+M121	; Reinigungsluft Traverse aus
+M112	; Reinigungsluft Kassette permanent ein
+M119  ; Kavitäten ausblasen permanent ein
+#FLUSH WAIT
+G01 X70
+G01 X35 Y0
+G01 X70 Y=V.A.+SWE.Y-10 A0
+;G01 A0 B0
+G01 X-100
+G01 Y80
+G01 X70
+G01 Y50
+G01 X-100
+G01 Y10
+G01 X70
+G01 Y-35
+G01 X-100
+G01 B180
+
+
+M121	; Reinigungsluft Traverse aus
+M111	; Reinigungsluft Kassette aus
+M118  ; Kavitäten ausblasen aus
+
+G01 X-100 Y-230
+M122	; Reinigungsluft Traverse permanent ein
+G01 Y50
+M121	; Reinigungsluft Traverse aus
+
+L SAFEPOS 	;Achsen auf Sicherheitsposition fahren
+
+M112	; Reinigungsluft Kassette permanent ein
+G04 1
+M111	; Reinigungsluft Kassette aus
+
+M122	; Reinigungsluft Traverse permanent ein
+G04 1
+M121	; Reinigungsluft Traverse aus
+
+M112	; Reinigungsluft Kassette permanent ein
+G04 1
+M111	; Reinigungsluft Kassette aus
+
+M122	; Reinigungsluft Traverse permanent ein
+G04 1
+M121	; Reinigungsluft Traverse aus
+
+M112	; Reinigungsluft Kassette permanent ein
+G04 1
+M111	; Reinigungsluft Kassette aus
+
+M122	; Reinigungsluft Traverse permanent ein
+G04 1
+M121	; Reinigungsluft Traverse aus
+
+M112	; Reinigungsluft Kassette permanent ein
+G04 1
+M111	; Reinigungsluft Kassette aus
+G04 1
+M107  ; Absaugung aus
+
+
+[Label_Ende]
+
+#FLUSH WAIT
+#MCS OFF
+#HSC ON
+M17

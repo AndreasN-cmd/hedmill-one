@@ -1,0 +1,110 @@
+(---------------- Reinigung vom Arbeitsraum ----------------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird der Bohrmilchschlauch frei geblasen.
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		08.06.2026	H.-J. Albrecht		Programmerstellung 
+;
+(---------------------------------------------------------------------------)
+M9    ; Bohrmilch aus
+
+$IF V.G.D_AKT == 9999 OR V.E.ToolInSpindle.Basic == 9999
+	TV.E.ToolInSpindle.Basic
+	#MSG SAVE EXCLUSIVE ["%S --- Der 3D-Messtaster muss vorher aus der Fraesspindel genommen werden", V.G.TIME_STAMP_FILE_NAME] 
+	#MSG SYN HMI ["Der 3D-Messtaster muss vorher aus der Fraesspindel genommen werden"]
+	V.E.MessageNumber = 135
+	M199
+	#FLUSH WAIT
+$ENDIF
+
+L SAFEPOS 	;Achsen auf Sicherheitsposition fahren
+
+
+M62		; Wechslerdeckel schliessen 
+M87		; Blank Hubzange Reinigungsluft AUS
+M107	; Absaugung aus
+M109 	; MHT Mediumverteiler AUS
+M111 	; Reinigungsluft Kassette AUS
+M118	; Ausblasen Kavität AUS
+M121	; Reinigungsluft Traverse AUS
+M125	; Powerclamp Reinigungsluft AUS
+M131	; Reinigungsluft B-Achse Spannsystem AUS
+
+#HSC OFF
+#MCS ON EX TOOL
+
+; Eintauchprozess neben B-Achse
+G01 B90 FV.E.FEEDMAX
+G01 X-55
+G01 Z70
+G01 B74
+
+; Ausblaszyklen vom Wasserventil -Y11
+M11=200
+G04 0.5
+M11=200
+G04 0.5
+M11=200
+G04 0.5
+M11=500
+G04 0.5
+M11=1000
+G04 0.5
+M11=1000
+G04 0.5
+
+M106 ; Absaugung an
+
+M11=200
+G04 0.5
+M11=200
+G04 0.5
+M11=200
+G04 0.5
+M11=500
+G04 0.5
+M11=1000
+G04 0.5
+M11=1000
+G04 0.5
+
+M11=200
+G04 0.5
+M11=200
+G04 0.5
+M11=200
+G04 0.5
+M11=500
+G04 0.5
+M11=1000
+G04 0.5
+M11=1000
+G04 0.5
+
+M11=200
+G04 0.5
+M11=200
+G04 0.5
+M11=200
+G04 0.5
+M11=500
+G04 0.5
+M11=1000
+G04 0.5
+M11=1000
+G04 0.5
+#FLUSH WAIT
+
+; frei fahren
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX
+G01 B0
+
+G04 3
+M107 ; Absaugung aus
+[Label_Ende]
+
+#FLUSH WAIT
+#MCS OFF
+#HSC ON
+M17

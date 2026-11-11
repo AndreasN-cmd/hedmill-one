@@ -1,0 +1,48 @@
+(---------------- Nullpunktspannsystem auf Handendnahme --------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm kann das Nullpunktspannsystem für die Handendnahme
+;  geöffnet werden
+;
+;  - A-90 B90
+;  - Spannsystem öffnen
+;  - Arbeitseraumtür öffnen
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		20.03.2025	H.-J. Albrecht		Programmerstellung
+;	1.0.1		06.06.2025	H.-J. Albrecht		V.E.BPosTo... hinzugefügt
+;	1.0.2		29.06.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert
+;
+; Auslieferungsversion 1.0.0
+(---------------------------------------------------------------------------)
+
+#VAR
+	V.L.OpenClosPos = V.E.BPosTo.OpenSystem 	;270.0
+	V.L.BoostPos = V.E.BPosTo.BoostSystem		;90.0
+#ENDVAR
+
+L DYN-Standard
+L SAFEPOS 	;Achsen auf Sicherheitsposition fahren
+L cleanBAxis
+#HSC OFF
+#MCS ON EX TOOL
+
+L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+
+G01 A-90 B=V.L.OpenClosPos FV.E.FEEDFAST
+
+#MSG SYN HMI ["Blankklemmung wird geoeffnet"]
+M80 	; Blankklemmung OEFFNEN
+
+#MSG SYN HMI ["Arbeitsraumtuer oeffnen und Blank entnehmen"]
+;M52
+
+L ToolWeightOn	; Werkzeugstandzeitgewichtung aktivieren
+
+[Label_End]
+
+#MCS OFF
+#HSC ON
+
+M17
+(-------------- Nullpunktspannsystem auf Handendnahme ENDE -----------------)

@@ -15,7 +15,7 @@
   - `V.E.FEED…` ↔ `machinePara.stCNC.stFeed`
 - ✅ Gruppen in machinePara:
   - stBlankChange: bRotaryChangerAvailable (TRUE), stBlankPositions, fCheckPosOffsetX/Y/Z, stCheckPosZLaser0/1, stClampBAxis (Spannsystem B-Achse, Booster, Dock-Luft), stGripper (stGripperOpenClose, stGripperLiftLower, Analogsensor-Werte), stRotaryChanger (stLifter, afBlankPositions[0..30], fOffsetSensorToBlankCenter 0, fVelocity 30, fAcceleration 150, fDeceleration 150, fJerk 1000), stTypeOfBlankOnPosition01[0..7] / 02[1..30] (Belegung je Platz: Rondendicke, Platznummer, Material, Definition, Teile-/Projektnummer)
-  - stToolChange: stPositions[1..28], fCheckPosOffsetX/Y/Z (Werkzeug-Laserprüfung), fDeltaValueToolBroken, fToolLengthOffset, Position Taster und 3D-Taster
+  - stToolChange: stPositions[1..28], fCheckPosOffsetX/Y/Z (Werkzeug-Laserprüfung), fDeltaValueToolBroken, **fToolLengthOffset** (Werkzeug-Längenoffset; ✅ HEDS 10.11.2026: in der HMI unter stToolChange, Eingabe HMI → BACK / Maschinenparameter → „Übertragen in SPS“; ❓ = `V.E.ToolOffset` in measureTool.nc: `ToolLength = MESS.Z − ToolOffset`; keine Textdatei dahinter, `*.plcstruct` binär; eingestellt über Testkreuz/Plättchen, docs/02), Position Taster und 3D-Taster
   - stMachine: Druckluft-Grenzwerte, Sperrluft B-Achse, Ausblasen Kavität, Wechslerklappe, Festlager A-Achse (mit Sensor), Reinigungsluft Klappe / Powerclamp / Traverse, Messzylinder Z, Absaugstellen (max. 10)
   - stCNC: Achs-Endschalter und Offsets X/Y/Z/A/B, Vorschübe
   - stMillingSpindle: Werkzeug in Spindel, Kegel offen/zu-Zeiten, Kühlung (Durchfluss- und Temperaturgrenzen), Sperrluft-Verzögerung, Warmlauf-Pflicht

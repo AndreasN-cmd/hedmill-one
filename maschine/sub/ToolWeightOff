@@ -1,0 +1,17 @@
+(---------------------- WZ Standzeit Gewichtung OFF ------------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird Standzeitgewichtung für die Werkzeuge geaktiviert
+;  Dies ist z.B. nötig bei M6
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		22.05.2025	H.-J. Albrecht		Erstellung bis Auslieferung HM1.XXXXX
+(---------------------------------------------------------------------------)
+
+V.TLM.TIME_FACT = 0.0
+V.TLM.DIST_FACT = 0.0
+
+
+M17
+
+(-------------------- ENDE WZ Standzeit Gewichtung -------------------------)

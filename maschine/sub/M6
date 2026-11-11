@@ -1,0 +1,338 @@
+(--------------------------- WZW-Ablauf ------------------------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird der komplette Werkzeugwechsel gesteuert.
+;  - Ablegen, holen oder beides
+;  - Definiert ob die Laenge oder der Verschleiß eines Werkzeugs 
+;    ermittelt werden soll
+;
+;	Version		Datum 		Name 				aenderungen
+;	1.0.0		28.11.2024	H.-J. Albrecht		Programmerstellung bis Auslieferung HM1.00000
+;	1.1.0		15.05.2025	H.-J. Albrecht		Optimierung bis Auslieferung HM1.XXXXX
+;												      Unterprogramm Reaktion auf WZ-Halter runter gedrueckt
+;	1.2.0		27.05.2025	H.-J. Albrecht		M6 neu aufgelegt. Reihenfolge immer erst WZ wegbringen
+;												      dann WZ holen. Keine Vordefintionen
+;	1.2.1		28.04.2026	H.-J. Albrecht		ToolDistFactOff wird am Ende aufgerufen
+;	1.2.2		13.05.2026	H.-J. Albrecht		Meldungsnunmmer 303 auf 306 fuer 
+;													Das Werkzeug T%D in der Spindel kann nicht abgelegt werden. Platz %D im Wechlser frei machen geaendert
+;	1.2.3		29.06.2026	H.-J. Albrecht		Abfrage, ob Blankchange durchgefuehrt wurde hinzugefuegt
+;												SYN PLC in SYN HMI geaendert
+;	1.2.4		25.08.2026	H.-J. Albrecht    Am Anfang wird die Reinigungsluft B-Achse deaktiviert und
+;                                         am Ende wird sie mit Intervall aktiviert
+;	1.2.5		26.08.2026	H.-J. Albrecht    cleanWS direkt nach SAFEPOS eingefügt
+;
+; 
+(---------------------------------------------------------------------------)
+
+
+
+
+( ------ Unterprogramm SAFEPOS und Wechslerklappe schließen --------------)
+%L UP_ExitM6	
+
+L SAFEPOS
+#MSG SYN HMI ["Warte auf Wechslerklappe geschlossen"]
+M62	; Wechslerklappe schließen
+#MSG SYN HMI [""]
+M50   ; Loadertuer entriegeln
+#MEAS DEFAULT	; Wiederherstellen der Messeinstellungen aus den Achsparametern fuer alle Bahnachsen
+#MCS OFF
+#FLUSH WAIT
+#HSC ON 
+#SLOPE[TYPE=HSC] ; Definition des Beschleunigungsverlaufs, Anwendungsart des Rucks
+
+M17
+
+
+
+( ------ Unterprogramm WZ-Halter-Positionswerte ungueltig --------------)
+%L UP_WZPosInvalid	
+
+$IF V.P.TC_PosX == 0 OR V.P.TC_PosY == 0 OR V.P.TC_PosZ == 0
+	V.L.TCPosInvalid = TRUE
+	V.E.MessageNumber = 132 (Die WZW-Positionen des angewaehlten WZ ist nicht gueltig)
+	M199
+$ENDIF
+M17
+
+
+
+( ---------------------------------------------------------------------- )
+( ----------------- Hauptprogramm -------------------------------------- )
+( ---------------------------------------------------------------------- )
+%MAIN
+
+#VAR
+	V.L.TCPosInvalid = FALSE
+	V.L.TCPosMin = 1				; kleinste Werkzeugwechslerposition
+	V.L.TCPosMax = 28				; groesste Werkzeugwechslerposition
+	V.L.SaveT_AKT					; sichern der geforderten Werkzeugnummer
+	V.L.DontUseLaser = 0        ; 0 = Laser zum Pruefen der Plaetze nutzen, 1= Laser nicht nutzen
+#ENDVAR
+
+$IF V.G.D_AKT == 9999 OR V.E.ToolInSpindle.Basic == 9999
+	TV.E.ToolInSpindle.Basic
+	#MSG SAVE EXCLUSIVE ["%S --- Der 3D-Messtaster muss vorher aus der Fraesspindel genommen werden", V.G.TIME_STAMP_FILE_NAME] 
+	#MSG SYN HMI ["Der 3D-Messtaster muss vorher aus der Fraesspindel genommen werden"]
+	V.E.MessageNumber = 135
+	M199
+	#FLUSH WAIT
+$ENDIF
+
+
+L DYN-Standard
+M9    	; Kuehlmittelpumpe aus
+L SAFEPOS 	;Achsen auf Sicherheitsposition fahren
+M5    	; Fraesspindel aus
+M131     ; Reinigungsluft B-Achse Spannsystem AUS
+L cleanWS	 
+#HSC OFF
+#MCS ON EX TOOL
+#MEAS [TYPE=1 SIGNAL=PLC EDGE=NEG]
+
+L checkBlankchangeDone	; pruefen, ob der Blankchange durchgefuehrt wurde
+
+#FLUSH WAIT
+L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+
+$IF NOT[V.E.HWInput.ToolCassetteAvailable]
+	#MSG SYN HMI ["Wechsler-Kassette bitte richtig rein schieben"]
+$ENDIF
+
+#WAIT FOR V.E.HWInput.ToolCassetteAvailable		; Werkzeug/Blank-Kassette eingeschoben ?
+
+M112	; Reinigungsluft Kassette EIN
+G04 1
+M111 	; Reinigungsluft Kassette AUS
+#MSG SYN HMI ["Loadertuer bitte schließen"]
+M51   	; Loadertuer verriegeln
+#MSG SYN HMI [""]
+
+#FLUSH WAIT
+V.E.ToolChangeActiveNo = 1
+
+
+
+
+;------------------ START WZ wegbringen ----------------
+[Label_RemoveTool] 
+	#FLUSH WAIT
+	$IF V.E.ToolInSpindle.Basic == 0	; Kein WZ in Fraesspindel
+			L checkToolExist	;pruefen, ob wirklich kein WZ in Fraesspindel
+			$IF V.P.ToolExist == 1
+				LL UP_ExitM6
+				V.E.MessageNumber = 104 ;T0, aber WZ in Spindel
+				M199
+				M0
+			$ENDIF
+			$GOTO [Label_GetTool]
+		$ELSEIF V.E.ToolInSpindle.Pos < V.L.TCPosMin OR V.E.ToolInSpindle.Pos > V.L.TCPosMax	; Die zugewiesene Werkzeugplatzposition ist ungueltig
+			LL UP_ExitM6
+			#MSG SAVE EXCLUSIVE ["%S --- Dem Werkzeug T%D wurde keine gueltige Werkzeugplatzposition zugewiesen", V.G.TIME_STAMP_FILE_NAME, V.E.ToolInSpindle.Basic] 
+			#MSG SYN HMI ["Dem Werkzeug T%D wurde keine gueltige Werkzeugplatzposition zugewiesen", V.E.ToolInSpindle.Basic]
+			V.E.MessageNumber = 131 (Dem Werkzeug wurde keine Werkzeugplatzposition zugewiesen)
+			M199
+			M0
+	$ENDIF 
+	#FLUSH WAIT
+	
+	
+	; Aktuelles Werkzeug nicht T0, Laenge bestimmen oder Bruchkontrolle
+	$IF V.G.WZ_AKT.P[0] > 0
+	   L toolBreakControl	; WZ Verschleiß oder Bruch ermitteln
+	   #FLUSH WAIT
+	$ELSE
+	   L measureTool	; WZ Laenge ermitteln
+	   #FLUSH WAIT
+	$ENDIF
+
+	
+	; Aktuelles Werkzeug in Fraesspindel ist gefordertes Werkzeug
+	$IF V.E.ToolInvalid == 0 AND V.E.ToolInSpindle.Basic == V.G.T_AKT
+		#TOOL PREP [V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Sister, V.E.ToolInSpindle.Variant]
+		#TOOL DATA [V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Sister, V.E.ToolInSpindle.Variant]
+		$GOTO [Label_End]
+	$ENDIF
+	
+	
+	[Label_OnlyRemoveTool]	; wird verwendet, wenn das geholte WZ gleich als defekt deklariert wurde. Dann wird dieses wieder abgelegt
+							; und somit danach nach einem SchwesterWZ gesucht
+	;WZW-Pos zuweisen
+	V.P.TC_PosX = V.E.ToolPos[V.E.ToolInSpindle.Pos].X
+	V.P.TC_PosY = V.E.ToolPos[V.E.ToolInSpindle.Pos].Y
+	V.P.TC_PosZ = V.E.ToolPos[V.E.ToolInSpindle.Pos].Z
+	#FLUSH WAIT
+
+	; pruefen ob die WZ-Positionen <> 0 sind
+	LL UP_WZPosInvalid 	
+	$IF V.L.TCPosInvalid == TRUE 
+		LL UP_ExitM6
+		M0
+	$ENDIF
+	
+	; pruefen ob der Ablegeplatz LEER ist
+	V.P.ToolPosToCheck = V.E.ToolInSpindle.Pos
+	
+	$IF V.L.DontUseLaser < 1
+  	[Label_CheckPosEmpty]
+   	L checkToolAtPos
+   	$IF V.P.ToolPosChecked != 2
+   		L findNextFreeToolPos
+   		$IF V.P.NextFreeToolPos == 0
+   			#MSG SAVE EXCLUSIVE ["%S --- Das Werkzeug T%D in der Spindel kann nicht abgelegt werden. Platz %D im Wechlser frei machen", V.G.TIME_STAMP_FILE_NAME, V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Pos] 
+   			#MSG SYN HMI ["Das Werkzeug T%D in der Spindel kann nicht abgelegt werden. Platz %D im Wechlser frei machen", V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Pos]
+   			V.E.MessageNumber = 306
+   			M199=1
+   			M0
+   			#FLUSH WAIT
+   			$GOTO [Label_CheckPosEmpty]
+   		$ENDIF
+   		#MSG SYN HMI ["Werkzeugplatznummer wurde geaendert von %D zu %D", V.P.ToolPosToCheck, V.P.NextFreeToolPos]
+   			
+   		V.E.FunctionNumber = 1200
+   		V.E.FunctionValue =	V.P.NextFreeToolPos		
+   		M198
+   		#WAIT FOR V.E.ToolInSpindle.Pos == V.P.NextFreeToolPos ;warten, dass die Platznummer angepasst wurde
+   		#MSG SAVE EXCLUSIVE ["%S --- Werkzeugplatznummer wurde geaendert von %D zu %D", V.G.TIME_STAMP_FILE_NAME, V.P.ToolPosToCheck, V.P.NextFreeToolPos] 
+   		#FLUSH WAIT
+   	$ENDIF
+	$ENDIF
+	; WZ ablegen
+	L removeTool
+
+   $IF V.E.ToolInvalid == 2
+		#MSG SYN HMI ["T%D Werkzeug gebrochen. Bitte ersetzen", V.E.ToolInSpindle.Basic]
+		G01 Y0 FV.E.FEEDMAX
+		G01 X-120
+		M62	; Wechslerklappe schließen
+      M50   ; Loadertuer entriegeln
+      M79
+      M199
+   $ENDIF			   
+
+;------------------ ENDE WZ wegbringen ----------------
+;------------------------------------------------------
+;-------------------- START WZ holen ------------------
+[Label_GetTool]
+
+	; kein neues WZ gefordert
+	$IF V.G.T_AKT == 0
+		D0
+		$GOTO [Label_End]
+	$ENDIF
+	
+	TV.G.T_AKT
+	#FLUSH WAIT
+	
+	;gefordertes WZ ist ungueltig
+	$IF V.E.ToolInvalid > 0
+		LL UP_ExitM6
+		#MSG SAVE EXCLUSIVE ["%S --- Das geforderte Werkzeug T%D ist ungueltig", V.G.TIME_STAMP_FILE_NAME, V.G.T_AKT] 
+		#MSG SYN HMI ["Das geforderte Werkzeug T%D ist ungueltig", V.G.T_AKT]
+		V.L.SaveT_AKT = V.G.T_AKT
+		T0 ; muss aufgerufen werden, da sonst das WZ in der WZ-Verwaltung nicht geaendert werden kann
+		V.E.MessageNumber = 133 (Das geforderte Werkzeug ist ungueltig)
+		M199=1
+		#FLUSH WAIT
+		M0
+		#FLUSH WAIT
+		TV.L.SaveT_AKT
+		$GOTO [Label_GetTool]
+	$ENDIF
+	
+	;WZW-Pos zuweisen
+	V.P.TC_PosX = V.E.ToolPos[V.E.ToolRequestPos].X
+	V.P.TC_PosY = V.E.ToolPos[V.E.ToolRequestPos].Y
+	V.P.TC_PosZ = V.E.ToolPos[V.E.ToolRequestPos].Z
+	#FLUSH WAIT
+
+	; pruefen ob die WZ-Positionen <> 0 sind
+	LL UP_WZPosInvalid 	
+	$IF V.L.TCPosInvalid == TRUE 
+		LL UP_ExitM6
+		M0
+	$ENDIF
+	
+	; pruefen ob der Ablegeplatz belegt ist
+	V.P.ToolPosToCheck = V.E.ToolRequestPos
+	$IF V.L.DontUseLaser < 1 
+	[Label_CheckToolOnPos]
+   	L checkToolAtPos
+   	$IF V.P.ToolPosChecked != 1
+   		L SAFEPOS 	;Achsen auf Sicherheitsposition fahren
+   		#MSG SYN HMI ["Warte auf Wechslerklappe geschlossen"]
+   		M62	; Wechslerklappe schließen
+   		#MSG SYN HMI [""]
+   		M50   ; Loadertuer entriegeln
+   		#MSG SAVE EXCLUSIVE ["%S --- Auf dem Werkzeugplatz %D im Wechlser befindet sich nicht T%D", V.G.TIME_STAMP_FILE_NAME, V.E.ToolRequestPos, V.G.T_AKT] 
+   		#MSG SYN HMI ["Auf dem Werkzeugplatz %D im Wechlser befindet sich nicht T%D", V.E.ToolRequestPos, V.G.T_AKT] 
+   		V.E.MessageNumber = 304
+   		M199=1
+   		M0
+   		#FLUSH WAIT
+   		$IF NOT[V.E.HWInput.ToolCassetteAvailable]
+   			#MSG SYN HMI ["Wechsler-Kassette bitte richtig rein schieben"]
+   		$ENDIF
+   
+   		#WAIT FOR V.E.HWInput.ToolCassetteAvailable		; Werkzeug/Blank-Kassette eingeschoben ?
+   		#MSG SYN HMI ["Loadertuer bitte schließen"]
+   		M51   	; Loadertuer verriegeln
+   		#MSG SYN HMI [""]
+   		$GOTO [Label_CheckToolOnPos]
+   	$ENDIF
+	$ENDIF
+		
+	L getTool
+
+	;geholtes WZ ist ungueltig
+	$IF V.E.ToolInvalid > 0
+		#MSG SAVE EXCLUSIVE ["%S --- Das eingewechselte Werkzeug T%D ist ungueltig", V.G.TIME_STAMP_FILE_NAME, V.G.T_AKT] 
+		#MSG SYN HMI ["Das eingewechselte Werkzeug T%D ist ungueltig", V.G.T_AKT]
+		V.L.SaveT_AKT = V.G.T_AKT
+		V.E.MessageNumber = 134 (Das eingewechselte Werkzeug ist unguetig)
+		M199=1
+		#FLUSH WAIT
+		$GOTO [Label_OnlyRemoveTool]
+	$ENDIF
+
+
+;-------------------- ENDE WZ holen -------------------
+
+
+
+[Label_End]
+
+L SAFEPOS
+
+L ToolDistFactOff    ; eventuell aktivierte Faktorisierung der Fraeswegaufnahme auf 100% setzen
+
+$IF V.G.WZ_AKT.L < 15
+	#MSG SYN HMI ["Die Laenge des eingewechselten Werkzeugs T%D ist kleiner als 15mm (ist: %Fmm)", V.G.T_AKT, V.G.WZ_AKT.L]
+	M199
+	#FLUSH WAIT
+$ENDIF
+
+#HSC OFF
+
+#MSG SYN HMI ["Warte auf Wechslerklappe geschlossen"]
+M62	; Wechslerklappe schließen
+#MSG SYN HMI [""]
+M50   ; Loadertuer entriegeln
+
+;; pruefen ob der Spindelwarmlauf noetig ist
+$IF V.E.WarmUpRequired == TRUE AND V.E.ToolInSpindle.Exist == TRUE
+	V.E.WarmUpDone = FALSE
+	L WarmUp
+	L SAFEPOS
+$ENDIF
+
+#MEAS DEFAULT	; Wiederherstellen der Messeinstellungen aus den Achsparametern fuer alle Bahnachsen
+#MCS OFF
+#FLUSH WAIT
+V.E.ToolChangeActiveNo = 0
+#HSC ON 
+#SLOPE[TYPE=HSC] ; Definition des Beschleunigungsverlaufs, Anwendungsart des Rucks
+
+M130     ; Reinigungsluft B-Achse Spannsystem Intervall EIN
+
+M17

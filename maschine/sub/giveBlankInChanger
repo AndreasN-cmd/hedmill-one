@@ -1,0 +1,268 @@
+(-------------------- Blankhalter in Wechsler absetzen ----------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird ein Blankhalter in den Wechsler gebracht
+;
+;	Version		Datum 		Name 				aenderungen
+;	1.0.0		28.11.2024	H.-J. Albrecht		Programmerstellung
+;	1.0.1		05.06.2025	H.-J. Albrecht		M85=2 zur Pruefung, ob Blankhalter
+;												wirklich abgelget wurde
+;	1.0.2		18.06.2025	H.-J. Albrecht		Rundwechslerablauf mit eingebunden
+;	1.0.3		03.03.2026	H.-J. Albrecht		Anpasssungen fuer das Wegbringen von Preformhalter in RC
+;	1.0.4		03.03.2026	H.-J. Albrecht		Jetzt werden die Offsetwerte aus setVPVars fuer die 
+;		 	 									Positionierung der Blankpositionen verrechnet
+;	1.0.5		19.03.2026	H.-J. Albrecht		-SYN PLC in SYN HMI geaendert
+;												-bei Pos 7 5mm nach links um nicht die Lamellen vom Faltenbalg zu zerstoeren
+;												-Nach bem oeffnen-Befehl des Blankgreifers, faehrt die Maschine 
+;												  jetzt 2mm nach oben um ein moegliches Verklemmen zu loesen
+;	1.1.0		24.06.2026	H.-J. Albrecht		Ablauf wegen den Scharnieren am Wechslerdeckel geaendert
+;	1.2.0		04.09.2026	H.-J. Albrecht		C-Halter ablegen eingefuegt
+;												pruefen ob der Blank im Wechsler ist hinzugefuegt
+;
+(---------------------------------------------------------------------------)
+
+#VAR
+	V.L.PosZPreOffset = 20
+	V.L.PlacePosX = -5000.0					; errechnete X-Position fuer das Ablegen eines Blanks
+	V.L.PlacePosY = -5000.0 					; errechnete Y-Position fuer das Ablegen eines Blanks
+	V.L.PlacePosZ = -5000.0					; errechnete Z-Position fuer das Ablegen eines Blanks
+	V.L.PlacePos5X = -5000.0 					; errechnete X-Position Pos 5 fuer das Ablegen eines Preforms
+	V.L.PlacePos5Y = -5000.0					; errechnete Y-Position Pos 5 fuer das Ablegen eines Preforms
+	V.L.PlacePos5Z = -5000.0 					; errechnete Z-Position Pos 5 fuer das Ablegen eines Preforms
+	V.L.PlacePos6Z = -5000.0					; errechnete Z-Position Pos 6 fuer das Ablegen eines Preforms
+	; -5000, damit die CNC in Stoerung geht, da der Softwareendschalter ueberfahren wird
+	V.L.SafeOffsetXPos7 = -5             ; Korrekturwert um nach dem Anheben des Blankgreifers nicht zu nah an den Faltenbalglamellen zu sein
+	V.L.tempBlankPosToCheck = -1		 ; wird benötigt um die Drehwechslerposition zwischenzuSspeichern
+#ENDVAR
+
+V.E.BlankChangeActiveNo = 70		; 70= Blankhalter in Wechsler bringen gestartet
+
+#HSC OFF
+#MCS ON EX TOOL
+
+$IF V.E.BlankInGripper.Pos > 100 AND V.E.BlankInGripper.Pos < 131
+   M93   ; pruefen ob Hubzylinder unten
+   #FLUSH WAIT
+	V.E.FunctionNumber = 3500	; Starte Rundwechsler auf Position aus FunctionValue
+	V.E.FunctionValue = V.E.BlankInGripper.Pos
+	#MSG SYN HMI ["Positionierung Rundwechsler wurde gestartet"]
+	M90	; Rundwechsler Positionierung starten
+	#FLUSH WAIT
+$ENDIF
+
+#MSG SYN HMI ["Warte auf Wechslerklappe geoeffnet"]
+M61		; Wechslerklappe oeffnen
+#MSG SYN HMI [""]
+#FLUSH WAIT
+
+L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+
+G01 Z= V.A.+SWE.Z-1 FV.E.FEEDSLOW	; Z hoch
+
+$IF V.E.BlankInGripper.Pos > 0 AND V.E.BlankInGripper.Pos < 8
+		V.L.PlacePosX = V.E.BlankPos[V.E.BlankInGripper.Pos].X + V.P.PlaceBlankOffset[0]
+		V.L.PlacePosY = V.E.BlankPos[V.E.BlankInGripper.Pos].Y + V.P.PlaceBlankOffset[1]
+		V.L.PlacePosZ = V.E.BlankPos[V.E.BlankInGripper.Pos].Z + V.P.PlaceBlankOffset[2]
+		G01 X= V.L.PlacePosX Y= V.L.PlacePosY + 3 FV.E.FEEDSLOW
+			;G01 X= V.E.BlankPos[V.E.BlankInGripper.Pos].X Y= V.E.BlankPos[V.E.BlankInGripper.Pos].Y FV.E.FEEDSLOW
+	$ELSEIF V.E.BlankInGripper.Pos > 100 AND V.E.BlankInGripper.Pos < 131
+		V.L.PlacePos5X = V.E.BlankPos[5].X + V.P.PlaceBlankOffset[0]
+		V.L.PlacePos5Y = V.E.BlankPos[5].Y + V.P.PlaceBlankOffset[1]
+		V.L.PlacePos5Z = V.E.BlankPos[5].Z + V.P.PlaceBlankOffset[2]
+		G01 X= V.L.PlacePos5X Y= V.L.PlacePos5Y + 3 FV.E.FEEDSLOW
+			;G01 X= V.E.BlankPos[5].X Y= V.E.BlankPos[5].Y FV.E.FEEDSLOW
+	$ELSE
+		#MSG SAVE EXCLUSIVE ["%S --- Eine unbekannte Blankposition %U wurde angefragt", V.G.TIME_STAMP_FILE_NAME, V.E.BlankRequest.Pos]
+		V.E.MessageNumber = 613 (Eine unbekannte Blankposition wurde angefragt)
+		M199
+$ENDIF
+
+#MSG SYN HMI ["Warte auf Blankgreifer-Hubzylinder gesenkt"]
+M82		; Blankgreifer-Hubzylinder senken
+#MSG SYN HMI [""]
+#FLUSH WAIT
+
+
+$IF V.E.BlankInGripper.Pos > 0 AND V.E.BlankInGripper.Pos < 8
+		; Standardwechsler
+		G01 Y= V.L.PlacePosY FV.E.FEEDSLOW
+		$IF V.P.BlankPosChecked == 2  ; Preformhalter soll geholt werden
+				G01 Z= V.L.PlacePosZ + V.P.ZOffsetPreformC
+			$ELSE    ; Blankhalter oder C-Halter soll geholt werden
+				G01 Z= V.L.PlacePosZ FV.E.FEEDMEASURE
+		$ENDIF
+	$ELSEIF V.E.BlankInGripper.Pos > 100 AND V.E.BlankInGripper.Pos < 131
+		; Rundwechsler
+		G01 Y= V.L.PlacePos5Y FV.E.FEEDSLOW
+		G01 Z= V.L.PlacePos5Z + V.L.PosZPreOffset M91 ; warten das Rundwechsler Position erreicht hat
+		#MSG SYN HMI ["Warte auf Rundwechsler Position erreicht"]
+		#FLUSH WAIT
+		$IF V.E.FeedbackMFunc == -91 
+			;;; ???     Position wurde nicht erreicht
+			M0
+		$ENDIF
+		M92 ; Blankhubzylinder Rundwechsler HEBEN
+		#FLUSH WAIT
+		$IF V.E.FeedbackMFunc == -92 
+			;;; ???     Heben nicht erfolgreich
+			M0
+		$ENDIF
+		$IF V.P.BlankPosChecked == 2  ; Preformhalter soll abgelegt werden
+			; Z-Wert von Position 6, da die Greifhoehen der Preforms im Wechsler und aus dem RC-Lift gleich hoch sind
+			; Die Z-Werte fuer Blankhalter sind unterschiedlich, dann wuerde fuer Pos ein weiterer OffsetWert fuer das Ablegen
+			; eines Preformhalter benoetigt werden 
+				V.L.PlacePos6Z = V.E.BlankPos[6].Z + V.P.PlaceBlankOffset[2]
+				G01 Z= V.L.PlacePos6Z + V.P.ZOffsetPreformC
+			$ELSE    ; Blankhalter oder C-Halter soll abgelegt werden
+				G01 Z= V.L.PlacePos5Z FV.E.FEEDMEASURE
+		$ENDIF
+$ENDIF
+
+#MSG SYN HMI ["Warte auf Blankgreifer geoeffnet"]
+M84=100		; Blankgreifer oeffnen, =100 Quittierung auch bei Misserfolg
+G01 G91 Z2 F500
+M84			; Blankgreifer oeffnen
+G90
+#FLUSH WAIT
+#MSG SYN HMI ["Warte auf Blankgreifer-Hubzylinder oben"]
+M83		; Blankgreifer-Hubzylinder heben
+#FLUSH WAIT
+#MSG SYN HMI [""]
+$IF V.E.BlankInGripper.Pos > 0 AND V.E.BlankInGripper.Pos < 8
+		$IF V.E.BlankInGripper.Pos == 7	; bei Pos 7 5mm nach links um nicht die Lamellen vom Faltenbalg zu zerstoeren
+			G01 X= V.L.PlacePosX + V.L.SafeOffsetXPos7 FV.E.FEEDMEASURE
+		$ENDIF
+		G01 Z= V.L.PlacePosZ + V.L.PosZPreOffset FV.E.FEEDMEASURE
+	$ELSEIF V.E.BlankInGripper.Pos > 100 AND V.E.BlankInGripper.Pos < 131			
+		G01 Z= V.L.PlacePos5Z + V.L.PosZPreOffset FV.E.FEEDMEASURE		
+$ENDIF
+
+#MSG SYN HMI ["Warte auf Blankgreifer geschlossen"]
+M85=2		; Blankgreifer schliessen, pruefen ob leer
+
+
+
+
+
+
+
+
+
+; pruefen ob der Blank im Wechsler ist
+
+$IF V.L.DontUseLaser == 0
+V.P.ExpectedBlankTyp = V.L.BlankPosCheckedInB	; der zu erwartende Blankhaltertyp
+(==================================================================================)
+	$IF V.P.BlankPosToCheck >= 1 AND V.P.BlankPosToCheck <= V.P.NumberOfBlankPos
+			; Standardwechsler - der Laser unterscheidet Blank- und Preformhalter
+			L checkBlankAtPos
+			#FLUSH WAIT
+			$IF V.P.BlankPosChecked != V.L.BlankPosCheckedInB
+					; beim Ablegen ist ein Fehler aufgetreten, eventuell ist der Blankhalter noch in der Maschine
+					V.E.MessageText = "Beim Ablegen Pos " + INT_TO_STR[V.P.BlankPosToCheck] + " ist ein Fehler aufgetreten, Blankhalter eventuell noch in der Maschine!"
+					#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+					#MSG SYN HMI["%S", V.E.MessageText]
+					V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+					M199
+				$ELSE
+					V.E.MessageText = "Blankhalter erfolgreich im Wechlser abgelegt. Pos " + INT_TO_STR[V.P.BlankPosToCheck]
+					#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+					#MSG SYN HMI["%S", V.E.MessageText]
+					V.E.MessageNumber = 920	; Hinweis in SPS erzeugen mit Text aus V.E.MessageText
+			$ENDIF
+
+		$ELSEIF V.P.BlankPosToCheck >= V.P.MinPosRC AND V.P.BlankPosToCheck <= V.P.MaxPosRC
+			V.L.tempBlankPosToCheck = V.P.BlankPosToCheck	; Position zwischen speichern
+			V.P.BlankPosToCheck = 5
+			L checkBlankAtPos
+			#FLUSH WAIT
+			$IF V.P.BlankPosChecked != V.L.BlankPosCheckedInB
+					; beim Ablegen ist ein Fehler aufgetreten, eventuell ist der Blankhalter noch in der Maschine
+					V.E.MessageText = "Beim Ablegen Pos " + INT_TO_STR[V.P.BlankPosToCheck] + " ist ein Fehler aufgetreten, Blankhalter eventuell noch in der Maschine!"
+					#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+					#MSG SYN HMI["%S", V.E.MessageText]
+					V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+					M199
+				$ELSE
+					V.E.MessageText = "Blankhalter erfolgreich im Wechlser abgelegt. Pos " + INT_TO_STR[V.P.BlankPosToCheck]
+					#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+					#MSG SYN HMI["%S", V.E.MessageText]
+					V.E.MessageNumber = 920	; Hinweis in SPS erzeugen mit Text aus V.E.MessageText
+					V.P.BlankPosToCheck = V.L.tempBlankPosToCheck	; Position zwischen speichern
+			$ENDIF
+
+		$ELSE
+			; weder Kassetten- noch Rundwechslerposition - darf nicht vorkommen
+			V.E.MessageText = "Ablagekontrolle mit ungueltiger Blankposition " + INT_TO_STR[V.P.BlankPosToCheck] + " aufgerufen!"
+			#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+			#MSG SYN HMI["%S", V.E.MessageText]
+			V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+			M199
+	$ENDIF
+$ENDIF	; V.L.DontUseLaser == 0
+(-----------------------------------------------------------------------------------)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$IF V.E.BlankInGripper.Pos > 100 AND V.E.BlankInGripper.Pos < 131
+	M93=-100 ; Blankhubzylinder Rundwechsler SENKEN, -100 --> direkte Quittierung von M93
+$ENDIF
+
+#HSC OFF
+#MCS ON EX TOOL
+
+G01 Z= V.A.+SWE.Z-1 FV.E.FEEDMAX		; Z hoch,
+#FLUSH WAIT
+#MSG SYN HMI [""]
+
+$IF V.E.BlankInGripper.Pos > 100 AND V.E.BlankInGripper.Pos < 131
+	M93 ; Blankhubzylinder Rundwechsler SENKEN,
+   #FLUSH WAIT
+   G04 1
+   #FLUSH WAIT
+   ; Pruefen ob der Blankhalter oder die Preformbasis unten angekommen ist
+   ; nur wenn kein C-Halter abgelegt wurde
+   $IF V.P.ExpectedBlankTyp != 6 AND V.E.HWInput.PreformHolderOnPlace == FALSE
+   		V.E.MessageText = "Blank " + V.E.BlankInGripper.Name + " Wechslerposition " + INT_TO_STR[V.E.BlankInGripper.Pos] + " fehlerhaft abgelegt"
+   		#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+   		#MSG SYN HMI["%S", V.E.MessageText]
+   		V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+   		M199
+   	$ELSE
+   		V.E.MessageText = "Blank " + V.E.BlankInGripper.Name + " Wechslerposition " + INT_TO_STR[V.E.BlankInGripper.Pos] + " abgelegt"
+   		#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+   $ENDIF
+$ENDIF
+#FLUSH WAIT
+
+
+
+
+V.E.BlankInGripper.Pos = 0
+V.E.BlankInGripper.Name = ""
+
+V.E.BlankChangeActiveNo = 80		; 80= Blankhalter in Wechsler bringen beendet
+
+#MCS OFF
+#HSC ON
+
+M17
+(----------------- ENDE Blankhalter in Wechsler absetzen -----------------)

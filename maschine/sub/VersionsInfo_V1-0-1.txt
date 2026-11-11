@@ -1,0 +1,13 @@
+aktuelle Version
+
+V1.0.1
+	- M6 angepasst
+		- Am Ende wird jetzt überprüft, ob die aktuelle Werkzeuglänge < 15mm ist,
+			wenn ja, dann ABBRUCH. Vermutlich wurde der Längenmesswert nicht an die 
+			CNC übertragen
+
+
+ältere Versionen
+
+V1.0.0
+	- aktueller Stand vom 28.01.2026 als Basis für folgende Versionen

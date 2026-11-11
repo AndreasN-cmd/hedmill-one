@@ -1,0 +1,49 @@
+(----------------- WZ PRÜFEN -----------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird ermittelt, ob ein Werkzeug in der Spindel
+;  vorhanden ist
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		28.11.2024	H.-J. Albrecht		Programmerstellung
+(---------------------------------------------------------------------------)
+
+V.P.ToolExist = 0
+#HSC OFF
+#MCS ON EX TOOL
+#MEAS DEFAULT
+#MEAS MODE [1]
+
+V.E.ToolChangeActiveNo = 50
+
+
+G01 ZV.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+
+M61	;Wechslerklappe öffnen
+
+X=V.E.TouchProbePos.X Y=V.E.TouchProbePos.Y		;auf XY-TouchProbePosition fahren
+Z=V.E.TouchProbePos.Z+40	;Vorposition in Z um Messen starten zu können
+M119  ; Kavitäten ausblasen ein
+G04 0.5		; Wartezeit
+M117  ; Intervall-Kavitäten ausblasen ein
+;G100 Z=V.E.TouchProbePos.Z FV.E.FEEDMEASURE*3	;Zmin beim Messen
+G100 Z=V.E.ToolLengthOffset + 3 FV.E.FEEDMEASURE*3 ; Messfahrt starten bis minimal Zmin 
+M118  ; Kavitäten ausblasen aus
+
+$IF V.A.MERF.Z == TRUE
+	V.P.ToolExist = 1
+	V.E.ToolInSpindle.Exist = 1
+	#FLUSH WAIT
+$ELSE
+	V.P.ToolExist = 2
+	V.E.ToolInSpindle.Exist = 0
+$ENDIF
+G01 ZV.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+
+#FLUSH WAIT
+V.E.ToolChangeActiveNo = 60
+;#MCS OFF
+;#HSC ON
+
+M17
+(----------------- ENDE WZ PRÜFEN -----------------)

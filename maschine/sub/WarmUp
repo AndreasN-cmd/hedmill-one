@@ -1,0 +1,101 @@
+(--Beschreibung-------------------------------------------------------------)
+;  Dieses Programm dient dazu den Warmlauf der Spindel durchzuführen
+;  Die Achsbewegungen sorgen dafür, dass jeder sieht, dass die Maschine 
+;  noch arbeitet.
+;
+;  Im Variablenbereich werden Zeiten und Drehzahlen definiert, welche in
+;  diesem Programm verwendet werden. Die jeweiligen Array-Positionen 
+;  bilden ein Wertepaar
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		28.04.2025	H.-J. Albrecht		Programmerstellung
+;	1.0.1		29.06.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert
+;
+; Auslieferungsversion 1.0.0
+(---------------------------------------------------------------------------)
+
+#VAR
+	V.L.Time[4] = [120, 60, 120, 120]		; Werte in [s]
+	V.L.RPM[4] = [10000, 0, 20000, 10000]	; Werte in [U/min]
+	V.L.Repeats = 4
+#ENDVAR
+
+
+LSAFEPOS
+
+L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+
+#HSC OFF
+#MCS ON EX TOOL
+
+V.E.WarmUpDone = FALSE
+#MSG SAVE EXCLUSIVE ["%S --- Warmlaufprogramm wurde gestartet", V.G.TIME_STAMP_FILE_NAME]    
+#MSG SYN HMI ["Warmlaufprogramm wurde gestartet"]
+V.E.MessageNumber = 500 (Warmlaufprogramm wird gestartet)
+M199=1
+
+P1=0	; Startwert für P1 setzen
+
+
+; Timer 1 für die EinzelAbläufe, Timer 2 für die Gesamtlaufzeit
+#TIMER STOP [ID2]		; Zeit der Timer in [ms] 
+#TIMER CLEAR [ID2]
+#TIMER START [ID2]
+
+[Label_Start]
+#TIMER STOP [ID1]		; Zeit der Timer in [ms] 
+#TIMER CLEAR [ID1]
+#FLUSH WAIT
+#TIMER START [ID1]
+#FLUSH WAIT
+G01 X0 Y0 Z=V.A.+SWE.Z-1 A0 B0 FV.E.FEEDSLOW
+
+$IF V.L.RPM[P1] <= 0
+		M5
+	$ELSE
+		M3 S=V.L.RPM[P1]
+$ENDIF
+
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDFAST
+G01 X-40 Y0 A-10 B-10 FV.E.FEEDSLOW	
+
+
+[Label_Wdh]
+G02 I40 A10 B10 Z100 F4000
+G02 I40 A-10 B-10 Z=V.A.+SWE.Z-1  ;A-10 B-10 X-40 Y0 Z=V.A.+SWE.Z-1  
+;G01 A0 B0 
+#FLUSH WAIT
+#TIMER READ [ID1]
+#MSG SYN HMI ["Warmlaufprogramm Teil %D/%D. Laufzeit %Ds/%Ds", P1 +1, V.L.Repeats, V.G.TIMER[1]/1000, V.L.Time[P1]]
+$IF V.G.TIMER[1] >= V.L.Time[P1] * 1000
+	#MSG SAVE EXCLUSIVE ["%S --- Warmlaufprogramm Teil %D/%D beendet. Laufzeit %Ds/%Ds", V.G.TIME_STAMP_FILE_NAME, P1 +1, V.L.Repeats, V.G.TIMER[1]/1000, V.L.Time[P1]]
+	P1 = P1 + 1
+	$IF P1 >= V.L.Repeats
+		#TIMER READ [ID2]
+		$GOTO [Label_Ende]
+	$ENDIF
+	$GOTO [Label_Start]
+$ENDIF
+$GOTO [Label_Wdh]
+
+
+
+
+[Label_Ende]
+M5
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDFAST
+G01 X0 Y0 A0 B0 FV.E.FEEDSLOW
+#MSG SAVE EXCLUSIVE ["%S --- Warmlaufprogramm erfolgreich beendet. Laufzeit %Ds", V.G.TIME_STAMP_FILE_NAME, V.G.TIMER[2]/1000]    
+#MSG SYN HMI ["Warmlaufprogramm erfolgreich beendet. Laufzeit %Ds", V.G.TIMER[2]/1000]
+V.E.WarmUpDone = TRUE
+#TIMER STOP [ID1]	
+#TIMER STOP [ID2]	
+
+
+LSAFEPOS
+
+#MCS OFF
+#HSC ON
+#SLOPE[TYPE=HSC] ; Definition des Beschleunigungsverlaufs, Anwendungsart des Rucks
+
+M17

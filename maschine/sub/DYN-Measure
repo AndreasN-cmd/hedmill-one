@@ -1,0 +1,42 @@
+; Material: CoCr
+
+
+; Deklaration und Beschreibung der Werte
+; ----------------------------------------------------------------------------------
+
+#VAR
+   V.L.AccXYZ = 1000    ; mm/s2
+   V.L.AccAB = 1000     ; Grad/s2     
+   V.L.RampXYZ = 65     ; ms
+   V.L.RampAB = 65      ; ms
+#ENDVAR
+
+
+
+
+
+; nachfolgende Zeilen nicht verändern
+; ----------------------------------------------------------------------------------
+N0010 #HSC OFF
+
+N0020 ; Beschleunigungen der Achsen prozentual anpassen
+N0030 ; Wert kleiner --> Beschleunigung kleiner
+N0040 G130 X = V.L.AccXYZ/V.P.AccBasis
+N0050 G130 Y = V.L.AccXYZ/V.P.AccBasis
+N0060 G130 Z = V.L.AccXYZ/V.P.AccBasis
+N0070 G130 A = V.L.AccAB/V.P.AccBasis
+N0080 G130 B = V.L.AccAB/V.P.AccBasis
+
+N0090 ; Rampenzeiten der Achsen prozentual anpassen
+N0100 ; Wert kleiner --> Rampenzeit kleiner --> Ruck größer
+N0110 G132 X = V.L.RampXYZ/V.P.JerkBasis
+N0120 G132 Y = V.L.RampXYZ/V.P.JerkBasis
+N0130 G132 Z = V.L.RampXYZ/V.P.JerkBasis
+N0140 G132 A = V.L.RampAB/V.P.JerkBasis
+N0150 G132 B = V.L.RampAB/V.P.JerkBasis
+
+#HSC [SURFACE PATH_DEV 0.016] ; Wert in mm
+N0160 #HSC ON 
+N01701 #SLOPE[TYPE=HSC] ; Definition des Beschleunigungsverlaufs, Anwendungsart des Rucks
+
+M17 ; Unterprogramm Ende

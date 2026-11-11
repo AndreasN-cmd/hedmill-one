@@ -1,0 +1,317 @@
+aktuelle Version
+V1.0.9
+	- start_init
+		- V1.1.6 --> V.E.ToolChangeActiveNo = 0 wird gesetzt, so lange, bis diese Variable 
+						mal ausgewertet wird
+		- V1.1.7 --> Aufruf von setVPVars001 hinzugefügt
+	- cleanWS
+		- V1.0.2 —> ToolWeightOn und ToolWeightOff hinzugefügt
+	- blankChange
+		- V1.3.0 --> 
+			- C-Halter holen/ablegen/erkennen eingefügt
+			- Fehlermeldung werden jetzt mit V.E.MessageText definiert
+	- declareVPVars
+		- V1.0.2 -->
+			- folgende VP’s hinzugefügt
+				- V.P.ExpectedBlankTyp
+				- V.P.CHolderCheckDif
+				- V.P.CHolderYPosOffset
+	- setVPVars001 V1.0.0 erstellt
+	- checkBlankAtPos
+		- V1.1.0 --> C-Halter erkennen eingefügt
+			- hinzugefügt:
+				- V.L.CHolderCheckDif 
+				- V.L.CHolderYPosOffset
+			- Fehlermeldung werden jetzt mit V.E.MessageText definiert
+	- checkBlankInB
+		- V1.1.0 --> C-Halter erkennen eingefügt
+			- hinzugefügt:
+				- V.L.ZLaserTakenValue 
+				- V.L.CHolderCheckDif
+				- V.L.CHolderYPosOffset
+			- Fehlermeldung werden jetzt mit V.E.MessageText definiert
+	- findNextFreeBlankPos
+		- V1.1.0 --> C-Halter erkennen eingefügt
+			- Fehlermeldung werden jetzt mit V.E.MessageText definiert
+	- getBlankFromB
+		- V1.1.0 --> C-Halter holen eingefügt
+	- giveBlankInChanger
+		- V1.2.0 --> C-Halter ablegen eingefuegt
+			- pruefen ob der Blank im Wechsler ist hinzugefuegt
+	- getBlankFromChanger
+		- V1.2.0 --> C-Halter ablegen eingefuegt
+			- pruefen ob der Blank im Wechsler ist hinzugefuegt
+			- UP_RCPosArrived hinzugefuegt
+	- giveBlankInB
+		- V1.1.0 --> C-Halter ablegen eingefuegt
+
+V1.0.8
+	- cleanM8Water
+		- Ablauf angepasst
+	- blankChange V1.2.7
+		- V1.2.7 —> VORSCHLAG ZUR PRUEFUNG - noch nicht freigegeben
+			Ablagekontrolle nach dem Einlagern (Abschnitt "pruefen ob der
+			Blank im Wechsler ist") rief checkBlankAtPos ohne Fall-
+			unterscheidung auf. Bei einer Rundwechslerposition (101-130)
+			in V.P.BlankPosToCheck wird dort V.E.BlankPos[101..130]
+			indiziert, obwohl das Array nur 0-7 kennt --> ID 20906.
+			Jetzt gleiche Fallunterscheidung wie in den Abschnitten
+			"pruefen, ob die benoetigte Position im Wechsler frei ist"
+			und Label_Load. Zusaetzlich #FLUSH WAIT vor der Auswertung
+			von V.P.BlankPosChecked ergaenzt (fehlte als einzige Stelle).
+			Am Rundwechsler messen die beiden Induktivsensoren, nicht der
+			Laser. Deren Codierung weicht ab (Preformhalter = 3 statt 2),
+			deshalb dort getrennte Auswertung.
+			- Vorschlaege geprueft und teilweise angepasst.
+			Bei Fehlermeldungen V.E.MessageNumber = 900 verwendet
+		- V1.2.8 —> Nach dem ersten Reinigen des Blanks, wird kurz die Reinigungsluft für den Kassettendeckel und das Kavitätenausblasen aktiviert, damit Späne zwischen Maschinengestell und A-Achse ausgeblasen werden
+		- V1.2.9 —> cleanWS hinter cleanBAxis eingefügt
+	- checkBlankAtPosRC2 V1.0.0 erstellt
+		- Mit diesem Programm wird die aktuelle Position im Rundwechsler
+			überprüft, ob an dieser Position ein Blankhalter vorhanden ist
+			Der Rundwechsler positioniert hier nicht!
+	- checkBlankAtPos V1.0.5
+		- VORSCHLAG ZUR PRÜFUNG - noch nicht freigegeben
+			Die Indexzugriffe auf V.E.BlankPos[V.P.BlankPosToCheck]
+			standen im #VAR-Block und liefen damit bedingungslos beim
+			Eintritt in das Unterprogramm - vor der Bereichspruefung.
+			Ein ungueltiger Wert loeste dadurch ID 20906 aus, statt
+			ueber $GOTO [Label_Ende] sauber zurueckzuspringen.
+			Bereichspruefung jetzt VOR den Indexzugriff gezogen und auf
+			den Bereich 1..V.P.NumberOfBlankPos erweitert.
+		- Vorschläge geprüft
+			$GOTO [Label_Ende] entfernt, durch M199 ersetzt.
+			Es darf nicht einfach weiter gemacht werden
+	- checkToolAtPos V1.0.3
+		- VORSCHLAG ZUR PRÜFUNG - noch nicht freigegeben
+			Gleicher Aufbau wie checkBlankAtPos: die Indexzugriffe auf
+			V.E.ToolPos[V.P.ToolPosToCheck] standen im #VAR-Block und
+			liefen damit bedingungslos beim Eintritt in das Unter-
+			programm - vor der Bereichspruefung. Diese pruefte zudem
+			nur auf <= 0, eine Obergrenze fehlte.
+			M6 ruft dieses Programm mit V.E.ToolRequestPos auf, ohne
+			den Wert vorher zu pruefen -> ID 20906 moeglich.
+			Bisher nicht aufgetreten, gleiche Fehlerklasse wie 20906
+			im Blankwechsel.
+		- Vorschläge geprüft
+			$GOTO [Label_Ende] entfernt, es gab kein [Label_Ende], durch M199 ersetzt.
+			Es darf nicht einfach weiter gemacht werden
+	- IBN_BlankPosLaserValueTest V1.0.1
+		- Abfrage für V.L.WithRC eingefügt
+	- cleanBAxis
+		- V1.0.1 —> während der Reinigung wird das Intervallblasen der Reinigungsluft für den Wechslerdeckel aktiviert
+	- cleanBlank
+		- V1.0.2 —> Nach jeder Reinigungsrunde wird jetzt Reinigungsluft Kassette Intervall abwechselnd aktiviert bzw. deaktiviert
+	- giveBlankInB
+		- V.1.0.6 —> Nach bem Öffnen-Befehl des Blankgreifers, fährt die Maschine jetzt 4mm nach oben um ein mögliches Verklemmen zu lösen
+	- giveBlankInChanger
+		- V1.1.1 —>
+			- vor dem Oeffnen der Wechslerklappe wird deren Reingungsluft und die vom Spannsystem kurz einmal aktiviert
+			- Nach bem Öffnen-Befehl des Blankgreifers, fährt die Maschine jetzt 4mm nach oben um ein mögliches Verklemmen zu lösen
+	- M6
+		- V1.2.4 —> Am Anfang wird die Reinigungsluft B-Achse deaktiviert und am Ende wird sie mit Intervall aktiviert
+		- V1.2.5 —> cleanWS direkt nach SAFEPOS eingefügt
+V1.0.7
+	- blankChange V1.2.6
+		- Nach dem Ablegen in den Wechsler oder in das Nullpunktspannsystem, 
+			wird mit dem Laser geprüft, ob der Blank im Wechlser/Nullpunktspannsystem ist
+	- getTool V1.1.3
+		- Z-PrePos wird jetzt auch beim Rausfahren verwendet
+	- removeTool V1.1.2
+		- Z-PrePos wird jetzt auch beim Rausfahren verwendet
+	- start_init.nc 
+		- V1.1.3 --> M79 hinzugefügt, Powerclamp einfahren
+		- V1.1.4 --> Jetzt wird vor setVPVars declareVPVars aufgerufen
+		- V1.1.5 --> V.L.MsgFileName wurde zu V.P.MsgFileName, damit diese Variable 
+					überall verwendet werden kann
+	- - declareVPVars V1.0.0-1
+		- erstellt
+		- Dieses Programm dient zum Deklarieren der V.P.-Variablen der Maschine. Dadurch können Änderungen an der start_init vorgenommen werden, 
+			ohne dass spezielle Variablen jeder einzelnen Maschine überschrieben werden. Die benötigte Wertzuweisung geschieht in setVPVars
+		- hier wird jetzt V.P.BlankchangeDone deklariert
+		- folgende VP’s hinzugefügt
+			- V.P.PinLayout = 0
+			- V.P.DropPin = -1
+			- V.P.SideLength = 0.0
+			- V.P.PinDiameter = 0.0
+			- V.P.PinHeight = 0.0
+	- getBlankFromChanger V1.1.0
+		- Ablauf wegen den Scharnieren am Wechslerdeckel geändert
+	- giveBlankInChanger V1.1.0
+		- Ablauf wegen den Scharnieren am Wechslerdeckel geändert
+	- cleanWS V1.0.1
+		- umbenannt von cleanWR in cleanWS
+		- Anpassungen des Reinigungsprozesses
+	- M6 V1.2.3
+		- Abfrage, ob Blankchange durchgeführt wurde hinzugefuegt
+		- SYN PLC in SYN HMI geändert
+	
+	
+	- checkBlankAtPosRC V1.0.1
+		- SYN PLC in SYN HMI geändert
+	- checkBlankAtPos V1.0.4
+		- SYN PLC in SYN HMI geändert
+	- checkBlankInB V1.0.4
+		- SYN PLC in SYN HMI geändert
+	- checkToolAtPos V1.0.2
+		- SYN PLC in SYN HMI geändert
+	- closeClamp V1.0.2
+		- SYN PLC in SYN HMI geändert
+	- findNextFreeBlankPos V1.0.1
+		- SYN PLC in SYN HMI geändert
+	- getBlankFromB V1.0.2
+		- SYN PLC in SYN HMI geändert
+	- getTool V1.1.4
+		- SYN PLC in SYN HMI geändert
+	- giveBlankInB V1.0.5
+		- SYN PLC in SYN HMI geändert
+	- Home.nc V1.1.2
+		- SYN PLC in SYN HMI geändert
+	- measureTool 
+		- V1.1.1 --> SYN PLC in SYN HMI geändert
+		- V1.1.2 --> UP_CheckBeforeStart hinzugefügt, und vor Wechlserklappe oeffnen aufgerufen
+	- openClamp V1.0.2
+		- SYN PLC in SYN HMI geändert
+	- removeTool V1.1.3
+		- SYN PLC in SYN HMI geändert
+	- SAFEPOS V1.0.1
+		- SYN PLC in SYN HMI geändert
+	- SAFEPOS180 V1.0.1
+		- SYN PLC in SYN HMI geändert
+	- SAFEPOSZ V1.0.1
+		- SYN PLC in SYN HMI geändert
+	- SetupChanger V1.0.1
+		- SYN PLC in SYN HMI geändert
+	- toolBreakControl V1.1.3
+		- SYN PLC in SYN HMI geändert
+	- WarmUp V1.0.1
+		- SYN PLC in SYN HMI geändert	
+		
+		
+	- IBN
+		- IBN_BlankPosLaserValueTest erstellt
+			- Mit diesem Programm werden die Lasermesswerte der Blankpositionen im Wechslerbereich ermittelt
+		- IBN_ToolPosLaserValueTest erstellt
+			- Mit diesem Programm werden die Lasermesswerte für jeden Werkzeugplatz ermittelt
+	
+V1.0.6
+	- in TwinCat Motion CNC Kanal —> SDA Para
+		- error_filter[0].reason erweitern um
+			- 120206 (Programmende bei aktivem Polynomüberschleifen)
+	- blankChange V1.2.5
+		- fehlende Meldungen hinzugefügt
+		- SYN PLC in SYN HMI geändert
+		- Weitere Protokollierung hinzugefügt
+	- toolBreakControl V1.1.2
+		- Es wird jetzt unterschieden, ob das WZ zu lang oder zu kurz ist
+		- Meldung 305 hinzugefügt
+	- M6 V1.2.2
+		- Meldungsnunmmer 303 auf 306 für “Das Werkzeug T%D in der Spindel kann nicht abgelegt werden. Platz %D im Wechlser frei machen” geändert
+	- getBlankFromChanger V1.0.5
+		- SYN PLC in SYN HMI geändert
+		- bei Pos 7 5mm nach links um nicht die Lamellen vom Faltenbalg zu zerstören
+	- giveBlankInChanger V1.0.5
+		- SYN PLC in SYN HMI geändert
+		- bei Pos 7 5mm nach links um nicht die Lamellen vom Faltenbalg zu zerstören
+		- Nach bem Öffnen-Befehl des Blankgreifers, fährt die Maschine jetzt 2mm nach oben um ein mögliches Verklemmen zu lösen
+	- cleanWR V1.0.0 erstellt
+		- dieses Programm ist zum Reinigen des Arbeitsraums
+	- giveBlankInB V1.0.4
+		- Nach bem Öffnen-Befehl des Blankgreifers, fährt die Maschine jetzt 2mm nach oben um ein mögliches Verklemmen zu lösen
+	
+	
+V1.0.5
+	- ToolDistFactOn 1.0.0
+		- Mit diesem Unterprogramm wird der Gewichtungsfaktor für den Standweg des Fräsers 
+		  auf 8.5% gesetzt. Diese Datei wird benötigt um beim Drehfräsen den Standweg der 
+		  Fräser anzupassen. Jetzt wird jede Umdrehung als ca. 10mm gerechnet
+	- ToolDistFactOff 1.0.0
+		- Mit diesem Unterprogramm wird der Gewichtungsfaktor für den Standweg des Fräsers 
+		  wieder auf 100% gesetzt. 
+	- toolBreakControl 1.1.1
+		- Unbekannte VALID-Rueckmeldung aus der SPS wird abgefangen
+	- removeTool 1.1.1
+		- Z-PrePos eingefügt, damit soll verhindert werden, dass die Z-Haube auf den
+          Wechslerdeckel fahren kann
+	- getTool 1.1.2
+		- Z-PrePos eingefügt, damit soll verhindert werden, dass die Z-Haube auf den
+          Wechslerdeckel fahren kann
+	- M6 V1.2.1
+		- ToolDistFactOff wird am Ende aufgerufen	
+	
+	
+V1.0.4
+	- giveBlankInB V1.0.3
+		- Reinigung der Npkt-Spannfläche vor dem Einsetzen
+	- cleanBlank V1.0.1
+		- Reinigungszykklus abhängig vom Halter Blank oder Preform
+	- setVPVars V1.0.2
+		- Offset-Werte für das Holen und Ablegen von Blanks hinzugefügt
+	- getBlankFromChanger V1.0.4
+		- Jetzt werden die Offsetwerte aus setVPVars für die 
+		  Positionierung der Blankpositionen verrechnet
+	- giveBlankInChanger V1.0.4
+		- Jetzt werden die Offsetwerte aus setVPVars für die 
+		  Positionierung der Blankpositionen verrechnet
+	- checkToolAtPos V1.0.2
+		- es werden jetzt die Messwerte auf den jeweiligen Positionen mitgeloggt 
+	- getTool V1.1.1
+		- Vor dem Aufnehmen, wird jetzt mit Kavitäten ausblasen der Fräser gereinigt
+	- checkBlankAtPos V1.0.3
+		- es werden jetzt die Messwerte auf den jeweiligen Positionen mitgeloggt 
+	- checkBlankInB V1.0.3
+		- es werden jetzt die Messwerte auf den jeweiligen Positionen mitgeloggt 
+	- blankChange
+		- cleanBlank wird bei Preforms nur einmal aufgerufen
+	- IBN-Ordner	
+		- IBN_Testpreform_A0.nc
+		- IBN_Testpreform_A-90.nc
+		- IBN_ToolChangePosTest.nc
+
+
+V1.0.3
+	- SetupChanger
+		- über eine Variable (V.L.CalcBlanlkPos) ist es jetzt möglich nur die Fräserplätze zu berechnen.
+		  Um beides zu berechnen muss diese True gesetzt werden
+	- IBN_BlankChangePosTest.nc
+		- kommt in den Ordner C:\CNC\IBN
+		- mit diesem Programm können alle oder nur bestimmte Blankwechslerpositionen getestet werden
+	- DYNvar im Ordner DYN erstellt
+	- setVPVars
+		- um Variablen für DYNvar erweitert
+	- checkBlankAtPos V1.2.4
+		- Blank an Position wird jetzt über beide Ini's abgefragt
+	- blankChange
+		- Anpassungen für das Holen vom Preformhalter aus RC
+	- getBlankFromChanger V1.0.3
+		- Anpasssungen für das Wegbringen von Preformhalter in RC
+	- giveBlankInChanger V1.0.3
+		- Anpasssungen für das Wegbringen von Preformhalter in RC
+	
+	
+V1.0.2
+	- setVPVars erstellt V1.0.0
+		- dieses Programm dient zum Setzen der V.P.-Variablen der Maschine und wird
+		  in start_init aufgerufen
+	- start_init V1.1.2
+		- den Deklarationsteil der V.P.-Variablen entfernt und den Aufruf für 
+		  setVPVars eingefügt
+	- blankchange V1.2.3
+		- Das Auslesen des Blankmaterials aus der Blankbezeichnung
+			um die Funktion FIND erweitert.  
+			Für HolderTypM und HolderTypC
+	- aktuelle dyn-Programme
+
+
+ältere Versionen
+
+
+V1.0.1
+	- M6 angepasst
+		- Am Ende wird jetzt überprüft, ob die aktuelle Werkzeuglänge < 15mm ist,
+			wenn ja, dann ABBRUCH. Vermutlich wurde der Längenmesswert nicht an die 
+			CNC übertragen
+			
+			
+V1.0.0
+	- aktueller Stand vom 28.01.2026 als Basis für folgende Versionen

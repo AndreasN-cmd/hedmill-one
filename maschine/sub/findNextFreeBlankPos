@@ -1,0 +1,55 @@
+(----------------- Den nächsten freien Blank-Platz finden ------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird die nächste freie Blankwechsler-Position ermittelt
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		02.12.2024	H.-J. Albrecht		Programmerstellung 
+;	1.0.1		29.06.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert  
+;	1.1.0		04.09.2026	H.-J. Albrecht		C-Halter erkennen eingefügt
+;												- Fehlermeldung werden jetzt mit V.E.MessageText definiert
+;
+; Auslieferungsversion 1.0.0    
+(---------------------------------------------------------------------------)
+
+#VAR
+	V.L.PosForRcInChanger : SGN16 = 5	; Dieser Blank-Platz wird für die Zuführung der Blanks vom
+										; Rundwechsler (RW) verwendet. Dieser wird bei der Überprüfung
+										; übersprungen, wenn der RW vorhanden ist 
+    V.L.temp										
+#ENDVAR
+
+V.P.NextFreeBlankPos = 0
+
+$IF V.P.NumberOfBlankPos <= 0 
+	V.E.MessageText = "Anzahl der Blankpositionen < 1"
+	#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E:MessageText]
+	#MSG SYN HMI ["%S", V.E.MessageText]
+	V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+	M199
+$ENDIF
+
+$FOR V.L.temp=1, V.P.NumberOfBlankPos, 1
+	
+	V.P.BlankPosToCheck = V.L.temp
+	$IF V.E.RotaryChangerAvailable == TRUE AND V.P.BlankPosToCheck == V.L.PosForRcInChanger
+		V.L.temp = V.L.temp + 1
+		V.P.BlankPosToCheck = V.L.temp
+	$ENDIF
+	L checkBlankAtPos
+	
+	#FLUSH WAIT
+	$IF [V.P.BlankPosChecked == 3 AND V.L.HolderTypM == 2] OR [V.P.BlankPosChecked == 4 AND [V.L.HolderTypM == 1 OR V.L.HolderTypM == 6]]
+		$IF V.L.temp != V.E.BlankRequest.Pos 
+			V.P.NextFreeBlankPos = V.L.temp
+			$BREAK
+		$ENDIF
+		#MSG SAVE EXCLUSIVE ["%S --- Der freie Halterplatz '%U' wurde nicht genutzt, da der geforderte Halter dort sein sollte", V.G.TIME_STAMP_FILE_NAME, V.L.temp]
+		#MSG SYN HMI ["Der freie Halterplatz '%U' wurde nicht genutzt, da der geforderte Halter dort sein sollte", V.L.temp]
+		
+	$ENDIF
+	
+$ENDFOR
+
+M17
+(---------------- ENDE Den nächsten freien Blank-Platz finden ----------------)

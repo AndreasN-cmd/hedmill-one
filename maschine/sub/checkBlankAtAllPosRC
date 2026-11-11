@@ -1,0 +1,27 @@
+(----------------- Alle Blank-Plätze PRÜFEN ob Blank vorhanden JA/NEIN -----------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm werden alle Blankwechsler-Positionen angefahren und 
+;  überprüft, ob an dieser Position ein Blankhalter vorhanden ist  
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		02.07.2025	H.-J. Albrecht		Programmerstellung            
+(---------------------------------------------------------------------------)
+#VAR
+	V.L.BlankPosToCheck
+#ENDVAR
+
+
+$IF V.P.NumberOfBlankPos <= 0 
+	#MSG SAVE EXCLUSIVE ["%S --- Anzahl der Blankpositionen < 1", V.G.TIME_STAMP_FILE_NAME]
+	V.E.MessageNumber = 300002 (Anzahl der Blankpositionen < 1)
+	M199
+$ENDIF
+
+$FOR V.L.BlankPosToCheck = V.P.MinPosRC, V.P.MaxPosRC, 1
+	V.P.BlankPosToCheck = V.L.BlankPosToCheck
+	L checkBlankAtPosRC
+$ENDFOR
+
+M17
+(--------------- ENDE Alle Blank-Plätze PRÜFEN ob Blank vorhanden JA/NEIN --------------)

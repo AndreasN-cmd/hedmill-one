@@ -1,0 +1,130 @@
+(------------------------- WZ vermessen ------------------------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird die Länge des aktuellen Werkzeugs in der 
+;  Frässpindel ermittelt
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		28.11.2024	H.-J. Albrecht		Programmerstellung bis Auslieferung HM1.00000
+;	1.1.0		15.05.2025	H.-J. Albrecht		Optimierung bis Auslieferung HM1.XXXXX
+;	1.1.1		29.06.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert
+;	1.1.2		13.07.2026	H.-J. Albrecht		UP_CheckBeforeStart hinzugefügt, und vor Wechlserklappe
+;												oeffnen aufgerufen
+;
+; Auslieferungsversion 1.0.0
+(---------------------------------------------------------------------------)
+
+( ------ Unterprogramm Wechsler-Kassette und Loadertuer pruefen ---------)
+%L UP_CheckBeforeStart
+
+$IF V.E.HWInput.ToolCassetteAvailable == FALSE
+	#MSG SYN HMI ["Wechsler-Kassette bitte richtig rein schieben"]
+$ENDIF
+#WAIT FOR V.E.HWInput.ToolCassetteAvailable == TRUE
+#FLUSH WAIT
+;M112	; Reinigungsluft Kassette EIN
+;G04 2
+;M111 	; Reinigungsluft Kassette AUS
+#MSG SYN HMI ["Loadertuer bitte schliessen"]
+M51   	; Loadertuer verriegeln
+#MSG SYN HMI [""]
+
+M17
+
+
+( ---------------------------------------------------------------------- )
+( ----------------- Hauptprogramm -------------------------------------- )
+( ---------------------------------------------------------------------- )
+%MAIN
+
+#VAR
+    V.L.ToolActLength					; Istlänge --> für Meldungen
+	V.L.ToolExpectedLength				; ewartete Länge --> für Meldungen
+#ENDVAR
+	
+#HSC OFF
+#MCS ON EX TOOL
+#MEAS DEFAULT
+#MEAS MODE [1]
+
+V.E.ToolChangeActiveNo = 10
+
+M5    ; Frässpindel stoppen
+M9    ; Kühlmittel aus
+;D V.E.ToolInSpindle.Basic ;V.G.T_AKT
+
+$IF V.E.ToolInSpindle.Basic == 0;  V.G.T_AKT == 0			;kein Werkzeug in Frässpindel --> an das Ende springen
+   $GOTO [Label_Ende]
+$ENDIF
+
+V.G.WZ_AKT.P[0] = 0	; muss NULL gesetzt werden, damit die Länge in der SPS auf die WZ-Länge geschrieben wird
+
+$IF V.E.MeasureSignal[0] != 1	; prüfen ob der Messtaster ein 1-Signal liefert, 0 --> Störung
+    V.E.MessageNumber = 207 (Messtaster liefert vor der Messung 0-Wert)
+	#MSG SYN HMI ["Messung kann nicht gestartet werden, Messtaster ist schon ausgelaengt"]
+    M199
+$ENDIF
+
+LL UP_CheckBeforeStart
+#MSG SYN HMI ["Warte auf Wechslerklappe geöffnet"]
+M61	; Wechslerklappe öffnen
+#MSG SYN HMI [""]
+
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+G01 A0 B0
+
+G01 X=V.E.TouchProbePos.X Y=V.E.TouchProbePos.Y	; auf XY-Messtasterposition fahren
+;G01 Z=V.E.TouchProbePos.Z+40					; Vorposition in Z, um Messen starten zu können
+M117  ; Intervall-Kavitäten ausblasen ein
+;G100 Z=V.E.TouchProbePos.Z FV.E.FEEDMEASURE ; Messfahrt starten bis minimal Zmin 
+G100 Z=V.E.ToolLengthOffset + 3 FV.E.FEEDMEASURE ; Messfahrt starten bis minimal Zmin 
+M118  ; Kavitäten ausblasen aus
+#FLUSH WAIT
+
+$IF V.A.MERF.Z == TRUE
+	V.P.ToolExist = 1
+	$IF V.G.D_AKT != 9999
+	   V.E.ToolInSpindle.Exist = 1
+   $ENDIF
+	
+	V.G.WZ_AKT.P[2] = V.A.MESS.Z - V.E.ToolLengthOffset
+	V.L.ToolExpectedLength = V.G.WZ_AKT.P[4]
+	V.L.ToolActLength = V.G.WZ_AKT.P[2]
+	V.E.FunctionNumber = 2
+	V.E.FunctionValue = 1	;Messwert zur SPS
+	#MSG SAVE EXCLUSIVE ["%S --- T%D Werkzeuglänge %Fmm ermittelt (erwartet %Fmm)", V.G.TIME_STAMP_FILE_NAME, V.G.T_AKT, V.G.WZ_AKT.P[2], V.L.ToolExpectedLength]  
+	D0 ; Daten T0 laden, dadurch refresh Werkzeugdaten von TXX
+	#FLUSH WAIT
+	
+	G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	   ;Z hoch 	; warten bis Messwert von SPS verarbeitet
+   
+    $IF V.E.ToolInvalid == 0
+			#TOOL DATA [V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Sister, V.E.ToolInSpindle.Variant]
+			;D V.E.ToolInSpindle.Basic ;V.G.T_AKT
+			V.G.WZ_AKT.P[0] = 1	; Werkzeuglänge wurde vermessen, wird im M6 ausgewertet, dann nur noch BreakControl
+		$ELSE
+			#MSG SAVE EXCLUSIVE ["%S --- T%D Werkzeug außerhalb der erwarteten Länge (erwartet %Fmm / ist %Fmm)", V.G.TIME_STAMP_FILE_NAME, V.G.T_AKT, V.L.ToolExpectedLength, V.L.ToolActLength] 
+			#MSG SYN HMI ["T%D Werkzeug außerhalb der erwarteten Länge (erwartet %Fmm / ist %Fmm)", V.G.T_AKT, V.L.ToolExpectedLength, V.L.ToolActLength]
+			V.E.MessageNumber = 303 (Letztes Werkzeug hatte nicht die erwartete Länge)
+			M199=1
+			#FLUSH WAIT
+	$ENDIF
+	  
+	V.E.FunctionNumber = 0
+	V.E.FunctionValue = 0
+$ELSE
+   V.P.ToolExist = 2
+   V.E.ToolInSpindle.Exist	 = 0
+   V.E.MessageNumber = 206 (Kein Messwert)
+   G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX  		;Z hoch 	
+   #MSG SAVE EXCLUSIVE ["%S --- T%D Werkzeuglänge konnte nicht ermittelt werden", V.G.TIME_STAMP_FILE_NAME, V.G.T_AKT]
+   M199
+$ENDIF
+
+[Label_Ende]
+
+#FLUSH WAIT
+V.E.ToolChangeActiveNo = 20
+#MCS OFF
+#HSC ON
+M17

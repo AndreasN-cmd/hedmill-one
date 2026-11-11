@@ -1,0 +1,143 @@
+(----------------- Blank-Platz PRÜFEN ob Blank vorhanden JA/NEIN -----------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird eine vorgegebene Blankwechsler-Position ange-
+;  fahren und überprüft, ob an dieser Position ein Blankhalter vorhanden ist  
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		27.11.2024	H.-J. Albrecht		Programmerstellung     
+;	1.0.1		05.06.2024	H.-J. Albrecht		Ablauf und Variablen angepasst 
+;	1.0.2		24.06.2024	H.-J. Albrecht		prüfen auf LEER, LEER mit Preformbasis, 
+;												belegt mit Preformhalter, belegt mit Blankhalter 
+;												unbekannter Messwert 
+;	1.0.3		26.03.2026	H.-J. Albrecht		es werden jetzt die Messwerte auf den jeweiligen Positionen mitgeloggt 
+;	1.0.4		29.06.2026	H.-J. Albrecht		SYN PLC in SYN HMI geändert
+;	1.0.5		31.07.2026	L. Felzmann			VORSCHLAG ZUR PRÜFUNG - noch nicht freigegeben
+;												Die Indexzugriffe auf V.E.BlankPos[V.P.BlankPosToCheck]
+;												standen im #VAR-Block und liefen damit bedingungslos beim
+;												Eintritt in das Unterprogramm - vor der Bereichspruefung.
+;												Ein ungueltiger Wert loeste dadurch ID 20906 aus, statt
+;												ueber $GOTO [Label_Ende] sauber zurueckzuspringen.
+;												Bereichspruefung jetzt VOR den Indexzugriff gezogen und auf
+;												den Bereich 1..V.P.NumberOfBlankPos erweitert.
+;	1.0.5		29.06.2026	H.-J. Albrecht		Vorschläge geprüft
+;												$GOTO [Label_Ende] entfernt, durch M199 ersetzt.
+;												Es darf nicht einfach weiter gemacht werden
+;	1.1.0		03.09.2026	H.-J. Albrecht		C-Halter erkennen eingefügt
+;												- hinzugefügt:
+;														- V.L.CHolderCheckDif 
+;														- V.L.CHolderYPosOffset
+;												- Fehlermeldung werden jetzt mit V.E.MessageText definiert
+;      
+(---------------------------------------------------------------------------)
+
+#VAR
+(=== 1.0.5 VORSCHLAG =========================================== NEU ===============)
+	V.L.BC_PosX	= 500.0					; X-Position die zum Prüfen angefahren werden soll, Zuweisung nach der Bereichspruefung
+	V.L.BC_PosY = 500.0					; Y-Position die zum Prüfen angefahren werden soll, Zuweisung nach der Bereichspruefung
+	V.L.BC_PosZ	= 500.0					; Z-Position die zum Prüfen angefahren werden soll, Zuweisung nach der Bereichspruefung
+(=== 1.0.5 VORSCHLAG ================================== ENDE AENDERUNG =============)
+	V.L.ZLaserMaxValue[4] = [V.E.BC_CheckPosZLaser1[0].MaxValue, V.E.BC_CheckPosZLaser1[1].MaxValue, V.E.BC_CheckPosZLaser1[2].MaxValue, V.E.BC_CheckPosZLaser1[3].MaxValue]
+	V.L.ZLaserMinValue[4] = [V.E.BC_CheckPosZLaser1[0].MinValue, V.E.BC_CheckPosZLaser1[1].MinValue, V.E.BC_CheckPosZLaser1[2].MinValue, V.E.BC_CheckPosZLaser1[3].MinValue]
+						         ; 0 = LEER, 1 = LEER mit Preformbasis , 2 = belegt mit Preformhalter, 3 = belegt mit Blankhalter
+	V.L.ZLaserTakenValue
+	V.L.CHolderCheckDif = V.P.CHolderCheckDif	; dieser Wert wird verwendet um feststellen zu können, ob ein C-Halter im Spannsystem ist.
+												; Dieser Wert enspricht der Differenz die mindestens gemessen werden muss zwischen den beiden 
+												; Positionen
+	V.L.CHolderYPosOffset = V.P.CHolderYPosOffset	; Dieser Offset wird zur aktuellen Y-Position gerechnet um den zweiten Wert für den C-Halter 
+													; zu ermitteln
+#ENDVAR
+
+	
+V.P.BlankPosChecked = 0
+
+(=== 1.0.5 VORSCHLAG =========================================== NEU ===============)
+; Die Bereichspruefung MUSS vor dem Indexzugriff auf V.E.BlankPos stehen
+$IF V.P.BlankPosToCheck < 1 OR V.P.BlankPosToCheck > V.P.NumberOfBlankPos
+	V.E.MessageText = "checkBlankAtPos mit ungueltiger Position " + INT_TO_STR[V.P.BlankPosToCheck] + " aufgerufen!"
+	#MSG SAVE EXCLUSIVE ["%S --- %S", V.G.TIME_STAMP_FILE_NAME, V.E.MessageText]
+	#MSG SYN HMI ["%S", V.E.MessageText]
+	V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+	M199 
+$ENDIF
+
+V.L.BC_PosX = V.E.BlankPos[V.P.BlankPosToCheck].X + V.E.BC_CheckPosOffset.X + V.P.PickBlankOffset[0]
+V.L.BC_PosY = V.E.BlankPos[V.P.BlankPosToCheck].Y + V.E.BC_CheckPosOffset.Y + V.P.PickBlankOffset[1]
+V.L.BC_PosZ = V.E.BlankPos[V.P.BlankPosToCheck].Z + V.E.BC_CheckPosOffset.Z + V.P.PickBlankOffset[2]
+(=== 1.0.5 VORSCHLAG ================================== ENDE AENDERUNG =============)
+
+#HSC OFF
+#MCS ON EX TOOL
+
+G01 Z=V.A.+SWE.Z-1 FV.E.FEEDMAX	; Z hoch
+
+#MSG SYN HMI ["Warte auf Wechslerklappe geoeffnet"]
+M61		; Wechslerklappe öffnen
+#MSG SYN HMI [""]
+
+$IF V.A.ACT_POS.Y > -85.0
+	$IF V.A.ACT_POS.X <= 0
+			G01 X-25
+		$ELSEIF V.A.ACT_POS.X > 0
+			G01 X25
+	$ENDIF
+	G01 Y-85
+$ENDIF
+
+G01 X=V.L.BC_PosX Y=V.L.BC_PosY		; 
+G04 0.5
+#FLUSH WAIT
+V.L.ZLaserTakenValue = V.E.SensorZLaser
+; Abfrage des Wertes
+$IF V.E.SensorZLaser >= V.L.ZLaserMinValue[3] AND V.E.SensorZLaser <= V.L.ZLaserMaxValue[3]	
+		;V.E.FunctionValue = 1	; belegt mit Blankhalter
+		;$IF V.P.ExpectedBlankTyp == 6
+				G01 Y=V.L.BC_PosY + V.L.CHolderYPosOffset FV.E.FEEDMAX
+				G04 X0.5
+				#FLUSH WAIT
+				$IF V.L.ZLaserTakenValue + V.L.CHolderCheckDif < V.E.SensorZLaser
+						V.E.FunctionValue = 6	; belegt mit C-Halter
+						#MSG SAVE EXCLUSIVE ["%S --- Auf Position %D ist ein C-Halter. Messwert = %F (min %F/ max %F)", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck, V.E.SensorZLaser, V.L.ZLaserMinValue[3], V.L.ZLaserMaxValue[3]] 
+					$ELSE
+						V.E.FunctionValue = 1	; belegt mit Blankhalter
+						#MSG SAVE EXCLUSIVE ["%S --- Auf Position %D ist ein Blankhalter. Messwert = %F (min %F/ max %F)", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck, V.E.SensorZLaser, V.L.ZLaserMinValue[3], V.L.ZLaserMaxValue[3]] 
+				$ENDIF
+		;	$ELSE
+		;		#MSG SAVE EXCLUSIVE ["%S --- Auf Position %D ist ein Blankhalter. Messwert = %F (min %F/ max %F)", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck, V.E.SensorZLaser, V.L.ZLaserMinValue[3], V.L.ZLaserMaxValue[3]] 
+		;$ENDIF
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+	$ELSEIF V.E.SensorZLaser >= V.L.ZLaserMinValue[2] AND V.E.SensorZLaser <= V.L.ZLaserMaxValue[2]	
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+		V.E.FunctionValue = 2	; belegt mit Preformhalter
+		#MSG SAVE EXCLUSIVE ["%S --- Auf Position %D ist ein Preformhalter. Messwert = %F (min %F/ max %F)", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck, V.E.SensorZLaser, V.L.ZLaserMinValue[2], V.L.ZLaserMaxValue[2]] 
+	$ELSEIF V.E.SensorZLaser >= V.L.ZLaserMinValue[1] AND V.E.SensorZLaser <= V.L.ZLaserMaxValue[1]	
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+		V.E.FunctionValue = 3	; LEER mit Preformbasis
+		#MSG SAVE EXCLUSIVE ["%S --- Auf Position %D ist nur die Preformbasis. Messwert = %F (min %F/ max %F)", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck, V.E.SensorZLaser, V.L.ZLaserMinValue[1], V.L.ZLaserMaxValue[1]] 
+	$ELSEIF V.E.SensorZLaser >= V.L.ZLaserMinValue[0] AND V.E.SensorZLaser <= V.L.ZLaserMaxValue[0]	
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+		V.E.FunctionValue = 4	; LEER
+		#MSG SAVE EXCLUSIVE ["%S --- Position %D ist LEER. Messwert = %F (min %F/ max %F)", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck, V.E.SensorZLaser, V.L.ZLaserMinValue[0], V.L.ZLaserMaxValue[0]] 
+	$ELSE						
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+		V.E.FunctionValue = 5	;undefinierter  Messwert
+		#MSG SAVE EXCLUSIVE ["%S --- Fuer Position %D wurde ein undefinierter Wert ermittelt. Messwert = %F", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck, V.E.SensorZLaser] 
+		M199
+$ENDIF
+V.P.BlankPosChecked  = V.E.FunctionValue
+#WAIT FOR V.E.FunctionNumber == 0
+#FLUSH WAIT
+;M198
+
+G01 ZV.A.+SWE.Z-1 FV.E.FEEDMAX	;Z hoch
+
+#MSG SYN HMI ["Warte auf SPS-Rueckmeldung"]
+#WAIT FOR V.E.FunctionNumber == 0
+#FLUSH WAIT
+#MSG SYN HMI [""]
+
+#MCS OFF
+#HSC ON
+[Label_Ende]
+M17
+(----------------- ENDE Blank-Platz PRÜFEN ob Blank vorhanden JA/NEIN -----------------)

@@ -1,0 +1,27 @@
+(---------------- prüft, ob der Blankchange durchgeführt wurde ----------------------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird geprüft, ob der Blankchange durchgeführt wurde
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		29.06.2026	H.-J. Albrecht		Programmerstellung 
+;
+(---------------------------------------------------------------------------)
+
+$IF EXIST[V.P.BlankchangeDone] == FALSE	; prüfen, ob Variable vorhanden
+		#MSG SAVE EXCLUSIVE ["%S --- Die Variable V.P.BlankchangeDone ist nicht definiert", V.G.TIME_STAMP_FILE_NAME] 
+	$ELSE
+		$IF V.P.BlankchangeDone == FALSE	; prüfen, ob der Blankchange durchgeführt wurde, wenn nicht, fragen ob das korrekt ist.
+			#MSG SYN HMI ["Es wurde kein Blankwechsel durchgeführt. Ist das korrekt? Dann START drücken"]
+			M0
+			#FLUSH WAIT
+         V.P.BlankchangeDone = 1
+			#MSG SYN HMI [""]
+			#MSG SAVE EXCLUSIVE ["%S --- Der Bediener hat bestätigt, dass ohne Blankwechsel weiter gearbeitet werden soll", V.G.TIME_STAMP_FILE_NAME]
+		$ENDIF
+$ENDIF
+
+[Label_Ende]
+
+#FLUSH WAIT
+M17

@@ -1,0 +1,47 @@
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird die B-Achse bzw. die Spannfläche des 
+;  Nullpunktspannsystems gereinigt
+;
+;	Version		Datum 		Name 				aenderungen
+;	1.0.0		XX.XX.2026	H.-J. Albrecht		Programmerstellung
+;	1.0.1		25.08.2026	H.-J. Albrecht		während der Reinigung wird das Intervallblasen der 
+;												Reinigungsluft für den Wechslerdeckel aktiviert
+;
+;
+(---------------------------------------------------------------------------)
+
+#HSC OFF
+#MCS ON EX TOOL
+
+L ToolWeightOff	; Werkzeugstandzeitgewichtung deaktivieren
+
+M9       ; Kühlmittelpunpe AUS
+M106     ; Absaugung EIN
+G04 2
+#FLUSH WAIT
+
+
+G01 A37 F30000
+
+M112	; Reinigungsluft Kassette EIN
+G04 2
+M132  ; Reinigungsluft B-Achse Spannsystem permanent EIN
+M110 	; Reinigungsluft Kassette Intervall EIN
+
+G91
+G01 B2700 F30000 
+B-2700
+
+G90
+A0
+M131  ; Reinigungsluft B-Achse Spannsystem AUS
+M112	; Reinigungsluft Kassette EIN
+G04 2
+M111  ; Reinigungsluft Kassette AUS
+
+
+#MCS OFF
+
+L ToolWeightOn	; Werkzeugstandzeitgewichtung aktivieren
+
+M17

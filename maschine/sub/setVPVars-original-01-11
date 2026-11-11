@@ -1,0 +1,50 @@
+(--Beschreibung-------------------------------------------------------------)
+;  Dieses Programm dient zum Laden der V.P.-Variablen-Werte der Maschine.
+;  Dadurch können Änderungen an der start_init vorgenommen werden, ohne dass
+;  spezielle Variablenwerte jeder einzelnen Maschine überschrieben werden.
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		30.01.2026	H.-J. Albrecht		Programmerstellung
+; 	1.0.1		26.02.2026	H.-J. Albrecht		Beschleunigungs-, Rampen- und PatDev-Variable für
+;												DYNvar hinzugefügt
+;	1.0.2		19.03.2026	H.-J. Albrecht		Offset-Werte für das Holen und Ablegen von Blanks hinzugefügt
+;	1.0.3		02.07.2026	H.-J. Albrecht		jetzt werden hier nur noch die Werte den VP-Variablen zugewiesen
+;												Die Deklarierun geschieht schon in declareVPVars
+;													
+;
+(---------------------------------------------------------------------------)
+
+$IF EXIST[V.P.VPDeclared] == TRUE
+		V.P.NumberOfToolPos = 28 							; Anzahl der vorhandenen WerkzeugPositionen
+		V.P.NumberOfBlankPos = 7 							; Anzahl der vorhandenen BlankPositionen
+		V.P.MinPosRC = 101 									; minimaler Positionswert des Rundwechslers
+		V.P.MaxPosRC = 130 									; maximaler Positionswert des Rundwechslers
+		V.P.AccBasis = 100 									;[mm/s2]
+		V.P.JerkBasis = 1  									;[ms]
+		V.P.NumberOfRuns = 2								; kann bei Programmen verwendet werden um die Anzahl der Iterationsschritte zu definieren
+		V.P.IBNactive = TRUE           						; TRUE = Inbetriebnahme aktiv
+		V.P.ZOffsetPreformM = -80.5  ;-79.1            		; Offset wird zum Greifen eines Preformhalters in der Maschine (M=Machine)
+		V.P.ZOffsetPreformC = -17.7         				   ; Offset wird zum Greifen eines Preformhalters in Wechslerbereich (C=Changer)
+		V.P.ZOffsetGetPreform = 8           				 ; Offset wird zum Greifen eines Preformhalters in Wechslerbereich (C=Changer)
+		V.P.AccXYZ = 3000									; Beschleunigung für XYZ mit Standardstartwert (DYN1) für die dynamischen Dynamikparameter (DYNvar)
+		V.P.AccAB = 3000									; Beschleunigung für AB mit Standardstartwert (DYN1) für die dynamischen Dynamikparameter (DYNvar)
+		V.P.RampXYZ = 50									; Rampenzeit für XYZ mit Standardstartwert (DYN1) für die dynamischen Dynamikparameter (DYNvar)
+		V.P.RampAB = 50										; Rampenzeit für AB mit Standardstartwert (DYN1) für die dynamischen Dynamikparameter (DYNvar)
+		V.P.PathDev = 0.04									; Path_DEV für HSC-Funktion mit Standardstartwert (DYN1) für die dynamischen Dynamikparameter (DYNvar)
+		V.P.PickBlankOffset[0] = 0							; [0]=X, [1]=Y, [2]=Z, Holen-Offset-Werte für die BlankPositionen im Wechsler 
+		V.P.PickBlankOffset[1] = 2							; [0]=X, [1]=Y, [2]=Z, Holen-Offset-Werte für die BlankPositionen im Wechsler 
+		V.P.PickBlankOffset[2] = 3.5						; [0]=X, [1]=Y, [2]=Z, Holen-Offset-Werte für die BlankPositionen im Wechsler 
+		V.P.PlaceBlankOffset[0] = V.P.PickBlankOffset[0]	; [0]=X, [1]=Y, [2]=Z, Ablegen-Offset-Werte für die BlankPositionen im Wechsler
+		V.P.PlaceBlankOffset[1] = V.P.PickBlankOffset[1]	; [0]=X, [1]=Y, [2]=Z, Ablegen-Offset-Werte für die BlankPositionen im Wechsler
+		V.P.PlaceBlankOffset[2] = V.P.PickBlankOffset[2]	; [0]=X, [1]=Y, [2]=Z, Ablegen-Offset-Werte für die BlankPositionen im Wechsler
+	$ELSE
+		#MSG SAVE EXCLUSIVE ["%S --- V.P.VPDeclared nicht deklariert. declareVPVars wurde nicht aufgerufen", V.G.TIME_STAMP_FILE_NAME] 
+		$IF EXIST[V.E.MessageText] == TRUE
+			V.E.MessageText = "V.P.VPDeclared nicht deklariert. declareVPVars wurde nicht aufgerufen"
+		$ENDIF
+		V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+		M199
+		#FLUSH WAIT
+$ENDIF
+
+M17

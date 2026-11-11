@@ -1,0 +1,56 @@
+(----------------- Blank-Platz PRÜFEN ob Blank vorhanden JA/NEIN -----------------)
+
+(--Beschreibung-------------------------------------------------------------)
+;  Mit diesem Programm wird die aktuelle Position im Rundwechsler
+;  überprüft, ob an dieser Position ein Blankhalter vorhanden ist 
+;  Der Rundwechsler positioniert hier nicht! 
+;
+;	Version		Datum 		Name 				Änderungen
+;	1.0.0		19.08.2025	H.-J. Albrecht		Programmerstellung  
+;
+;   
+(---------------------------------------------------------------------------)
+
+
+V.P.BlankPosChecked = 0
+
+$IF V.P.BlankPosToCheck < V.P.MinPosRC OR V.P.BlankPosToCheck > V.P.MaxPosRC
+	#MSG SAVE EXCLUSIVE ["%S --- checkBlankAtPosRC2 mit ungueltiger Position %D aufgerufen, zulaessig 1 bis %D", V.G.TIME_STAMP_FILE_NAME, V.P.BlankPosToCheck, V.P.NumberOfBlankPos]
+	#MSG SYN HMI ["checkBlankAtPosRC2 mit ungueltiger Position %D aufgerufen, zulaessig 1 bis %D", V.P.BlankPosToCheck, V.P.NumberOfBlankPos]
+	$IF EXIST[V.E.MessageText] == TRUE
+		V.E.MessageText = "checkBlankAtPosRC2 mit ungueltiger Position " + INT_TO_STR[V.P.BlankPosToCheck] + " aufgerufen!"
+		V.E.MessageNumber = 900	; Fehlermeldung in SPS erzeugen mit Text aus V.E.MessageText
+	$ENDIF
+
+	M199 
+$ENDIF
+
+#HSC OFF
+#MCS ON EX TOOL
+
+
+#FLUSH WAIT
+#MSG SYN HMI [""]
+; Abfrage des Wertes
+$IF V.E.HWInput.BlankExistRC == TRUE AND V.E.HWInput.PreformHolderOnPlace == TRUE
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+		V.E.FunctionValue = 1	; belegt mit Blankhalter
+	$ELSEIF V.E.HWInput.PreformHolderOnPlace == TRUE
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+		V.E.FunctionValue = 3	; belegt mit Preformbasis, ob ein Halter in der Basis ist, ist nicht bekannt
+	$ELSE							
+		V.E.FunctionNumber = 3000 + V.P.BlankPosToCheck
+		V.E.FunctionValue = 4	; LEER
+$ENDIF
+V.P.BlankPosChecked  = V.E.FunctionValue
+#FLUSH WAIT
+M198
+
+#MSG SYN HMI ["Warte auf SPS-Rueckmeldung"]
+#MSG SYN HMI [""]
+
+#MCS OFF
+#HSC ON
+[Label_Ende]
+M17
+(----------------- ENDE Blank-Platz PRÜFEN ob Blank vorhanden JA/NEIN -----------------)

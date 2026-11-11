@@ -10,6 +10,7 @@
 - ✅ Eigene Programme (01.11.2026, liegen auf dem Mac in ~/Downloads):
   - LASERCHECK_LESEN.nc – schreibt Laser-Messfenster, BC_CheckPosOffset, PickBlankOffset, C-Halter-Werte, BlankPos[0..7] und aktuellen Laserwert ins Log, nur lesend, Suchwort LASERCHECK; auf der Maschine erfolgreich gelaufen
   - FENSTER3_SETZEN.nc – Versuch, das Fenster per NC zu ändern; OHNE Wirkung (SPS überschreibt) → nicht mehr verwenden, kann gelöscht werden
+- ✅ 09.11.2026: Hersteller-Unterprogramme 1:1 aus `~/Downloads/Hedmill-maschinendaten` nach `maschine/sub/` kopiert (136 Dateien inkl. HJA/, IBN-Programme, DYN-Sätze, VersionsInfo V1.0.1–V1.0.9, ToDo.txt des Herstellers mit CNC-Parametern); setVPVars zeigt `ZOffsetPreformC = -26.2` ✅ (passt zur Doku). Ein echtes hyperDENT-Teleskop-NC liegt in `maschine/nc-beispiele/`. Die fünf großen Produktions-NCs (SA13, SA16, SA22, SA26, SA27) bleiben in Downloads
 - ✅ setVPVars = maschinenspezifische NC-Werte, getrennt von start_init, damit Updates sie nicht überschreiben; Deklaration in declareVPVars; Datei ist UTF-8 + CRLF
 - ✅ Weitere Werte setVPVars: MinPosRC 101, MaxPosRC 130, AccXYZ/AB 3000, RampXYZ/AB 50, PathDev 0,04, IBNactive = TRUE
 - ✅ declareVPVars enthält auch die 3Pins-Variablen: V.P.PinLayout = 0, V.P.DropPin = −1, V.P.SideLength, V.P.PinDiameter, V.P.PinHeight

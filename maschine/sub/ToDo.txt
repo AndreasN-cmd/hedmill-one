@@ -1,0 +1,24 @@
+für CNC
+
+- unter CNC Startup
+	- configuration.channel[0].interpolator.function FCT_LOOK_AHEAD_CUSTOM
+	- configuration.channel[0].interpolator.parameter 200
+	- configuration.channel[0].path_preparation.function FCT_DEFAULT| FCT_SURFACE
+	
+- Kanal SDA
+	- trans_limit_with_curvature 1
+	- opt_contour_mode 2
+	- prog_start.slope.profile 3
+	- hsc.bspline.auto_contour_mode 2
+	- (Optional 5 axis) dev_surface_5ax 1
+
+- bei allen Achsen
+	- getriebe[0].dynamik.a_trans_weight 50-1000
+	- getriebe[0].dynamik.r_trans_weight 50-1000
+	- filter[0].order 6
+	- filter[0].prototype 5
+
+
+
+Intervalldauer für Kassettendeckel auf 10s
+Intervalldauer für Traverse auf 29s 
