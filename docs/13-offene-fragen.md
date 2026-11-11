@@ -1,7 +1,7 @@
 # Offene Fragen
 
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
-> Stand: 09.11.2026 (Export aus dem claude.ai-Projekt „Hedmill Maschine“)
+> Stand: 11.11.2026. Andreas 11.11.2026: Halternummerierung und Werkzeugkontrolle der Tonne gestrichen; einziger offener Kalibrierpunkt ist das Schräg-Kalibrierteil (irgendwann später, Maschine soll jetzt produzieren). Technikertermin Mo/Di 16./17.11.2026
 
 - Preform-Ablegen 03.11.2026: Reicht −26.2 (Ablegen 50,8)? Holen noch sauber? Falls weiter nach oben: ab welchem Wert wird das Holen zu hoch?
 - B-Achsen-Laserfenster `stCheckPosZLaser0[0..3]` komplett auslesen (LASERCHECK_LESEN um Laser0 erweitern)
@@ -18,14 +18,12 @@
 - Was passiert physisch beim 8-mm-Nachfahren nach dem Greiferschließen (Wechsler und B-Achse)?
 - Plättchen (statt Testkreuz) 10.11.2026: Erwartung ΔX ≈ −0,071; Dicke 5,875 = Längenoffset erklärt alles, 6,000 = G58-Z; Längenoffset 49,828 (HMI = SPS, OFFSET_LESEN_V3 11.11.2026); ✅ Variable heißt `V.E.ToolLengthOffset` (aktives measureTool); Historie nach dem Spannzangen-Update; ❓ Vorzeichen ΔA am eigenen Plättchen bestätigen
 - G58-X bleibt 0,069 (Andreas 10.11.2026): erstes Teleskop auf Hohlkehle, Rand und MKD-Oberfläche prüfen
-- Nullpunkte 09.11.2026: Kontroll-Lauf MESS_REL_PLAN + MESS_ABS nach dem Technikertermin 19.11.2026 (Soll 19,50 / 4,50); neue X- und Y-Werte ohne Bestätigungslauf
-- G58-Z: +0,0625 mit T4081 und T4090 bestätigt (Maschine). Entscheidung Andreas 10.11.2026: HEDS-Weg – Längenoffset über das Plättchen setzen, G59-Z nachführen, eine Tonne (MESS_REL_PLAN + MESS_G58_XZ) validieren, Rest in G58-Z; Frässtrategie-Version mit Drehfräs-Aufmaßen − Korrektur vor dem ersten Teleskop. Beim Technikertermin 19.11.2026 darauf achten, dass Längenoffset und G58-Z nicht unbemerkt geändert werden
+- Nullpunkte 09.11.2026: Kontroll-Lauf MESS_REL_PLAN + MESS_ABS nach dem Technikertermin 16./17.11.2026 (Soll 19,50 / 4,50); neue X- und Y-Werte ohne Bestätigungslauf
+- G58-Z: +0,0625 mit T4081 und T4090 bestätigt (Maschine). Entscheidung Andreas 10.11.2026: HEDS-Weg – Längenoffset über das Plättchen setzen, G59-Z nachführen, eine Tonne (MESS_REL_PLAN + MESS_G58_XZ) validieren, Rest in G58-Z; Frässtrategie-Version mit Drehfräs-Aufmaßen − Korrektur vor dem ersten Teleskop. Beim Technikertermin 16./17.11.2026 darauf achten, dass Längenoffset und G58-Z nicht unbemerkt geändert werden
 - Nach jedem Crash (HEDS: alle Achsen geklemmte Getriebe) neu einmessen: Plättchen → Tonnen. Prüfen, ob die drei SPS-Werte vom 01.11. und der Längenoffset einen Neustart überleben
 - Schräge Anstellung unter G59: Kalibrierteil A −65 bis −100 schreiben (braucht echtes hyperDENT-NC mit Anstellung); Vorhersage rund 6 µm je Grad prüfen; mit dem Techniker klären, ob die Steuerung eine Kinematik-Korrektur hat
 - `KONTROLL_TELESKOP_V1.nc` einmal fahren (zurückgestellt)
 - Lose Auflage im Spannsystem der B-Achse (NSE mini 90-25-V4): Wie hält die feste Auflage (Lippen, Gummischnur, Stift)? Winkelanschlag oder Höhenauflage (Filzstift-Probe)? Neues Teil von HEDS? Danach G58/G59 neu kalibrieren (11-stoerungen-historie.md)
-- **Preformhalter nummerieren** (Gravur oder Lackstift): axial 0,02–0,04 Unterschied zwischen Haltern (09.11. und 11.11.2026), Halter 2 ist nicht mehr zuzuordnen. Ohne Nummer ist G58-Y/G59-Z nicht besser als ±0,02 kalibrierbar
-- Kontroll-Tonne 11.11.2026: Werkzeugkontrolle −0,010 (09.11. +0,0005) – Flanke T4081 schneidet 0,01 tiefer als Nennmaß? Beim nächsten Lauf beobachten
 - Fit-Check des nächsten Primärteleskops mit den aktuellen Vorlagen bei Offset 49,776 / G58-Z −0,016 (Andreas 11.11.2026: erst validieren, keine neue Version vorher); Ergebnis in `../fraesstrategien-hyperdent` eintragen
 - Wie stark streut die Länge der Prefab-Tonnen (Soll 20,00)? 3–5 Rohlinge messen
 - Antwort von HEDS zu Look-ahead (`interpolator.parameter 200`), CNC 4.34 und Meldung 70222

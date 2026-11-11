@@ -7,8 +7,8 @@
 |---|---|---|---|---|---|
 | 07/2026 | G58-Y | Nullpunkttabelle | −0,685 | −0,255 | ✅ Richtung bestätigt 09.11.2026 (zwei Läufe: Ist 4,96 und 5,00 bei Soll 5,024), Rest −0,02 bis −0,06 |
 | 07/2026 | G59-Z | Nullpunkttabelle | 0,000 | +0,190 | ✅ Richtung bestätigt 09.11.2026 (Scheibe 4,45/4,46 bei Soll 4,50) |
-| 09.11.2026 | G58-Y (drei Läufe Messing, Halter 2, Gummihammer; Auflage im Spannsystem lose eingesetzt) | Nullpunkttabelle | −0,255 | −0,230 | ❓ Kontrolle nach Technikertermin 19.11.2026 |
-| 09.11.2026 | G59-Z (zwei Läufe, Gesamtlänge mit Bügelmessschraube) | Nullpunkttabelle | +0,190 | +0,209 | ❓ Kontrolle nach Technikertermin 19.11.2026 |
+| 09.11.2026 | G58-Y (drei Läufe Messing, Halter 2, Gummihammer; Auflage im Spannsystem lose eingesetzt) | Nullpunkttabelle | −0,255 | −0,230 | ❓ Kontrolle nach Technikertermin 16./17.11.2026 |
+| 09.11.2026 | G59-Z (zwei Läufe, Gesamtlänge mit Bügelmessschraube) | Nullpunkttabelle | +0,190 | +0,209 | ❓ Kontrolle nach Technikertermin 16./17.11.2026 |
 | 09.11.2026 | G58-X (MESS_G58_XZ_A0_V1, ein Lauf, Werkzeugkontrolle +0,0005) | Nullpunkttabelle | +0,110 | +0,069 | ❓ kein Bestätigungslauf, erstes echtes Teil ist die Probe |
 | 09.11.2026 | G59-X (MESS_G59_XY_A-90_V1, ein Lauf, Werkzeugkontrolle −0,0025) | Nullpunkttabelle | +0,130 | +0,079 | ❓ kein Bestätigungslauf |
 | 09.11.2026 | G59-Y (MESS_G59_XY_A-90_V1, ein Lauf) | Nullpunkttabelle | −0,685 | −0,663 | ❓ kein Bestätigungslauf |
