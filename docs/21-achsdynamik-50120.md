@@ -110,3 +110,20 @@
 - ❓ Mechanik (Deutung): In der Bahnmetrik (B in Grad wie mm) ist der Knick fast gerade (1–3°), der Planer bremst deshalb nicht; die Z-Achse muss aber aus dem Stand auf 2–5 mm/s. Bei langen 2°-Sätzen vor und 0,19°-Sätzen nach dem Knick entsteht im Interpolator ein Einzelzyklus-Ausreißer in B. Die Kugeljobs laufen über dieselben Konnektoren fehlerfrei – sie fahren seitlich versetzt (X 1,5–3,9), dort gibt es den flachen Konnektorbogen mit Knick nicht
 - **Lösung CAM-seitig (Vorschlag, Entscheidung Andreas, neue Version nur auf Ansage):** MKD-Job vor dem Konnektorkontakt enden lassen: `bottomoffset` 1 → **−3** (Ende 3 mm vor dem okklusalen Pol, wie die Hohlkehlenringe T4098/T4089). Nimmt alle Konnektor-Knicke aus dem MKD-Job und spart **8,3 von 26,6 min MKD-Zeit (SA13) bzw. 4,5 von 20,5 (ED00)**. Die Kuppel am Konnektor bleibt dann auf Ø1,5-Kugel +0,03 (Job 22, läuft bis Pol +2); okklusal liegt unter dem Deckelspalt 0,1, keine Passungswirkung. Kontrolle in hyperDENT: letzter MKD-Ring frei vom Konnektor, sonst −4. Plan Primärteleskop SLM Punkt 56, CoCr Bar Punkt 14. Maschinenseitig nichts ändern; DYN17 bleibt (Qualität). HEDS-Meldung mit dieser Stelle (Satz + NC) ist jetzt möglich
 - ❓ Gegenprobe offen: NC-Programme HF46, HF33, SA22, SA21, AS22, GH17/23/24 vom CAM-PC (hyperDENT-Ausgabeordner) holen und die Satznummern mit `skripte/nc_konnektor_knicke.py <nc> T4126 <N>` prüfen. `C:\CNC\wp` enthält nur das jeweils aktuelle Programm
+
+## 11.11.2026, 12:00: Gegenprobe mit 15 NC-Programmen vom CAM-PC – bestätigt
+- ✅ Andreas hat 15 NC-Programme geliefert (`~/Downloads/*.nc`, 02.11., 07.11. und 10.11.): SA_6/SA_3/SA_4, AS23/AS12/AS11/AS21/AS22/AS25, HF46/HF45/HF43/HF44/HF33/HF35. Zusammen mit SA13 (Repo) 16 Programme. Hinweis: Der Ordner `~/Downloads/HEDmill-Logs-2026-11-11_1127` mit der LoggedEvents.db ist nicht mehr in Downloads; die Ereignisliste steht in `maschine/log/cnc_ereignisse_2026-11-09_bis_11.md`
+- ✅ **Alle fünf Ereignisse mit vorliegendem NC liegen am Konnektor-Austritt des MKD-Rings (5 von 5):**
+
+| Programm | Ereignis | Satz N | Stelle | Konnektorzone (Y, Länge) | Knicke im Job | Rang nach Steilheit |
+|---|---|---|---|---|---|---|
+| 2007-24__SA13 (DYN60) | 50121 3,5× | 4616650 | Austritt Y −17,03, Z 1,507 | −17,50 … −14,36, 3,15 mm | 250 | 187 |
+| 2007-24__SA13 | 50121 2,2× | 4692170 | Austritt Y −15,98, Z 1,515 | | | 83 |
+| 2007-24__SA13 | **50120** 5,4× | 4758370 | Austritt Y −15,13, Z 1,521 | | | 41 |
+| 1041-54__HF46 (DYN17) | **50120** 5,8× | 4686010 | Austritt Y −15,33, Z 1,524: 16° lang Z 1,5225 flach, dann +0,0017/+0,0056/+0,0056/+0,0057 je 0,1875° | −15,48 … −15,00, 0,48 mm | 41 | 21 |
+| 1120-19__HF33 (DYN17) | 50121 4,0× | 6109080 | Austritt Y −13,17, Z 1,528: 16° lang Z 1,525 flach, dann +0,0008/+0,0017/+0,0017/+0,0036 je 0,1875° (flacher Knick) | −13,73 … −12,50, 1,23 mm | 44 | 27 |
+
+- ✅ Kontrollgruppe (11 Programme ohne Meldung, DYN60 und DYN17): jedes hat eine Konnektorzone von 0,30 bis 2,35 mm mit 13 bis 161 Knicken und lief trotzdem fehlerfrei → der Auslöser ist zufällig (Timing), die Zone ist die Bedingung. Kein Ereignis außerhalb einer Konnektorzone, in keinem der 16 Programme
+- ✅ Konnektorzonen aller 16 Programme: 0,30 … 3,15 mm vor dem MKD-Ende (Maximum SA13). **`bottomoffset` −3 lässt den MKD 4 mm früher enden als heute (1) → Reserve ≥ 0,85 mm in allen 16; `bottomoffset` −4 → Reserve ≥ 1,85 mm.** Empfehlung −4 (die Kuppel dort bleibt ohnehin unter dem Sekundärteil-Deckel, Fräszeit sinkt noch etwas)
+- ✅ Skript `skripte/nc_konnektor_knicke.py` (Schwellen: flach |dZ/dB| < 0,004 mm/° bei Z < Konnektorradius + 0,06; Knick, wenn innerhalb 5 Sätzen > 0,008 mm/°). Aufruf: `python3 -I skripte/nc_konnektor_knicke.py <nc> T4126 <N …>`
+- **Damit ist der Fehler CAM-seitig vermeidbar, ohne an der Maschine etwas zu ändern.** Für HEDS (falls gewünscht): „Einzelzyklus-Beschleunigungsspitze der B-Achse am Übergang von langen 2°-Sätzen (Z konstant) auf 0,19°-Sätze mit steigendem Z, z. B. 2007-24__SA13.nc N4758370, CNC 4.34, HSC SURFACE PATH_DEV 0,016/0,2, Look-ahead 200“

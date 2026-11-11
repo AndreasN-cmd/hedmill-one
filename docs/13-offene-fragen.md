@@ -29,4 +29,4 @@
 - Antwort von HEDS zu Look-ahead (`interpolator.parameter 200`), CNC 4.34 und Meldung 70222
 - Hybrid-Express-Halter: sechs Rückfragen offen (22-hybrid-express-halter.md)
 - Herkunft der Schnittwerte T4090 (S8000 / S18500, HL 8) und T4081 (S11500) in 06-werkzeuge-schnittwerte.md: eigene NC-Programme oder alter Stand? (weichen von der Werkzeug-DB ab)
-- 50120 am MKD: Stelle gefunden (Konnektor-Knick, 21-achsdynamik-50120.md). Offen: Gegenprobe mit den NC-Programmen HF46, HF33, SA22, SA21, AS22, GH17/23/24 vom CAM-PC (`skripte/nc_konnektor_knicke.py`); Andreas' Entscheidung zu `bottomoffset` −3 im MKD-Job; danach HEDS die Stelle melden (Satz N4758370 in 2007-24__SA13.nc)
+- 50120 am MKD: Ursache bestätigt (Konnektor-Austritt des MKD-Rings, 5 von 5 Ereignissen, 21-achsdynamik-50120.md). Offen: Andreas' Entscheidung zu `bottomoffset` −3/−4 im MKD-Job (Plan SLM 56, CoCr Bar 14), danach Nachtschichten ohne Konnektorkontakt beobachten; HEDS die Stelle melden (optional)

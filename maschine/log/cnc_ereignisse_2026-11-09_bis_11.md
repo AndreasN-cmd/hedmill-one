@@ -20,3 +20,5 @@ Zeit = Ortszeit; 50121 = Warnung (ab 1,5-fach, kein Stopp), 50120 = Fehler (ab 2
 Weitere CNC-Meldungen im Zeitraum: 120206 (Programmende bei aktivem Polynomüberschleifen) 21 ×, 120462 8 ×, 120662 2 ×, 20394 1 × – keine Achsmeldungen außer B.
 
 SA13 im Repo (`maschine/nc-beispiele/2007-24__SA13.nc`): alle drei Sätze sind Konnektor-Austritte des MKD (Y −17,03 / −15,98 / −15,13, Z 1,51–1,52 → Kuppelflanke). Prüfung: `python3 -I skripte/nc_konnektor_knicke.py maschine/nc-beispiele/2007-24__SA13.nc T4126 4616650 4692170 4758370`.
+
+Gegenprobe 11.11.2026 mit den NC-Programmen vom CAM-PC: HF46 N4686010 und HF33 N6109080 sind ebenfalls Konnektor-Austritte des MKD (5 von 5 Ereignissen mit NC bestätigt, Tabelle in `docs/21-achsdynamik-50120.md`). Die 11 Programme ohne Meldung haben dieselben Konnektorzonen (0,3 bis 2,35 mm, 13 bis 161 Knicke).

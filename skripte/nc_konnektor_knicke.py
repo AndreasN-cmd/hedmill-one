@@ -40,17 +40,28 @@ print(f"Abschnitt {tool}: {len(blocks)} Saetze, kleinster Radius {zmin:.3f} -> K
 # Flache Strecke: |dZ/dB| < 0.002 mm/Grad und Z < rk + 0.05
 def flat(b): return abs(b[3] / b[4]) < 0.004 and b[2] < rk + 0.06
 kinks = []
-for i in range(6, len(blocks) - 3):
+# Knick = 6 flache Konnektorsaetze, danach steigt Z innerhalb von 5 Saetzen auf > 0,008 mm/Grad (Austritt),
+# bzw. spiegelbildlich davor (Eintritt). Mehrere Kandidaten im selben Lauf werden zum letzten zusammengefasst.
+cand = []
+for i in range(6, len(blocks) - 5):
     b = blocks[i]
     prev = blocks[i - 6:i]
-    if all(flat(p) for p in prev) and not flat(b):
-        steep = max(abs(blocks[j][3] / blocks[j][4]) for j in range(i, min(i + 4, len(blocks))))
-        if steep > 0.02:
-            kinks.append(("Austritt", b[0], b[1], b[2], b[4], b[3] / b[4], steep, prev[-1][4]))
-    if i + 7 < len(blocks) and all(flat(p) for p in blocks[i + 1:i + 7]) and not flat(b):
-        steep = max(abs(blocks[j][3] / blocks[j][4]) for j in range(max(0, i - 3), i + 1))
-        if steep > 0.02:
-            kinks.append(("Eintritt", b[0], b[1], b[2], b[4], b[3] / b[4], steep, blocks[i + 1][4]))
+    if all(flat(p) for p in prev):
+        steep = max(abs(blocks[j][3] / blocks[j][4]) for j in range(i, i + 5))
+        if steep > 0.008:
+            cand.append(("Austritt", i, steep, prev[-1][4]))
+    if all(flat(p) for p in blocks[i + 1:i + 7]):
+        steep = max(abs(blocks[j][3] / blocks[j][4]) for j in range(max(0, i - 4), i + 1))
+        if steep > 0.008:
+            cand.append(("Eintritt", i, steep, blocks[i + 1][4]))
+last = None
+for typ, i, steep, nb in cand:
+    if last and last[0] == typ and i - last[1] <= 6:
+        last = (typ, i, max(steep, last[2]), nb)
+        kinks[-1] = (typ, blocks[i][0], blocks[i][1], blocks[i][2], blocks[i][4], blocks[i][3] / blocks[i][4], last[2], nb)
+        continue
+    last = (typ, i, steep, nb)
+    kinks.append((typ, blocks[i][0], blocks[i][1], blocks[i][2], blocks[i][4], blocks[i][3] / blocks[i][4], steep, nb))
 
 print(f"Konnektor-Knicke gesamt: {len(kinks)} (Austritt {sum(1 for k in kinks if k[0]=='Austritt')}, Eintritt {sum(1 for k in kinks if k[0]=='Eintritt')})")
 ys = [k[2] for k in kinks]
