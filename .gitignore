@@ -4,3 +4,4 @@ Thumbs.db
 # grosse TwinCAT-Archive nur bei Bedarf einchecken
 maschine/twincat/*.tnzip
 maschine/twincat/*.tszip
+maschine/log/*.db

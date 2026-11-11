@@ -86,3 +86,27 @@
   1. Logs holen: `skripte/LOGS_SAMMELN.ps1` am Steuerungs-PC (kopiert LoggedEvents.db, HMI-Logs 3 Tage, die 12 letzten NC aus `C:\CNC\wp`, diag_data, DYN-Sätze auf den Desktop) → USB-Stick → Mac `~/Downloads`. Auswerten: `python3 -I skripte/loggedevents_dump.py <LoggedEvents.db>` (alle 50120/50121 mit Programm und Satznummer), dann Satznummern im NC nachschlagen (Y-Position, Satzlänge, Z-Umkehr?) – damit wird die Stelle erstmals sichtbar, auch über die Warnungen 50121 statistisch
   2. Im NC der Nacht prüfen: `LDYN17` oder `LDYN60` nach `T4126 M6`. Bei LDYN60: zuerst `DYN18` auf die Maschine, dann neue `ldyn.cfg` am CAM-PC, Nacht beobachten (20-cam-hyperdent.md)
   3. Bleibt der Fehler mit LDYN17: `_201` → LDYN26 (längste Rampe) als Gegenprobe, dann MKD-Vorschub 5 500 → 4 000 in der Vorlage (Plan Primärteleskop Punkt 54), dann HEDS (Look-ahead 200 → 500, CNC 4.34). Nie B-Grenzen (P-AXIS-00008/00441/00442) erhöhen
+
+## 11.11.2026, 11:30: Logauswertung – die Stelle ist gefunden (Konnektor-Knick im MKD-Job)
+- ✅ Logs vom Steuerungs-PC per `skripte/LOGS_SAMMELN.ps1` (Ordner `~/Downloads/HEDmill-Logs-2026-11-11_1127`, LoggedEvents.db 15 MB bleibt dort; HMI-Logs 09.–11.11. in `maschine/log/`). **Die Nacht lief bereits mit der neuen `ldyn.cfg` (Andreas; NC `1109-59__ED00.nc` vom 11.11.: `LDYN17` nach `T4126 M6`, `LDYN18` nach T4093, sonst DYN1/4/5).** → DYN17 allein löst den Fehler nicht
+- ✅ **Alle CNC-Meldungen 50120/50121 seit 09.11.2026** (LoggedEvents.db, Tabelle `JsonAttributes`: Programm, Satz N, Achse 5 = B, Istwert/Grenze; Auswertung `skripte/loggedevents_dump.py`, Liste in `maschine/log/cnc_ereignisse_2026-11-09_bis_11.md`):
+
+| Zeit | ID | Programm | Satz N | Beschleunigung B (Vielfaches von 10 000 °/s²) | Dynamiksatz MKD |
+|---|---|---|---|---|---|
+| 09.11. 03:54 | 50121 | 2033-08__GH17 | 5345770 | ±1,75 | DYN60 |
+| 09.11. 05:44 | 50121 | 2050-40__GH24 | 3933920 | ±1,76 | DYN60 |
+| 09.11. 07:34 | 50121 | 2049-11__GH23 | 4220510 | ±1,98 | DYN60 |
+| 09.11. 13:21 | **50120** | 1042-14__AS22 | 2964620 | 5,14 | DYN60 |
+| 09.11. 20:47 | **50120** | 2012-56__SA21 | 4272950 | 5,90 | DYN60 |
+| 10.11. 00:04 | 50121 | 2016-22__SA22 | 3473180 | ±3,74 | DYN60 |
+| 10.11. 11:45 | 50121 | 2007-24__SA13 | 4616650 | ±3,47 / 3,70 | DYN60 |
+| 10.11. 11:48 | 50121 | 2007-24__SA13 | 4692170 | ±2,16 / 2,56 | DYN60 |
+| 10.11. 11:50 | **50120** | 2007-24__SA13 | 4758370 | 5,35 | DYN60 |
+| 11.11. 00:17 | **50120** | 1041-54__HF46 | 4686010 | 5,79 | **DYN17** |
+| 11.11. 09:07 | 50121 | 1120-19__HF33 | 6109080 | ±4,02 | **DYN17** |
+
+  - Jede Warnung kommt als Paar +a / −a im Abstand von 1–2 ms (Modul `BAHN_ABL.C`, Z. 11640 Warnung / 11348 Fehler): ein einzelner Sollwert-Ausreißer der B-Achse (Sprung hin und zurück), kein Bremsvorgang. Vier Abbrüche in drei Tagen, bei allen Teilen im MKD-Abschnitt (Satznummern 2,9–6,1 Mio = letztes Drittel des Programms)
+- ✅ **SA13 (Programm liegt im Repo) – alle drei Ereignisse an derselben Art Stelle:** N4616650 (Y −17,03), N4692170 (Y −15,98), N4758370 (Y −15,13): Der MKD läuft im Ring 35–45° lang auf **Z = 1,50 = Radius des Ø3-Konnektors** (lange 2°-Sätze, Z konstant) und verlässt den Konnektor dann mit einem **Knick** in die Kuppelflanke (0,1875°/0,25°-Sätze, Z steigt 0,005 → 0,015 mm je Satz, bis 0,06 mm/°). Skript `skripte/nc_konnektor_knicke.py`: 199 solcher Knicke in SA13 (Y −17,5 bis −14,4, Konnektorkontakt die letzten 3,15 mm des MKD-Jobs), die drei Ereignisse liegen nach Steilheit auf Rang 189, 82 und 41 → **welcher Knick auslöst, ist Zufall (Timing), jeder Konnektor-Knick kann es**. ED00 (11.11.): 50 Knicke auf den letzten 1,73 mm. Bis zum Konnektorkontakt (Friktion, Kuppel mit Fissuren) kein einziges Ereignis seit 09.11. – genau Andreas' Beobachtung „erst wenn die Friktionsfläche fertig ist“
+- ❓ Mechanik (Deutung): In der Bahnmetrik (B in Grad wie mm) ist der Knick fast gerade (1–3°), der Planer bremst deshalb nicht; die Z-Achse muss aber aus dem Stand auf 2–5 mm/s. Bei langen 2°-Sätzen vor und 0,19°-Sätzen nach dem Knick entsteht im Interpolator ein Einzelzyklus-Ausreißer in B. Die Kugeljobs laufen über dieselben Konnektoren fehlerfrei – sie fahren seitlich versetzt (X 1,5–3,9), dort gibt es den flachen Konnektorbogen mit Knick nicht
+- **Lösung CAM-seitig (Vorschlag, Entscheidung Andreas, neue Version nur auf Ansage):** MKD-Job vor dem Konnektorkontakt enden lassen: `bottomoffset` 1 → **−3** (Ende 3 mm vor dem okklusalen Pol, wie die Hohlkehlenringe T4098/T4089). Nimmt alle Konnektor-Knicke aus dem MKD-Job und spart **8,3 von 26,6 min MKD-Zeit (SA13) bzw. 4,5 von 20,5 (ED00)**. Die Kuppel am Konnektor bleibt dann auf Ø1,5-Kugel +0,03 (Job 22, läuft bis Pol +2); okklusal liegt unter dem Deckelspalt 0,1, keine Passungswirkung. Kontrolle in hyperDENT: letzter MKD-Ring frei vom Konnektor, sonst −4. Plan Primärteleskop SLM Punkt 56, CoCr Bar Punkt 14. Maschinenseitig nichts ändern; DYN17 bleibt (Qualität). HEDS-Meldung mit dieser Stelle (Satz + NC) ist jetzt möglich
+- ❓ Gegenprobe offen: NC-Programme HF46, HF33, SA22, SA21, AS22, GH17/23/24 vom CAM-PC (hyperDENT-Ausgabeordner) holen und die Satznummern mit `skripte/nc_konnektor_knicke.py <nc> T4126 <N>` prüfen. `C:\CNC\wp` enthält nur das jeweils aktuelle Programm
