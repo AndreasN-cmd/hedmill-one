@@ -12,3 +12,4 @@
 - ✅ Kopie des Logs vom 01.11.2026 liegt auf dem Mac in ~/Downloads/message20261101.txt
 - ✅ TwinCAT-Ereignisprotokoll (CNC-Meldungen wie 50120): `C:\ProgramData\Beckhoff\TwinCAT\3.1\Boot\LoggedEvents.db` (SQLite, Zeit = Windows-FILETIME UTC), siehe 21-achsdynamik-50120.md
 - ✅ 3Pins.nc schreibt Messergebnisse nach `C:\PINresult\PINresult.txt`
+- ✅ 11.11.2026: `skripte/LOGS_SAMMELN.ps1` (nur lesend, am Steuerungs-PC) sammelt LoggedEvents.db (+ -wal/-shm), HMI-Logs der letzten 3 Tage, die 12 zuletzt geänderten NC aus `C:\CNC\wp`, diag_data-Dateien und alle DYN-Sätze in einen Desktop-Ordner `HEDmill-Logs-<Datum>` (mit UEBERSICHT.txt). Am Mac: `python3 -I skripte/loggedevents_dump.py <LoggedEvents.db> [Suchbegriff]` listet Tabellen und alle Zeilen mit 50120/50121, FILETIME → Ortszeit

@@ -1,7 +1,7 @@
 # Achsdynamik: Störung 50120 / Warnung 50121 Achse B, Look-ahead, TwinCAT-Projekt
 
 > Kennzeichnung: ✅ bestätigt · 🌐 Beckhoff-Doku / allgemein · ❓ offen oder Annahme
-> Stand: 09.11.2026
+> Stand: 11.11.2026
 
 ## Entscheidung
 - ✅ **02.11.2026, 00:00: Andreas klärt Achsdynamik / Look-ahead / CNC 4.34 über den Hersteller (HEDS)** – keine eigene Änderung an der CNC-Konfiguration
@@ -71,3 +71,18 @@
 ## Suchskript
 - `skripte/DYNSUCHE.ps1` (nur lesend, PowerShell am Steuerungs-PC, erfolgreich gelaufen 01.11.2026)
 - ✅ 09.11.2026: Die Hersteller-Datei `maschine/sub/ToDo.txt` listet die CNC-Parameter, die HEDS für die Steuerung vorsieht: `interpolator.function FCT_LOOK_AHEAD_CUSTOM`, `interpolator.parameter 200`, `path_preparation.function FCT_DEFAULT|FCT_SURFACE`, Kanal SDA `trans_limit_with_curvature 1`, `opt_contour_mode 2`, `hsc.bspline.auto_contour_mode 2`, Achsen `a_trans_weight`/`r_trans_weight` 50–1000, `filter[0].order 6`, `prototype 5`. ❓ Welche davon auf der Maschine aktiv sind, ist nicht geprüft
+
+## 11.11.2026: Nacht 10./11.11. – neun Teleskope drehgefräst, eines mit 50120 (Analyse läuft)
+- ✅ Andreas 11.11.2026: neun Primärteleskope im Drehfräsprozess in einer Nacht, eines mit Abbruch durch den B-Achsen-Beschleunigungsfehler. **Der Fehler ist der größte Störfaktor im Automatikbetrieb** (ohne ihn ≈ 50 Teleskope in 3 Tagen möglich; ist er weg, darf die Frässtrategie wieder schneller werden). Ziel: endgültig lösen
+- ✅ **Beobachtung Andreas (mehrfach bestätigt):** Der Fehler kommt beim Drehfräsen **nur beim Torus (MKD T4126, Job 25), nie bei den Kugeljobs**, und erst, **wenn der Torus die Friktionsfläche schon fertig hat** (also in der Kuppel/okklusalen Zone, die genaue Stelle ist unbekannt)
+- ❓ Noch unbekannt: Lief die Nacht mit der neuen `ldyn.cfg` (MKD → `LDYN17`) oder noch mit `LDYN60`? Steht im NC der Nacht in der Zeile nach `T4126 M6`
+- ✅ **NC-Analyse SA13 (08.11.2026, LDYN60, `maschine/nc-beispiele/2007-24__SA13.nc`), MKD-Abschnitt gegen die Kugel-Drehfräsjobs derselben Außenfläche** (Skript `skripte/nc_drehfraes_analyse.py <nc> <Werkzeug> [Vorkommen] [Zonenbreite]`, Kennzahlen je Y-Zone, B modulo 360 beachtet):
+  - MKD Job 25: 101 496 Sätze, 407 Umdrehungen, 249 Sätze je Umdrehung, 5 500 °/min = 91,7 °/s, kürzester Satz 0,1875° = 2,05 ms, Z-Geschwindigkeit max 10,5 mm/s, Zeit rechnerisch 26,6 min, X 0 (Spitze auf der Achse), keine B-Umkehr (B358 → B0 ist der Modulo-Übergang, keine Umkehr)
+  - Friktionszone (Y −24,5 bis −22): Querschnitt je Umdrehung gleich (Z 2,23–4,27), ≈ 6 Z-Umkehrungen je Umdrehung, viele kurze Sätze (bis 1 772 je 0,5 mm)
+  - Kuppel (Y −21 bis −14,4): Radius 1,5–3,5, **Z-Umkehrungen steigen auf 30–57 je Umdrehung** (Fissuren, Höcker; Beispiel N4312570: Z 3,33 → 2,98 → 3,47 innerhalb 20° B, Flanke 0,08 mm/°), kurze Sätze dagegen seltener. Das ist genau die Zone, in der Andreas den Fehler sieht
+  - Ø2-Kugel Job 21 (T4083, LDYN1) über dieselbe Fläche: 16 000 °/min = 267 °/s, Sätze bis 0,70 ms, **Z-Geschwindigkeit bis 36 mm/s, bis 106 Z-Umkehrungen je Umdrehung in der Kuppel** – und kein Fehler. Ø1,5 (T4086, LDYN2) ebenso; T4098/T4089 Hohlkehle 10 000 °/min mit Sätzen von 1,13 ms
+  - **Schlussfolgerung:** Geometrie und Vorschub des MKD-Jobs sind in jeder Kennzahl harmloser als die Kugeljobs. Was den MKD unterscheidet: der Dynamiksatz (bis 10.11. **DYN60**: 50 % der B-Grenze = 5 000 °/s², Rampe 30 ms = härtester Ruck, Bahnabweichung 0,2 mm), die Spitze auf der Achse (X 0, `leadangle 0`) und die Dauer (26 min am Stück). Der Fehlerwert 37 500 °/s² (01.11.) ist das 7,5-fache dessen, was der Planer mit DYN60 selbst anfordern darf – also kein geplanter Bremsvorgang, sondern ein Sprung in der Sollwertbahn. Mit der Kuppel (viele Z-Umkehrungen) und DYN60 (weiche 0,2-mm-Glättung, harter Ruck) passt das Bild zu den Beobachtungen von Andreas
+- **Nächste Schritte (Reihenfolge):**
+  1. Logs holen: `skripte/LOGS_SAMMELN.ps1` am Steuerungs-PC (kopiert LoggedEvents.db, HMI-Logs 3 Tage, die 12 letzten NC aus `C:\CNC\wp`, diag_data, DYN-Sätze auf den Desktop) → USB-Stick → Mac `~/Downloads`. Auswerten: `python3 -I skripte/loggedevents_dump.py <LoggedEvents.db>` (alle 50120/50121 mit Programm und Satznummer), dann Satznummern im NC nachschlagen (Y-Position, Satzlänge, Z-Umkehr?) – damit wird die Stelle erstmals sichtbar, auch über die Warnungen 50121 statistisch
+  2. Im NC der Nacht prüfen: `LDYN17` oder `LDYN60` nach `T4126 M6`. Bei LDYN60: zuerst `DYN18` auf die Maschine, dann neue `ldyn.cfg` am CAM-PC, Nacht beobachten (20-cam-hyperdent.md)
+  3. Bleibt der Fehler mit LDYN17: `_201` → LDYN26 (längste Rampe) als Gegenprobe, dann MKD-Vorschub 5 500 → 4 000 in der Vorlage (Plan Primärteleskop Punkt 54), dann HEDS (Look-ahead 200 → 500, CNC 4.34). Nie B-Grenzen (P-AXIS-00008/00441/00442) erhöhen
