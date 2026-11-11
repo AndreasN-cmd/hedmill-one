@@ -15,7 +15,7 @@
 | 09.11.2026 | G58-Z bewusst NICHT geändert (gemessen +0,0625, würde alle gedrehten Durchmesser um 0,125 vergrößern) | Nullpunkttabelle | −0,025 | −0,025 | – Gegenprobe T4090 09.11.2026 ebenfalls +0,0625 → Maschine, nicht Werkzeug. Bleibt bis zur Entscheidung zusammen mit den Frässtrategien |
 | 11.11.2026 | G54-X (Plättchen MESS_RONDE_G54G55_V1: W2 5,901 / W3 6,143) | Nullpunkttabelle | +0,140 | +0,080 | ❓ erstes Rondenteil ist die Probe |
 | 11.11.2026 | G55-X (gleich G54) | Nullpunkttabelle | +0,140 | +0,080 | ❓ |
-| 11.11.2026 | **Werkzeug-Längenoffset** (Plättchen Dicke 5,8955 → −0,052; HEDS-Weg) | HMI → BACK / Maschinenparameter, `stToolChange.fToolLengthOffset` (= `V.E.ToolLengthOffset`), „Übertragen in SPS“ | 49,828 | 49,776 | ✅ Kontroll-Tonne D 9,982 (erwartet 9,980) |
+| 11.11.2026 | **Werkzeug-Längenoffset** (Plättchen Dicke 5,8955 → −0,052; HEDS-Weg) | HMI → BACK / Maschinenparameter, `stToolChange.fToolLengthOffset` (= `V.E.ToolLengthOffset`), „Übertragen in SPS“ | 49,828 | 49,776 | ✅ Kontroll-Tonne D 9,982 (erwartet 9,980) – ⚠️ gilt nur für danach voll vermessene Werkzeuge (T4081, T4090); alle anderen Längen noch alt, Vollmessung aller Werkzeuge steht aus (docs/02, Befund 11.11. abends) |
 | 11.11.2026 | G59-Z rechnerisch nachgeführt (Längenoffset −0,052) | Nullpunkttabelle | +0,209 | +0,157 | ✅ Kontroll-Tonne max. Länge 19,495 (Soll 19,500) |
 | 11.11.2026 | G54/G55-A geprüft (Plättchen ΔA +0,002°) | Nullpunkttabelle | −0,040 | −0,040 | ✅ keine Änderung nötig |
 | 11.11.2026 | G58-Z Rest aus der Kontroll-Tonne (5,000 − 9,982/2 = +0,009); damit Drehfräsen A0 = programmiertes Maß | Nullpunkttabelle | −0,025 | −0,016 | ❓ Fit-Check am nächsten Primärteleskop (Entscheidung Andreas: keine neue Vorlagenversion vorher) |
