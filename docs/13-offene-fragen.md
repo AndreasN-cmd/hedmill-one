@@ -3,7 +3,7 @@
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
 > Stand: 11.11.2026. Andreas 11.11.2026: Halternummerierung und Werkzeugkontrolle der Tonne gestrichen; einziger offener Kalibrierpunkt ist das Schräg-Kalibrierteil (irgendwann später, Maschine soll jetzt produzieren). Technikertermin Mo/Di 16./17.11.2026
 
-- Werkzeuglängen 12.11.2026 um +0,022 … +0,048 größer als „alt + 0,052“ (alle Werkzeuge, `docs/02-koordinaten-nullpunkte.md`): Taster/Spindelbezug oder Werkzeug im Halter? Messing-Tonne mit T4126 und T4089 direkt nach einer Vollmessung (auch zur Klärung des Teleskops 12.11., CAM §27)
+- Werkzeuglängen 12.11.2026 um +0,022 … +0,048 größer als „alt + 0,052“ (alle Werkzeuge, `docs/02-koordinaten-nullpunkte.md`): Taster/Spindelbezug oder Werkzeug im Halter? Messing-Tonne mit T4126 und T4089 direkt nach einer Vollmessung (auch zur Klärung des Teleskops 12.11., CAM §27) → Programm `eigene-programme/MESS_G58_A0_ENDWZ_V1.nc` liegt bereit
 - Preform-Ablegen 03.11.2026: Reicht −26.2 (Ablegen 50,8)? Holen noch sauber? Falls weiter nach oben: ab welchem Wert wird das Holen zu hoch?
 - B-Achsen-Laserfenster `stCheckPosZLaser0[0..3]` komplett auslesen (LASERCHECK_LESEN um Laser0 erweitern)
 - Nach dem Neustart 01.11.2026: Sind die drei SPS-Werte erhalten (LASERCHECK: Fenster 3 min 480; Lift heben/senken ohne Störung)? Falls nicht → machinePara nicht PERSISTENT, Werte nach jedem Neustart neu schreiben bzw. anderen Weg suchen
