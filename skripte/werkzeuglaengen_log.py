@@ -144,6 +144,25 @@ def main():
         mark = "*" if w in TELESKOP else " "
         print(f" {mark}T{w}: {basis}\n      {stat}\n      -> {urteil}")
     print("\n* = Teleskop-Werkzeug. Streuung des Tasters je Messung erfahrungsgemäß ± 0,01.")
+    # Laengenaenderung waehrend einer Einspannung: Messung beim Abgeben minus Messung beim Holen (Waerme der Spindel)
+    print("\n## Länge nach dem Job minus vor dem Job (je Einspannung; + = Werkzeugspitze tiefer, schneidet tiefer)")
+    offen, paare = {}, []
+    for e in ev:
+        if e["art"] not in ("delta", "voll"):
+            continue
+        if e["richtung"] == "an":
+            offen[e["wz"]] = (e["t"], 0.0 if e["art"] == "voll" else e["wert"])
+        elif e["art"] == "delta" and e["wz"] in offen:
+            t0, d0 = offen.pop(e["wz"])
+            if t0 < OFFSET[-1][0] <= e["t"]:
+                continue
+            if abs(e["wert"] - d0) <= 0.06:
+                paare.append((e["wz"], d0, e["wert"]))
+    for w in TELESKOP:
+        v = [p for p in paare if p[0] == w]
+        if v:
+            print(f"  T{w}: n {len(v):2d}  beim Holen {statistics.median([p[1] for p in v])*1000:+5.1f} µm, beim Abgeben "
+                  f"{statistics.median([p[2] for p in v])*1000:+5.1f} µm, Änderung Median {statistics.median([p[2]-p[1] for p in v])*1000:+5.1f} µm")
     au = [e for e in ev if e["art"] == "ausserhalb"]
     for e in au:
         print(f"Hinweis {z(e['t'])}: {e['text']}")
