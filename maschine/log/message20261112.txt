@@ -271,3 +271,80 @@
 20261112T115754944 --- Auf Position 15 ist ein Fraeser. Messwert = 522
 20261112T115810367 --- T4081 Werkzeugdeltalänge -0.01139775mm ermittelt
 20261112T115811404 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261112T134138476 --- Der Bediener hat bestätigt, dass ohne Blankwechsel weiter gearbeitet werden soll
+20261112T134149535 --- T4090 Werkzeugdeltalänge -0.00112309mm ermittelt
+20261112T134151367 --- Auf Position 15 ist kein Fraeser. Messwert = 698
+20261112T134201587 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261112T134202529 --- Auf Position 21 ist ein Fraeser. Messwert = 515
+20261112T134217986 --- T4090 Werkzeugdeltalänge 0.00116114mm ermittelt
+20261112T134219007 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261112T134602418 --- T4126 Werkzeugdeltalänge 0.01142907mm ermittelt
+20261112T134604317 --- Auf Position 21 ist kein Fraeser. Messwert = 699
+20261112T134614564 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261112T134615497 --- Auf Position 7 ist ein Fraeser. Messwert = 518
+20261112T134631282 --- T4126 Werkzeugdeltalänge 0.01243149mm ermittelt
+20261112T134632364 --- T4126 wurde aus dem Werkzeugwechsler geholt
+20261112T134747593 --- T4089 Werkzeugdeltalänge -0.00175665mm ermittelt
+20261112T134749532 --- Auf Position 7 ist kein Fraeser. Messwert = 594
+20261112T134759770 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261112T134800854 --- Auf Position 23 ist ein Fraeser. Messwert = 518
+20261112T134816703 --- T4089 Werkzeugdeltalänge -0.00958063mm ermittelt
+20261112T134817730 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261112T160223406 --- Der Bediener hat bestätigt, dass ohne Blankwechsel weiter gearbeitet werden soll
+20261112T160234775 --- T4098 Werkzeugdeltalänge -0.00546426mm ermittelt
+20261112T160236811 --- Auf Position 23 ist kein Fraeser. Messwert = 700
+20261112T160247186 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261112T160248386 --- Auf Position 26 ist ein Fraeser. Messwert = 514
+20261112T160304563 --- T4098 Werkzeugdeltalänge -0.00935215mm ermittelt
+20261112T160305577 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261112T160309709 --- WARMTEST T4098 geholt, Laenge aktiv 23.8091mm
+20261112T160750222 --- T4098 Werkzeuglänge 23.8201771mm ermittelt (erwartet 25.2mm)
+20261112T160755776 --- WARMTEST T4098 nach 4 min nachgemessen, Laenge aktiv 23.8202mm
+20261112T160833801 --- T4089 Werkzeugdeltalänge -0.00034715mm ermittelt
+20261112T160835899 --- Auf Position 26 ist kein Fraeser. Messwert = 698
+20261112T160846430 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261112T160847522 --- Auf Position 23 ist ein Fraeser. Messwert = 520
+20261112T160903391 --- T4089 Werkzeugdeltalänge 0.0141835mm ermittelt
+20261112T160904419 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261112T160910581 --- WARMTEST T4089 geholt, Laenge aktiv 24.6009mm
+20261112T162015033 --- Der Bediener hat bestätigt, dass ohne Blankwechsel weiter gearbeitet werden soll
+20261112T162025943 --- T4081 Werkzeuglänge 24.59773638mm ermittelt (erwartet 26mm)
+20261112T162028009 --- Auf Position 23 ist kein Fraeser. Messwert = 700
+20261112T162038394 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261112T162039294 --- Auf Position 15 ist ein Fraeser. Messwert = 526
+20261112T162054726 --- T4081 Werkzeugdeltalänge 0.00549869mm ermittelt
+20261112T162055744 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261112T162212078 --- Der Bediener hat bestätigt, dass ohne Blankwechsel weiter gearbeitet werden soll
+20261112T162223136 --- T4083 Werkzeugdeltalänge -0.00083101mm ermittelt
+20261112T162224959 --- Auf Position 15 ist kein Fraeser. Messwert = 697
+20261112T162235169 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261112T162235993 --- Auf Position 17 ist ein Fraeser. Messwert = 515
+20261112T162251304 --- T4083 Werkzeugdeltalänge -0.00400225mm ermittelt
+20261112T162252320 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261112T162254261 --- WARMT4083S18000DYN4: Warmlauf 4 min Start, Laenge aktiv 27.3326mm
+20261112T162710828 --- T4083 Werkzeuglänge 27.34019853mm ermittelt (erwartet 28.7mm)
+20261112T162713600 --- WARMT4083S18000DYN4: warm nachgemessen, Laenge aktiv 27.3402mm
+20261112T162753123 --- T4089 Werkzeugdeltalänge 0.00020357mm ermittelt
+20261112T162754837 --- Auf Position 17 ist kein Fraeser. Messwert = 696
+20261112T162804982 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261112T162806077 --- Auf Position 23 ist ein Fraeser. Messwert = 520
+20261112T162821974 --- T4089 Werkzeugdeltalänge 0.00301184mm ermittelt
+20261112T162823013 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261112T162824924 --- WARMT4089S40000DYN5: Warmlauf 4 min Start, Laenge aktiv 24.6007mm
+20261112T163246213 --- T4089 Werkzeuglänge 24.61124994mm ermittelt (erwartet 26mm)
+20261112T163249023 --- WARMT4089S40000DYN5: warm nachgemessen, Laenge aktiv 24.6112mm
+20261112T163249041 --- WARMT4089S40000DYN5: Warmlauf 4 min Start, Laenge aktiv 24.6112mm
+20261112T163710670 --- T4089 Werkzeuglänge 24.61401083mm ermittelt (erwartet 26mm)
+20261112T163713610 --- WARMT4089S40000DYN5: warm nachgemessen, Laenge aktiv 24.614mm
+20261112T163757860 --- T4126 Werkzeugdeltalänge -0.00043263mm ermittelt
+20261112T163759858 --- Auf Position 23 ist kein Fraeser. Messwert = 699
+20261112T163810253 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261112T163811195 --- Auf Position 7 ist ein Fraeser. Messwert = 520
+20261112T163827000 --- T4126 Werkzeugdeltalänge 0.01114889mm ermittelt
+20261112T163828083 --- T4126 wurde aus dem Werkzeugwechsler geholt
+20261112T163830021 --- WARMT4126S6000DYN17: Warmlauf 4 min Start, Laenge aktiv 23.9784mm
+20261112T164244836 --- T4126 Werkzeuglänge 23.96792509mm ermittelt (erwartet 25.3mm)
+20261112T164248034 --- WARMT4126S6000DYN17: warm nachgemessen, Laenge aktiv 23.9679mm
+20261112T164248055 --- WARMT4126S6000DYN17: Warmlauf 4 min Start, Laenge aktiv 23.9679mm
+20261112T164703044 --- T4126 Werkzeuglänge 23.96737673mm ermittelt (erwartet 25.3mm)
+20261112T164706301 --- WARMT4126S6000DYN17: warm nachgemessen, Laenge aktiv 23.9674mm

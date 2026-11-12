@@ -144,25 +144,18 @@ def main():
         mark = "*" if w in TELESKOP else " "
         print(f" {mark}T{w}: {basis}\n      {stat}\n      -> {urteil}")
     print("\n* = Teleskop-Werkzeug. Streuung des Tasters je Messung erfahrungsgemäß ± 0,01.")
-    # Laengenaenderung waehrend einer Einspannung: Messung beim Abgeben minus Messung beim Holen (Waerme der Spindel)
-    print("\n## Länge nach dem Job minus vor dem Job (je Einspannung; + = Werkzeugspitze tiefer, schneidet tiefer)")
-    offen, paare = {}, []
-    for e in ev:
-        if e["art"] not in ("delta", "voll"):
-            continue
-        if e["richtung"] == "an":
-            offen[e["wz"]] = (e["t"], 0.0 if e["art"] == "voll" else e["wert"])
-        elif e["art"] == "delta" and e["wz"] in offen:
-            t0, d0 = offen.pop(e["wz"])
-            if t0 < OFFSET[-1][0] <= e["t"]:
-                continue
-            if abs(e["wert"] - d0) <= 0.06:
-                paare.append((e["wz"], d0, e["wert"]))
+    # Laengenaenderung je Einspannung. Die Steuerung rechnet jedes Delta in die aktive Laenge ein (aktiv = letzte
+    # Vollmessung + Summe aller Deltas danach, belegt mit WARMT-Logzeilen 12.11.2026) -> jedes Delta ist die Aenderung seit
+    # der letzten Messung: Delta beim Abgeben = Aenderung WAEHREND des Jobs, Delta beim Holen = Aenderung zwischen den Jobs.
+    print("\n## Längenänderung je Werkzeug (+ = Spitze tiefer, schneidet tiefer; jedes Delta = Änderung seit der letzten Messung)")
     for w in TELESKOP:
-        v = [p for p in paare if p[0] == w]
-        if v:
-            print(f"  T{w}: n {len(v):2d}  beim Holen {statistics.median([p[1] for p in v])*1000:+5.1f} µm, beim Abgeben "
-                  f"{statistics.median([p[2] for p in v])*1000:+5.1f} µm, Änderung Median {statistics.median([p[2]-p[1] for p in v])*1000:+5.1f} µm")
+        ab_ = [e["wert"] for e in ev if e["wz"] == w and e["art"] == "delta" and e["richtung"] == "ab"
+               and not (e["t"][:8] == "20261111" and "0926" <= e["t"][9:13] <= "1019") and abs(e["wert"]) <= 0.06]
+        an_ = [e["wert"] for e in ev if e["wz"] == w and e["art"] == "delta" and e["richtung"] == "an"
+               and not (e["t"][:8] == "20261111" and "0926" <= e["t"][9:13] <= "1019") and abs(e["wert"]) <= 0.06]
+        if ab_:
+            print(f"  T{w}: während des Jobs (beim Abgeben) Median {statistics.median(ab_)*1000:+5.1f} µm (n {len(ab_)}), "
+                  f"zwischen den Jobs (beim Holen) Median {statistics.median(an_)*1000 if an_ else 0:+5.1f} µm (n {len(an_)})")
     au = [e for e in ev if e["art"] == "ausserhalb"]
     for e in au:
         print(f"Hinweis {z(e['t'])}: {e['text']}")
