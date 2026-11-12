@@ -5,7 +5,7 @@
 
 - Werkzeuglängen 12.11.2026 um +0,022 … +0,048 größer als „alt + 0,052“ (alle Werkzeuge, `docs/02-koordinaten-nullpunkte.md`): Taster/Spindelbezug oder Werkzeug im Halter? Messing-Tonne mit T4126 und T4089 direkt nach einer Vollmessung (auch zur Klärung des Teleskops 12.11., CAM §27) → Programm `eigene-programme/MESS_G58_A0_ENDWZ_V1.nc` liegt bereit
 - Wärmedehnung der Spindel je Drehzahl (MKD −22 µm, T4089 +14 µm je Job, `docs/02-koordinaten-nullpunkte.md`): bei HEDS fragen, ob die Steuerung eine Spindel-Wärmekompensation hat bzw. ob das Delta vor dem Job verrechnet wird
-- `TEST_WARM_NACHMESSEN_V1.nc` fahren (ohne Bauteil): laufen `V.G.WZ_AKT.P[0] = 0` und das zweite `T… M6` mit gleichem Werkzeug fehlerfrei? Wie groß ist die Längenänderung nach 4 und 8 min (T4098, T4089, T4126)?
+- `TEST_WARM_NACHMESSEN_V2.nc` fahren (ohne Bauteil, Unterprogramme `sub/WARMT…` vorher nach `C:\HMI\NCProg\sub\`): laufen `V.G.WZ_AKT.P[0] = 0` und das zweite `T… M6` im Unterprogramm fehlerfrei? Längenänderung nach 4 und 8 min (T4083, T4089, T4126)?
 - Preform-Ablegen 03.11.2026: Reicht −26.2 (Ablegen 50,8)? Holen noch sauber? Falls weiter nach oben: ab welchem Wert wird das Holen zu hoch?
 - B-Achsen-Laserfenster `stCheckPosZLaser0[0..3]` komplett auslesen (LASERCHECK_LESEN um Laser0 erweitern)
 - Nach dem Neustart 01.11.2026: Sind die drei SPS-Werte erhalten (LASERCHECK: Fenster 3 min 480; Lift heben/senken ohne Störung)? Falls nicht → machinePara nicht PERSISTENT, Werte nach jedem Neustart neu schreiben bzw. anderen Weg suchen
