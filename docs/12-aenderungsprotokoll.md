@@ -1,7 +1,7 @@
 # Änderungsprotokoll (Rückweg auf Herstellerstand)
 
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
-> Stand: 09.11.2026 (Export aus dem claude.ai-Projekt „Hedmill Maschine“)
+> Stand: 13.11.2026 (Grundlage: Export aus dem claude.ai-Projekt „Hedmill Maschine“ vom 09.11.2026)
 
 | Datum | Was | Ort (Datei / Variable / Feld) | Alt | Neu | Getestet |
 |---|---|---|---|---|---|
@@ -19,6 +19,8 @@
 | 11.11.2026 | G59-Z rechnerisch nachgeführt (Längenoffset −0,052) | Nullpunkttabelle | +0,209 | +0,157 | ✅ Kontroll-Tonne max. Länge 19,495 (Soll 19,500) |
 | 11.11.2026 | G54/G55-A geprüft (Plättchen ΔA +0,002°) | Nullpunkttabelle | −0,040 | −0,040 | ✅ keine Änderung nötig |
 | 11.11.2026 | G58-Z Rest aus der Kontroll-Tonne (5,000 − 9,982/2 = +0,009); damit Drehfräsen A0 = programmiertes Maß | Nullpunkttabelle | −0,025 | −0,016 | ❓ Fit-Check am nächsten Primärteleskop (Entscheidung Andreas: keine neue Vorlagenversion vorher) |
+| 12.11.2026 | Eigene Unterprogramme Warmlauf + Nachmessen CoCr-Primärteleskop (`WARMT4083S18000DYN4`, `WARMT4089S40000DYN5`, `WARMT4126S6000DYN17`, Quelle `eigene-programme/sub/`) | `C:\HMI\NCProg\sub\` (neue Dateien, kein Herstellerprogramm geändert) | – | 3 Dateien | ✅ Test V3 12.11.2026 problemlos; Rückweg: Dateien löschen, dann laufen CAM-Vorlagen ab V5.39 nicht mehr (NC stoppt an der Aufrufzeile) |
+| 13.11.2026 | Eigene Unterprogramme Warmlauf + Nachmessen Titan-Primärteleskop CAM V5.41 (`WARMT5053S13000DYN4`, `WARMT5059S35000DYN5`, `WARMT5062S7000DYN18`, Quelle `eigene-programme/sub/`) | `C:\HMI\NCProg\sub\` (neue Dateien, kein Herstellerprogramm geändert) | – | 3 Dateien (Andreas) | ❓ noch nicht gelaufen, erstes Titan-Teleskop ist die Probe; Rückweg: Dateien löschen |
 | 2026 | Endposition B | eigene V3-Programme | B270 | B290 | ✅ |
 | 01.11.2026 | Preform-Greifhöhe Wechsler (Plätze + Rundwechsler, Holen + Ablegen) | setVPVars Z. 27, `V.P.ZOffsetPreformC` | −17.7 | −28.2 | ✅ Holen Platz 6 · ⚠️ Ablegen zu tief → 03.11. ersetzt |
 | 01.11.2026 | Laser-Fenster Blankhalter Untergrenze | SPS (TwinCAT) `GVL_HEDmillOne.machinePara.stBlankChange.stCheckPosZLaser1[3].MinValue` | 505 | 480 | ✅ Erkennung Platz 7 · ❓ nach Neustart |
