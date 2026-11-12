@@ -1,8 +1,9 @@
-; WARMT4126S6000DYN17 - Warmlauf 4 min + Nachmessen fuer Drehfraesstrategien (Spindelwaerme)
-; Werkzeug T4126, Drehzahl 6000, Dynamiksatz LDYN17. Version 1, 2026-11-12 (Andreas/Claude).
+; WARMT4126S6000DYN17 - Warmlauf 4 min + Nachmessen fuer Drehfraesstrategien (Spindelwaerme), Version 2
+; Werkzeug T4126, Drehzahl 6000, Dynamiksatz LDYN17. 2026-11-12 (Andreas/Claude).
 ; Aufruf: NC-Text 'nach Werkzeugwechsel' im hyperDENT-Job (L WARMT4126S6000DYN17). Der Postprozessor setzt ihn
 ; nach 'T4126 M6' und 'LDYN17', vor 'S6000 M3'. Danach schaltet der PP Spindel und Luft selbst wieder ein.
-; Messen NUR ueber das Hersteller-M6 (schaltet die Spindel vor dem Messen aus). Nie bei drehender Spindel.
+; Messen mit dem Hersteller-measureTool erst nach M5 + 3 s (measureTool macht selbst nochmal M5).
+; Ohne zweites M6, damit cleanWS (Reinigungsfahrt) entfaellt. Rueckweg: Version 1 mit 'T.. M6'.
 ; Quelle: ../fraesstrategien-hyperdent/docs/drehfraesen_spindelwaerme.md, tools/warmlauf_unterprogramme.py
 $IF V.G.T_AKT != 4126 OR V.E.ToolInSpindle.Basic != 4126
    #MSG SYN HMI ["WARMT4126S6000DYN17: falsches Werkzeug in der Spindel - Abbruch"]
@@ -10,15 +11,30 @@ $IF V.G.T_AKT != 4126 OR V.E.ToolInSpindle.Basic != 4126
    M5
    M199
 $ENDIF
-#MSG SAVE EXCLUSIVE ["%S --- WARMT4126S6000DYN17: Warmlauf 4 min Start", V.G.TIME_STAMP_FILE_NAME]
+#MSG SAVE EXCLUSIVE ["%S --- WARMT4126S6000DYN17: Warmlauf 4 min Start, Laenge aktiv %Fmm", V.G.TIME_STAMP_FILE_NAME, V.G.WZ_AKT.L]
 S6000 M3
 M119 ; Spindel EIN -> Spindelluft EIN
 G04 240
 M5
 M118 ; Spindel AUS -> Spindelluft AUS
 G04 3
-V.G.WZ_AKT.P[0] = 0 ; naechstes M6 misst voll (wie Refresh)
-T4126 M6 ; gleiches Werkzeug: Hersteller-M6 haelt Spindel an, misst, laedt Werkzeugdaten, Klappe zu
+V.G.WZ_AKT.P[0] = 0 ; measureTool speichert die Laenge (Vollmessung, wie Refresh)
+L measureTool ; Hersteller: M5, M9, Klappe auf, Z hoch, A0 B0, Taster, Laenge, Werkzeugdaten
+#FLUSH WAIT
+$IF V.E.ToolInvalid != 0 OR V.E.ToolInSpindle.Basic != 4126 OR V.G.WZ_AKT.L < 15
+   #MSG SYN HMI ["WARMT4126S6000DYN17: Nachmessen nicht in Ordnung - Abbruch"]
+   #MSG SAVE EXCLUSIVE ["%S --- WARMT4126S6000DYN17: Nachmessen nicht in Ordnung - Abbruch", V.G.TIME_STAMP_FILE_NAME]
+   M199
+$ENDIF
+#TOOL PREP [V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Sister, V.E.ToolInSpindle.Variant]
+#TOOL DATA [V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Sister, V.E.ToolInSpindle.Variant]
+#MEAS DEFAULT
+L SAFEPOS
+#MSG SYN HMI ["Warte auf Wechslerklappe geschlossen"]
+M62 ; Wechslerklappe schliessen (measureTool hat sie geoeffnet)
+#MSG SYN HMI [""]
+M50 ; Loadertuer entriegeln (wie Ende M6)
+V.E.ToolChangeActiveNo = 0
 LDYN17
 #FLUSH WAIT
 #MSG SAVE EXCLUSIVE ["%S --- WARMT4126S6000DYN17: warm nachgemessen, Laenge aktiv %Fmm", V.G.TIME_STAMP_FILE_NAME, V.G.WZ_AKT.L]

@@ -1,5 +1,5 @@
 ; ==========================================================
-; TEST_WARM_NACHMESSEN V2 - Warmlauf-Unterprogramme pruefen
+; TEST_WARM_NACHMESSEN V3 - Warmlauf-Unterprogramme (Version 2) pruefen
 ; OHNE Bauteil, OHNE Preform. Kein Fraesen, nur Werkzeugwechsel,
 ; Spindel in Sicherheitsposition und Messen am Taster.
 ; ----------------------------------------------------------
@@ -14,19 +14,24 @@
 ;   Dieses Programm ruft die Unterprogramme GENAU an der Stelle
 ;   auf, an der sie im Teleskop-NC stehen werden:
 ;     T.. M6 / LDYN.. / L WARM... / S.. M3 / M110 / M120 / M106 / M119
-;   Je Unterprogramm: Werkzeug pruefen, 4 min auf Drehzahl,
-;   M5, 3 s, V.G.WZ_AKT.P[0] = 0, gleiches T.. M6 (Hersteller misst
-;   voll, Spindel aus), LDYN.., Laenge ins Log.
+;   Je Unterprogramm (Version 2): Werkzeug pruefen, 4 min auf
+;   Drehzahl, M5, 3 s, V.G.WZ_AKT.P[0] = 0, L measureTool (Hersteller,
+;   macht selbst M5, misst voll), Werkzeugdaten laden, SAFEPOS,
+;   Klappe zu (M62), LDYN.., Laenge ins Log. OHNE zweites M6, damit
+;   die Reinigungsfahrt cleanWS entfaellt (Andreas 12.11.).
+;   (V1-Test mit zweitem M6 lief am 12.11. fehlerfrei.)
 ;   T4089 und T4126 zweimal (Laenge nach 4 und nach 8 min).
 ;
-; SICHERHEIT: Gemessen wird nur im Hersteller-M6 (M5 vor dem
-;   Messen). Vor jedem M6 dieses Programms steht zusaetzlich M5.
+; SICHERHEIT: Vor dem Messen M5 + 3 s, measureTool schaltet die
+;   Spindel selbst nochmal aus. Vor jedem M6 dieses Programms M5.
+; ACHTEN: Nach jedem Nachmessen muss die Wechslerklappe wieder zu
+;   sein (M62), bevor die Spindel wieder anlaeuft.
 ;
 ; ABLAUF AN DER MASCHINE:
 ;   - Kein Bauteil, keine Preform noetig.
 ;   - Meldung "ohne Blankwechsel weiterarbeiten" je M6 bestaetigen.
 ;   - ERSTEN LAUF im Einzelsatz mit reduziertem Override.
-;   - Laufzeit ca. 30 min.
+;   - Laufzeit ca. 25 min.
 ;   - Danach LOGS_SAMMELN, Ordner an Claude (Suchwort WARMT).
 ; ==========================================================
 
