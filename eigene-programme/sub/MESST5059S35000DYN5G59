@@ -1,0 +1,84 @@
+; MESST5059S35000DYN5G59 - Nur messen ohne Werkzeugwechsel und ohne cleanWS (Spindelwaerme), Version 1
+; Werkzeug T5059, Drehzahl danach 35000, Dynamiksatz LDYN5, Nullpunkt G59. 2026-11-13 (Andreas/Claude).
+; Aufruf: NC-Text 'nach letzter Position' des Jobs VOR dem kritischen Job (L MESST5059S35000DYN5G59).
+; Gleiches Werkzeug in beiden Jobs, kein M6 dazwischen. Der Vorjob hat das Werkzeug warm gefahren.
+; Ablauf: Position merken, SAFEPOS, Spindel AUS, 4 s, measureTool (Vollmessung, macht selbst nochmal M5),
+;   Werkzeugdaten laden, Klappe zu, Spindel EIN, zurueck wie der Postprozessor anfaehrt:
+;   SAFEPOS180, G59, A/B, X/Y, Z. Danach schreibt der PP den Kopf des Folgejobs (Luft, Absaugung).
+; Weicht die Laenge um mehr als 0,015 ab: einmal neu messen. Mehr als 0,1: Abbruch (Bruch, Werkzeug gezogen).
+; Quelle: ../fraesstrategien-hyperdent/docs/drehfraesen_spindelwaerme.md, tools/warmlauf_unterprogramme.py
+#VAR
+   V.L.PX = 0
+   V.L.PY = 0
+   V.L.PZ = 0
+   V.L.PA = 0
+   V.L.PB = 0
+   V.L.LAlt = 0
+   V.L.Diff = 0
+#ENDVAR
+$IF V.G.T_AKT != 5059 OR V.E.ToolInSpindle.Basic != 5059
+   #MSG SYN HMI ["MESST5059S35000DYN5G59: falsches Werkzeug in der Spindel - Abbruch"]
+   #MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59: falsches Werkzeug T%D in der Spindel - Abbruch", V.G.TIME_STAMP_FILE_NAME, V.E.ToolInSpindle.Basic]
+   M5
+   M199
+$ENDIF
+V.L.PX = V.A.ABS.X ; letzte programmierte Position im aktiven Nullpunkt
+V.L.PY = V.A.ABS.Y
+V.L.PZ = V.A.ABS.Z
+V.L.PA = V.A.ABS.A
+V.L.PB = V.A.ABS.B
+V.L.LAlt = V.G.WZ_AKT.L
+#MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59: Start, Laenge aktiv %Fmm", V.G.TIME_STAMP_FILE_NAME, V.G.WZ_AKT.L]
+L SAFEPOS ; Z hoch, A0 B0, X-120 Y0, Klappe zu (wie im M6 vor dem Messen)
+M5
+M118 ; Spindel AUS -> Spindelluft AUS
+G04 4 ; Auslauf der Spindel
+L measureTool ; Hersteller: M5, M9, Klappe auf, Z hoch, A0 B0, Taster, Laenge, Werkzeugdaten
+#FLUSH WAIT
+$IF V.E.ToolInvalid != 0 OR V.E.ToolInSpindle.Basic != 5059 OR V.G.WZ_AKT.L < 15
+   #MSG SYN HMI ["MESST5059S35000DYN5G59: Messen nicht in Ordnung - Abbruch"]
+   #MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59: Messen nicht in Ordnung - Abbruch", V.G.TIME_STAMP_FILE_NAME]
+   M199
+$ENDIF
+#TOOL PREP [V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Sister, V.E.ToolInSpindle.Variant]
+#TOOL DATA [V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Sister, V.E.ToolInSpindle.Variant]
+#FLUSH WAIT
+V.L.Diff = V.G.WZ_AKT.L - V.L.LAlt
+$IF ABS[V.L.Diff] > 0.015
+   #MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59: Aenderung %Fmm groesser 0,015 - messe nochmal", V.G.TIME_STAMP_FILE_NAME, V.L.Diff]
+   L measureTool ; Hersteller: M5, M9, Klappe auf, Z hoch, A0 B0, Taster, Laenge, Werkzeugdaten
+   #FLUSH WAIT
+   $IF V.E.ToolInvalid != 0 OR V.E.ToolInSpindle.Basic != 5059 OR V.G.WZ_AKT.L < 15
+      #MSG SYN HMI ["MESST5059S35000DYN5G59: Messen nicht in Ordnung - Abbruch"]
+      #MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59: Messen nicht in Ordnung - Abbruch", V.G.TIME_STAMP_FILE_NAME]
+      M199
+   $ENDIF
+   #TOOL PREP [V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Sister, V.E.ToolInSpindle.Variant]
+   #TOOL DATA [V.E.ToolInSpindle.Basic, V.E.ToolInSpindle.Sister, V.E.ToolInSpindle.Variant]
+   #FLUSH WAIT
+   V.L.Diff = V.G.WZ_AKT.L - V.L.LAlt
+$ENDIF
+$IF ABS[V.L.Diff] > 0.1
+   #MSG SYN HMI ["MESST5059S35000DYN5G59: Laengenaenderung groesser 0,1 - Abbruch"]
+   #MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59: Laengenaenderung %Fmm groesser 0,1 - Abbruch", V.G.TIME_STAMP_FILE_NAME, V.L.Diff]
+   M199
+$ENDIF
+#MEAS DEFAULT
+L SAFEPOS
+#MSG SYN HMI ["Warte auf Wechslerklappe geschlossen"]
+M62 ; Wechslerklappe schliessen (measureTool hat sie geoeffnet)
+#MSG SYN HMI [""]
+M50 ; Loadertuer entriegeln (wie Ende M6)
+V.E.ToolChangeActiveNo = 0
+LDYN5
+S35000 M3
+M119 ; Spindel EIN -> Spindelluft EIN
+G04 4 ; Hochlauf
+L SAFEPOS180
+G59
+G01 A=V.L.PA B=V.L.PB F25000
+G01 X=V.L.PX Y=V.L.PY
+G01 Z=V.L.PZ
+#FLUSH WAIT
+#MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59: nachgemessen, Laenge aktiv %Fmm, Aenderung %Fmm", V.G.TIME_STAMP_FILE_NAME, V.G.WZ_AKT.L, V.L.Diff]
+M17
