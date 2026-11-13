@@ -5,7 +5,9 @@
 
 - 13.11.2026: **Test `TEST_NURMESSEN_V4.nc` – Z-Achse fährt beim Anheben in den Endschalter** (Andreas: „Du kannst da nicht mit 25.000 mm pro Minute in den Achsen rumjagen.“)
   - ✅ Unsere Fahrten in V4 und `MESST…` Version 1 liefen mit F25000 (wie der Postprozessor); Rückfahrt in Z auf die gemerkte Position `V.A.ABS.Z`
-  - ❓ Ursache nicht belegt: entweder Überschwingen bei F25000 oder ein Z-Ziel über dem Software-Ende (`SAFEPOS` fährt Z auf SWE − 1; liefert `V.A.ABS.Z` nicht den G59-Wert, wäre das Ziel zu hoch). Log der Stelle fehlt
+  - ✅ Ursache (Log 13.11., LoggedEvents.db, `skripte/loggedevents_dump.py`): in beiden Läufen (18:07, 18:24) beim **dritten** Aufruf von `MESST4089S40000DYN5G59` (davor `G04 120`) Fehler **TcCnc.PathPrep 120002** in der Zeile `G01 Z=V.L.PZ` (FilePos 3954): Achse 3 (Z) Ziel 143 mm, oberes Software-Ende 138 mm, Istwert 137,1 (Höhe aus `SAFEPOS180` = SWE − 1). Die Steuerung hat die Fahrt in der Bahnvorbereitung verweigert, kein Hardware-Endschalter. Aufruf 1 und 2 (davor ein Fahrsatz) liefen sauber zurück
+  - ❓ `V.A.ABS.Z` liefert nach einem Verweilsatz (`G04`) nicht die zuletzt programmierte G59-Position; warum, offen. Im Teleskop-NC steht vor dem Aufruf immer ein Fahrsatz
+  - ✅ Messen selbst in Ordnung: T4089 Wiederholgenauigkeit 0,1–0,7 µm, nach 2 min bei 40 000 +3,0 µm (Lauf 1) / +0,7 µm (Lauf 2), Warmlauf 4 min +20,2 µm (kalt geholt 24,578, Maschine ≈ 45 min still) / +5,9 µm; ein Aufruf ≈ 35 s
   - Abhilfe (13.11., CAM V5.50): `MESST…` Version 2 und `TEST_NURMESSEN_V5.nc` – alle eigenen Fahrten F3000, Z nur bis Z50 (Rückzugshöhe des Postprozessors), Position im Log (Suchwort MESST)
 - 13.11.2026: **MHT läuft beim Werkzeugwechsel weiter, Magazin verschmutzt** (Andreas, Titan-Drehfräsen, MHT mit Flüssigkeit)
   - ✅ NC SA13: zwischen zwei Jobs schreibt der Postprozessor kein `M109`, nur am Programmende; `M6` schaltet das MHT nicht ab (Andreas)
