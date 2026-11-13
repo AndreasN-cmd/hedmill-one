@@ -1,10 +1,14 @@
 ; ==========================================================
-; TEST_NURMESSEN V4 - "Nur messen" ohne Werkzeugwechsel und ohne cleanWS
+; TEST_NURMESSEN V5 - "Nur messen" ohne Werkzeugwechsel und ohne cleanWS
+; V5 (13.11.2026, Andreas zu V4: Z-Achse faehrt beim Anheben in den Endschalter,
+;   25 000 mm/min zu schnell): alle eigenen Fahrten mit F3000, MESST... Version 2
+;   (zurueck langsam mit F3000, Z nur bis Z50 = Rueckzugshoehe des Postprozessors,
+;   X/Y-Pruefung, Position im Log).
 ; OHNE Bauteil, OHNE Preform. Kein Fraesen.
 ; ----------------------------------------------------------
 ; VORHER auf den Steuerungs-PC nach C:\HMI\NCProg\sub\ kopieren
 ; (aus eigene-programme\sub\, ohne Dateiendung):
-;   MESST4089S40000DYN5G59      (neu)
+;   MESST4089S40000DYN5G59      (Version 2, ersetzt Version 1)
 ;   WARMT4089S40000DYN5         (liegt seit 12.11. dort)
 ; ----------------------------------------------------------
 ; ZWECK: Ab CAM V5.49 ruft das Teleskop-NC am Ende des Jobs
@@ -12,7 +16,7 @@
 ;   (NC-Text "nach letzter Position"). Es merkt sich die Position,
 ;   faehrt auf SAFEPOS, haelt die Spindel an, misst mit dem
 ;   Hersteller-measureTool, startet die Spindel wieder und faehrt
-;   zurueck: SAFEPOS180, G59, A/B, X/Y, Z. Kein M6, kein cleanWS.
+;   zurueck: SAFEPOS180, G59, A/B, X/Y, Z50 (langsam). Kein M6, kein cleanWS.
 ;   Dieses Programm stellt die Lage wie am Jobende her (Position
 ;   aus einem echten Teleskop-NC, Rueckzugshoehe Z50) und ruft das
 ;   Unterprogramm fuenfmal auf:
@@ -47,7 +51,7 @@ M106 (Absaugung EIN)
 M119 (Reinigungsluft Spindel Dauerhaft EIN)
 L SAFEPOS180
 G59
-G1 A-95.50328 B291.53401 F25000.
+G1 A-95.50328 B291.53401 F3000. ; langsam (V5)
 G1 X-2.83898 Y4.64709
 G1 Z50.0
 

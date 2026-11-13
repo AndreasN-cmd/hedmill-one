@@ -3,6 +3,14 @@
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
 > Stand: 09.11.2026 (Export aus dem claude.ai-Projekt „Hedmill Maschine“)
 
+- 13.11.2026: **Test `TEST_NURMESSEN_V4.nc` – Z-Achse fährt beim Anheben in den Endschalter** (Andreas: „Du kannst da nicht mit 25.000 mm pro Minute in den Achsen rumjagen.“)
+  - ✅ Unsere Fahrten in V4 und `MESST…` Version 1 liefen mit F25000 (wie der Postprozessor); Rückfahrt in Z auf die gemerkte Position `V.A.ABS.Z`
+  - ❓ Ursache nicht belegt: entweder Überschwingen bei F25000 oder ein Z-Ziel über dem Software-Ende (`SAFEPOS` fährt Z auf SWE − 1; liefert `V.A.ABS.Z` nicht den G59-Wert, wäre das Ziel zu hoch). Log der Stelle fehlt
+  - Abhilfe (13.11., CAM V5.50): `MESST…` Version 2 und `TEST_NURMESSEN_V5.nc` – alle eigenen Fahrten F3000, Z nur bis Z50 (Rückzugshöhe des Postprozessors), Position im Log (Suchwort MESST)
+- 13.11.2026: **MHT läuft beim Werkzeugwechsel weiter, Magazin verschmutzt** (Andreas, Titan-Drehfräsen, MHT mit Flüssigkeit)
+  - ✅ NC SA13: zwischen zwei Jobs schreibt der Postprozessor kein `M109`, nur am Programmende; `M6` schaltet das MHT nicht ab (Andreas)
+  - ❓ Ursache laut Andreas die eigene Änderung der Halterdateien „HEDmill One Medentika“ und „HEDmill One OneStep“ (`*HD_HEDS_ZP 3`)
+  - Abhilfe in den CAM-Vorlagen (V5.50): NC-Text „vor Werkzeugwechsel“ `M109` in jedem MHT-Job der Drehfräsvorlagen (`../fraesstrategien-hyperdent/docs/drehfraesen_spindelwaerme.md` Abschnitt 7)
 - 07/2026: Fehler ID 70020 „Dynamischer Schleppabstand zu groß“
 - 07/2026: Nullpunkt-Kalibrierung G58/G59 (02-koordinaten-nullpunkte.md)
 - Lose Auflage im Nullpunktspannsystem der B-Achse (Schunk) – **OFFEN**, erfasst 09.11.2026
