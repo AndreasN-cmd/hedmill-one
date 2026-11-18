@@ -21,8 +21,10 @@
   - Abhilfe (13.11., CAM V5.50): `MESST…` Version 2 und `TEST_NURMESSEN_V5.nc` – alle eigenen Fahrten F3000, Z nur bis Z50 (Rückzugshöhe des Postprozessors), Position im Log (Suchwort MESST)
 - 13.11.2026: **MHT läuft beim Werkzeugwechsel weiter, Magazin verschmutzt** (Andreas, Titan-Drehfräsen, MHT mit Flüssigkeit)
   - ✅ NC SA13: zwischen zwei Jobs schreibt der Postprozessor kein `M109`, nur am Programmende; `M6` schaltet das MHT nicht ab (Andreas)
-  - ❓ Ursache laut Andreas die eigene Änderung der Halterdateien „HEDmill One Medentika“ und „HEDmill One OneStep“ (`*HD_HEDS_ZP 3`)
-  - Abhilfe in den CAM-Vorlagen (V5.50): NC-Text „vor Werkzeugwechsel“ `M109` in jedem MHT-Job der Drehfräsvorlagen (`../fraesstrategien-hyperdent/docs/drehfraesen_spindelwaerme.md` Abschnitt 7)
+  - ✅ (Code gelesen 18.11.2026) `maschine/sub/M6` schaltet nur `M9` (Kühlwasser) ab, kein `M109`; kein Hersteller-Unterprogramm in `maschine/sub/` schaltet das MHT ab. Die Klappe geht beim Ablegen auf (`removeTool`, `M61`), das MHT läuft dann weiter
+  - ~~❓ Ursache laut Andreas die eigene Änderung der Halterdateien „HEDmill One Medentika“ und „HEDmill One OneStep“ (`*HD_HEDS_ZP 3`)~~ widerlegt 18.11.2026: ✅ das MHT läuft auch beim Titan-Blankfräsen (anderer Halter) beim Werkzeugwechsel weiter (Andreas) → grundsätzlich, unabhängig vom Halter
+  - Abhilfe in den CAM-Vorlagen (V5.50): NC-Text „vor Werkzeugwechsel“ `M109` in jedem MHT-Job der Drehfräsvorlagen; **seit 18.11.2026 Regel für jede HEDmill-Vorlage mit MHT, jeder Job** (Andreas: „keine MHT-Flüssigkeit mehr bei geöffnetem Werkzeugklappendeckel“, ohne Unterprogramm; `../fraesstrategien-hyperdent/docs/grundsaetze.md`, Kühlmittel). Die Titan-Blank-, -Powder- und -Direct-Vorlagen bekommen es mit der nächsten CAM-Version
+  - ❓ Nicht gewählt: `M109` neben `M9` ins Hersteller-`M6` (deckt jedes Programm ab, ist aber ein Eingriff in Herstellercode und wird von jedem Hedmill-Update überschrieben)
 - 07/2026: Fehler ID 70020 „Dynamischer Schleppabstand zu groß“
 - 07/2026: Nullpunkt-Kalibrierung G58/G59 (02-koordinaten-nullpunkte.md)
 - Lose Auflage im Nullpunktspannsystem der B-Achse (Schunk) – **OFFEN**, erfasst 09.11.2026
