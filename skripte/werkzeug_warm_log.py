@@ -35,7 +35,7 @@ for t, zs, tx in ev:
     if m:
         cur = dict(blank=blank, wz=m.group(1), zeit=zs, start=t, dan=last_delta[1] if last_delta and t-last_delta[0] < 10 else None, warm=[], mess=[])
         continue
-    m = re.match(r"WARMT(\d+)\S*: Warmlauf 4 min Start, Laenge aktiv ([\d.]+)mm", tx)
+    m = re.match(r"WARMT(\d+)\S*: Warmlauf \d+ min Start, Laenge aktiv ([\d.]+)mm", tx)   # 4 min, seit CAM V5.74 auch ...MIN8
     if m and cur: cur["w0"] = float(m.group(2)); continue
     m = re.match(r"WARMT(\d+)\S*: warm nachgemessen, Laenge aktiv ([\d.]+)mm", tx)
     if m and cur: cur["w1"] = float(m.group(2)); cur["tw"] = t; continue
