@@ -1,7 +1,7 @@
 # Änderungsprotokoll (Rückweg auf Herstellerstand)
 
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
-> Stand: 13.11.2026 (Grundlage: Export aus dem claude.ai-Projekt „Hedmill Maschine“ vom 09.11.2026)
+> Stand: 22.11.2026 (Grundlage: Export aus dem claude.ai-Projekt „Hedmill Maschine“ vom 09.11.2026)
 
 | Datum | Was | Ort (Datei / Variable / Feld) | Alt | Neu | Getestet |
 |---|---|---|---|---|---|
@@ -23,6 +23,7 @@
 | 13.11.2026 | Eigene Unterprogramme Warmlauf + Nachmessen Titan-Primärteleskop CAM V5.41 (`WARMT5053S13000DYN4`, `WARMT5059S35000DYN5`, `WARMT5062S7000DYN18`, Quelle `eigene-programme/sub/`) | `C:\HMI\NCProg\sub\` (neue Dateien, kein Herstellerprogramm geändert) | – | 3 Dateien (Andreas) | ❓ noch nicht gelaufen, erstes Titan-Teleskop ist die Probe; Rückweg: Dateien löschen |
 | 13.11.2026 (geplant) | Eigene Unterprogramme für CAM V5.49: „Nur messen“ `MESST4089S40000DYN5G59`, `MESST5059S35000DYN5G59`; Warmlauf `WARMT4083S16000DYN4`, `WARMT5062S15000DYN18`, `WARMT4092S8000DYN18` (Quelle `eigene-programme/sub/`) | `C:\HMI\NCProg\sub\` (neue Dateien, kein Herstellerprogramm geändert) | – | 5 Dateien | ❓ noch nicht kopiert; Test `TEST_NURMESSEN_V4.nc` vor dem ersten V5.49-Teleskop; Rückweg: Dateien löschen und CAM-Vorlagen ohne den Messaufruf bauen |
 | 13.11.2026 abends | Eigene Unterprogramme `MESST4089S40000DYN5G59`, `MESST5059S35000DYN5G59` Version 2 (CAM V5.50): Rückfahrt F3000, Z bis Z50, X/Y-Prüfung, Titan `M109` | `C:\HMI\NCProg\sub\` | Version 1 (Kopie im Git-Verlauf, Commit 42d9684) | Version 2 | ✅ kopiert (Andreas „Alles erledigt“); Test `TEST_NURMESSEN_V5.nc` offen |
+| 22.11.2026 | Eigene Unterprogramme für CAM V5.74 (Primärteleskop CoCr Powder/Bar: `WARMT4086S22000DYN4`, `WARMT4098S19500DYN4`, `WARMT4126S6000DYN17MIN8`, `MESST4089S40000DYN5G59MIN4`) und CAM V5.75 (Abutment Titan-Prefab: `WARMT5058S25000DYN4`; CoCr-Abutment nutzt `WARMT4098S19500DYN4`), Quelle `eigene-programme/sub/` | `C:\HMI\NCProg\sub\` (neue Dateien, kein Herstellerprogramm geändert) | – | 5 Dateien | ✅ kopiert (Andreas 22.11.2026: „Alles importiert und kopiert!“) · ❓ noch nicht gelaufen, erstes V5.74-Teleskop bzw. V5.75-Abutment ist die Probe; Rückweg: Dateien löschen, dann stoppen V5.74/V5.75 an der Aufrufzeile |
 | 2026 | Endposition B | eigene V3-Programme | B270 | B290 | ✅ |
 | 01.11.2026 | Preform-Greifhöhe Wechsler (Plätze + Rundwechsler, Holen + Ablegen) | setVPVars Z. 27, `V.P.ZOffsetPreformC` | −17.7 | −28.2 | ✅ Holen Platz 6 · ⚠️ Ablegen zu tief → 03.11. ersetzt |
 | 01.11.2026 | Laser-Fenster Blankhalter Untergrenze | SPS (TwinCAT) `GVL_HEDmillOne.machinePara.stBlankChange.stCheckPosZLaser1[3].MinValue` | 505 | 480 | ✅ Erkennung Platz 7 · ❓ nach Neustart |
