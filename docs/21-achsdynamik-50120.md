@@ -4,6 +4,7 @@
 > Stand: 11.11.2026
 
 ## Entscheidung
+- ❓ **24.11.2026 (Andreas): Beckhoff hat in der Woche des Technikerbesuchs (16.–20.11.) ein Update herausgebracht, das das Drehfräs- und B-Achs-Beschleunigungsproblem vollständig lösen soll.** Offen: installiert (Datum, CNC-Version)? Andreas geht in den Frässtrategien zurück auf die alte Drehfräs-Geschwindigkeit, probiert Genauigkeit 0,005 und lässt die letzten drei Drehfräsjobs wieder näher an den Pol laufen (CAM-Repo, Änderungsplan Primärteleskop). Damit berührt der MKD den Konnektor wieder öfter: die ersten Teile danach in `LoggedEvents.db` auf 50120/50121 prüfen. Zusammenfassung `23-waerme-z-kette.md` Abschnitt 6
 - ✅ **02.11.2026, 00:00: Andreas klärt Achsdynamik / Look-ahead / CNC 4.34 über den Hersteller (HEDS)** – keine eigene Änderung an der CNC-Konfiguration
 - ✅ Mail-Entwurf an HEDS in zwei Varianten erstellt: „Nur Symptome melden“ / „Mit Befund“ (Betreff: „HEDmill One – Beschleunigungsmeldungen Achse B seit Update V1.0.12 (30.10.2026)“); Inhalt „Mit Befund“: CNC 4.30 → 4.34, neue Zeile `interpolator.parameter 200` unter `number_blocks_lah 500`, Achsdynamik/Filter/Kanal unverändert, Meldung 70222 seit Update; Bitte um Fernwartungstermin (Maschine läuft nachts)
 - ✅ Hinweis dazu: Die drei Wechsler-Korrekturen vom 01.11.2026 (v. a. Hubzylinder 0 ms → 8 s) gehen beim nächsten Update evtl. verloren, wenn HEDS nichts davon weiß – ob mitmelden, entscheidet Andreas

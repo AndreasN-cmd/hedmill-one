@@ -43,6 +43,7 @@ Ziel: **Alles an der Maschine selbst lösen können, ohne Hersteller-Support.**
 | hyperDENT: Toleranz, HSC, Maschinenseite (Vorlagen selbst: `../fraesstrategien-hyperdent`) | `docs/20-cam-hyperdent.md` |
 | Fehler 50120/50121, Look-ahead, TwinCAT-Projekt | `docs/21-achsdynamik-50120.md` |
 | Hybrid-Express-Halter (SLM nachfräsen) | `docs/22-hybrid-express-halter.md` |
+| Wärme in der Z-Kette: Spindelkühlung (2-°C-Band), Längenmessung, Ausgleichsbehälter | `docs/23-waerme-z-kette.md` |
 | Hersteller-Unterprogramme (Kopie) | `maschine/sub/` |
 | Eigene NC-Programme | `eigene-programme/` |
 | Skripte für den Steuerungs-PC | `skripte/` |
