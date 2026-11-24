@@ -1,0 +1,252 @@
+20261122T111545422 --- T5055 Werkzeugdeltalänge -0.00280862mm ermittelt
+20261122T111547015 --- Warmlaufprogramm wurde gestartet
+20261122T111752925 --- Warmlaufprogramm Teil 1/4 beendet. Laufzeit 124s/120s
+20261122T111859936 --- Warmlaufprogramm Teil 2/4 beendet. Laufzeit 67s/60s
+20261122T112103286 --- Warmlaufprogramm Teil 3/4 beendet. Laufzeit 123s/120s
+20261122T112305428 --- Warmlaufprogramm Teil 4/4 beendet. Laufzeit 122s/120s
+20261122T112305433 --- Warmlaufprogramm erfolgreich beendet. Laufzeit 438s
+20261122T120412069 --- T5055 Werkzeugdeltalänge 0.00150772mm ermittelt
+20261122T120417748 --- BlankChange wurde aufgerufen
+20261122T120459344 --- Im Spannsystem ist ein Preformhalter. Messwert = 609 (min 570/ max 614)
+20261122T120528325 --- Blank '116.90011-AB44' aus B-Achse geholt
+20261122T120600850 --- Auf Position 5 ist ein Preformhalter. Messwert = 598 (min 565/ max 620)
+20261122T120600909 --- Blankhalter erfolgreich im Wechlser abgelegt. Pos 5
+20261122T120606502 --- Blank 116.90011-AB44 Wechslerposition 116 abgelegt
+20261122T120608469 --- Auf Position 7 ist ein Blankhalter. Messwert = 366 (min 480/ max 545)
+20261122T120618669 --- Blank '7.40012-1055' aus Wechslerposition 7 geholt
+20261122T120650547 --- Blank '7.40012-1055' im B-Achsennullpunktspannsystem abgesetzt
+20261122T120657335 --- Im Spannsystem ist ein Blankhalter. Messwert = 466 (min 445/ max 485)
+20261122T120657389 --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt
+20261122T120657481 --- BlankChange wurde abgearbeitet
+20261122T120729638 --- T4081 Werkzeugdeltalänge -0.00149909mm ermittelt
+20261122T120731263 --- Auf Position 5 ist kein Fraeser. Messwert = 577
+20261122T120741350 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T120742240 --- Auf Position 15 ist ein Fraeser. Messwert = 520
+20261122T120757694 --- T4081 Werkzeugdeltalänge 0.01031222mm ermittelt
+20261122T120758670 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261122T120928431 --- T4083 Werkzeugdeltalänge 0.00431806mm ermittelt
+20261122T120930194 --- Auf Position 15 ist kein Fraeser. Messwert = 697
+20261122T120940363 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T120941158 --- Auf Position 17 ist ein Fraeser. Messwert = 528
+20261122T120956417 --- T4083 Werkzeugdeltalänge 0.00953024mm ermittelt
+20261122T120957405 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261122T121051818 --- T4069 Werkzeugdeltalänge -0.0002654mm ermittelt
+20261122T121053514 --- Auf Position 17 ist kein Fraeser. Messwert = 700
+20261122T121103621 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T121104935 --- Auf Position 28 ist ein Fraeser. Messwert = 520
+20261122T121120003 --- T4069 Werkzeugdeltalänge 0.01602747mm ermittelt
+20261122T121120989 --- T4069 wurde aus dem Werkzeugwechsler geholt
+20261122T121210445 --- T4083 Werkzeugdeltalänge -0.00010604mm ermittelt
+20261122T121212581 --- Auf Position 28 ist kein Fraeser. Messwert = 701
+20261122T121223155 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T121223950 --- Auf Position 17 ist ein Fraeser. Messwert = 522
+20261122T121239198 --- T4083 Werkzeugdeltalänge 0.00146511mm ermittelt
+20261122T121240277 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261122T121329909 --- T4067 Werkzeugdeltalänge 0.00138609mm ermittelt
+20261122T121331596 --- Auf Position 17 ist kein Fraeser. Messwert = 700
+20261122T121341691 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T121342987 --- Auf Position 14 ist ein Fraeser. Messwert = 524
+20261122T121358076 --- T4067 Werkzeugdeltalänge 0.00685843mm ermittelt
+20261122T121359031 --- T4067 wurde aus dem Werkzeugwechsler geholt
+20261122T121527335 --- T4096 Werkzeugdeltalänge -0.00172481mm ermittelt
+20261122T121530175 --- Auf Position 14 ist kein Fraeser. Messwert = 551
+20261122T121540745 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T121542725 --- Das geforderte Werkzeug T4096 ist ungueltig
+20261122T121703135 --- Auf Position 13 ist ein Fraeser. Messwert = 522
+20261122T121717792 --- T4096 Werkzeuglänge 31.53258421mm ermittelt (erwartet 33mm)
+20261122T121718710 --- T4096 wurde aus dem Werkzeugwechsler geholt
+20261122T122007606 --- T4081 Werkzeugdeltalänge -0.00074058mm ermittelt
+20261122T122009669 --- Auf Position 13 ist kein Fraeser. Messwert = 602
+20261122T122020180 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T122021090 --- Auf Position 15 ist ein Fraeser. Messwert = 522
+20261122T122036464 --- T4081 Werkzeugdeltalänge -0.01103026mm ermittelt
+20261122T122037400 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261122T122713502 --- BlankChange wurde aufgerufen
+20261122T122755430 --- Im Spannsystem ist ein Blankhalter. Messwert = 467 (min 445/ max 485)
+20261122T122755594 --- BlankChange wurde abgearbeitet
+20261122T122828413 --- T4081 Werkzeugdeltalänge 0.00504329mm ermittelt
+20261122T130646348 --- BlankChange wurde aufgerufen
+20261122T130728308 --- Im Spannsystem ist ein Blankhalter. Messwert = 469 (min 445/ max 485)
+20261122T130728471 --- BlankChange wurde abgearbeitet
+20261122T130801318 --- T4081 Werkzeugdeltalänge 0.00076808mm ermittelt
+20261122T132016548 --- T4082 Werkzeugdeltalänge 0.00601915mm ermittelt
+20261122T132018361 --- Auf Position 15 ist kein Fraeser. Messwert = 699
+20261122T132028532 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T132029356 --- Auf Position 16 ist ein Fraeser. Messwert = 528
+20261122T132044497 --- T4082 Werkzeugdeltalänge 0.01275751mm ermittelt
+20261122T132045431 --- T4082 wurde aus dem Werkzeugwechsler geholt
+20261122T132355181 --- T4081 Werkzeugdeltalänge -0.00039535mm ermittelt
+20261122T132356824 --- Auf Position 16 ist kein Fraeser. Messwert = 702
+20261122T132406918 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T132407810 --- Auf Position 15 ist ein Fraeser. Messwert = 531
+20261122T132423142 --- T4081 Werkzeugdeltalänge -0.0084018mm ermittelt
+20261122T132424059 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261122T132516444 --- T4083 Werkzeugdeltalänge 3.157999999e-005mm ermittelt
+20261122T132518155 --- Auf Position 15 ist kein Fraeser. Messwert = 700
+20261122T132528325 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T132529119 --- Auf Position 17 ist ein Fraeser. Messwert = 524
+20261122T132544338 --- T4083 Werkzeugdeltalänge -0.00456294mm ermittelt
+20261122T132545256 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261122T132812333 --- T4084 Werkzeugdeltalänge 0.00486742mm ermittelt
+20261122T132813951 --- Auf Position 17 ist kein Fraeser. Messwert = 702
+20261122T132824036 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T132824821 --- Auf Position 18 ist ein Fraeser. Messwert = 523
+20261122T132840108 --- T4084 Werkzeugdeltalänge 0.02008529mm ermittelt
+20261122T132841046 --- T4084 wurde aus dem Werkzeugwechsler geholt
+20261122T134216119 --- T4086 Werkzeugdeltalänge -0.00228445mm ermittelt
+20261122T134217747 --- Auf Position 18 ist kein Fraeser. Messwert = 701
+20261122T134227843 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T134228719 --- Auf Position 20 ist ein Fraeser. Messwert = 520
+20261122T134244047 --- T4086 Werkzeugdeltalänge 0.0102882mm ermittelt
+20261122T134245012 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261122T134852711 --- T4085 Werkzeugdeltalänge 0.00407946mm ermittelt
+20261122T134854399 --- Auf Position 20 ist kein Fraeser. Messwert = 701
+20261122T134904531 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T134905326 --- Auf Position 19 ist ein Fraeser. Messwert = 521
+20261122T134920611 --- T4085 Werkzeugdeltalänge -0.00148679mm ermittelt
+20261122T134921532 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261122T143840670 --- T4088 Werkzeugdeltalänge 0.00211606mm ermittelt
+20261122T143842311 --- Auf Position 19 ist kein Fraeser. Messwert = 700
+20261122T143852415 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T143853412 --- Auf Position 22 ist ein Fraeser. Messwert = 522
+20261122T143907844 --- T4088 Werkzeugdeltalänge 0.00903659mm ermittelt
+20261122T143908767 --- T4088 wurde aus dem Werkzeugwechsler geholt
+20261122T144056323 --- T4086 Werkzeugdeltalänge -0.00088371mm ermittelt
+20261122T144058116 --- Auf Position 22 ist kein Fraeser. Messwert = 703
+20261122T144108388 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T144109245 --- Auf Position 20 ist ein Fraeser. Messwert = 526
+20261122T144124595 --- T4086 Werkzeugdeltalänge -0.00664381mm ermittelt
+20261122T144125518 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261122T144529126 --- T4067 Werkzeugdeltalänge 0.00118166mm ermittelt
+20261122T144530821 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261122T144540943 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T144542230 --- Auf Position 14 ist ein Fraeser. Messwert = 520
+20261122T144557187 --- T4067 Werkzeugdeltalänge 0.00887774mm ermittelt
+20261122T144558115 --- T4067 wurde aus dem Werkzeugwechsler geholt
+20261122T144643358 --- T4092 Werkzeugdeltalänge -0.00238737mm ermittelt
+20261122T144646110 --- Auf Position 14 ist kein Fraeser. Messwert = 555
+20261122T144656670 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T144657825 --- Auf Position 25 ist ein Fraeser. Messwert = 521
+20261122T144712553 --- T4092 Werkzeugdeltalänge 0.01693933mm ermittelt
+20261122T144713600 --- T4092 wurde aus dem Werkzeugwechsler geholt
+20261122T145005508 --- T4091 Werkzeugdeltalänge 0.00036835mm ermittelt
+20261122T145007485 --- Auf Position 25 ist kein Fraeser. Messwert = 701
+20261122T145017909 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T145019109 --- Auf Position 12 ist ein Fraeser. Messwert = 525
+20261122T145035022 --- T4091 Werkzeugdeltalänge -0.0083661mm ermittelt
+20261122T145035981 --- T4091 wurde aus dem Werkzeugwechsler geholt
+20261122T145214951 --- T4085 Werkzeugdeltalänge -3.762e-005mm ermittelt
+20261122T145217013 --- Auf Position 12 ist kein Fraeser. Messwert = 584
+20261122T145227482 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T145228278 --- Auf Position 19 ist ein Fraeser. Messwert = 524
+20261122T145243662 --- T4085 Werkzeugdeltalänge -0.00685039mm ermittelt
+20261122T145244583 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261122T151721759 --- BlankChange wurde aufgerufen
+20261122T151803696 --- Im Spannsystem ist ein Blankhalter. Messwert = 468 (min 445/ max 485)
+20261122T151803852 --- BlankChange wurde abgearbeitet
+20261122T151836696 --- T4081 Werkzeugdeltalänge -0.00218676mm ermittelt
+20261122T151838346 --- Auf Position 19 ist kein Fraeser. Messwert = 699
+20261122T151848430 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T151849321 --- Auf Position 15 ist ein Fraeser. Messwert = 519
+20261122T151904645 --- T4081 Werkzeugdeltalänge -0.00282467mm ermittelt
+20261122T151905590 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261122T154741608 --- T4083 Werkzeugdeltalänge 0.00656999mm ermittelt
+20261122T154743340 --- Auf Position 15 ist kein Fraeser. Messwert = 700
+20261122T154753509 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T154754304 --- Auf Position 17 ist ein Fraeser. Messwert = 523
+20261122T154809532 --- T4083 Werkzeugdeltalänge 0.00145038mm ermittelt
+20261122T154810461 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261122T155901872 --- T4081 Werkzeugdeltalänge 0.00221059mm ermittelt
+20261122T155903539 --- Auf Position 17 ist kein Fraeser. Messwert = 701
+20261122T155913625 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T155914535 --- Auf Position 15 ist ein Fraeser. Messwert = 517
+20261122T155929868 --- T4081 Werkzeugdeltalänge 0.00194409mm ermittelt
+20261122T155930824 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261122T161254149 --- T4090 Werkzeugdeltalänge -0.00404717mm ermittelt
+20261122T161255882 --- Auf Position 15 ist kein Fraeser. Messwert = 700
+20261122T161306041 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T161306983 --- Auf Position 21 ist ein Fraeser. Messwert = 522
+20261122T161322387 --- T4090 Werkzeugdeltalänge 0.00147559mm ermittelt
+20261122T161323342 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261122T170248466 --- T4086 Werkzeugdeltalänge -0.00046787mm ermittelt
+20261122T170250218 --- Auf Position 21 ist kein Fraeser. Messwert = 699
+20261122T170300415 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T170301262 --- Auf Position 20 ist ein Fraeser. Messwert = 523
+20261122T170316613 --- T4086 Werkzeugdeltalänge -0.00805781mm ermittelt
+20261122T170317537 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261122T173508856 --- T4085 Werkzeugdeltalänge 0.00213074mm ermittelt
+20261122T173510542 --- Auf Position 20 ist kein Fraeser. Messwert = 701
+20261122T173520665 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T173521450 --- Auf Position 19 ist ein Fraeser. Messwert = 524
+20261122T173536804 --- T4085 Werkzeugdeltalänge 0.00916374mm ermittelt
+20261122T173537726 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261122T183202901 --- T4092 Werkzeugdeltalänge 0.00195216mm ermittelt
+20261122T183204533 --- Auf Position 19 ist kein Fraeser. Messwert = 700
+20261122T183214618 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T183215792 --- Auf Position 25 ist ein Fraeser. Messwert = 522
+20261122T183230451 --- T4092 Werkzeugdeltalänge -0.00448531mm ermittelt
+20261122T183231387 --- T4092 wurde aus dem Werkzeugwechsler geholt
+20261122T192401926 --- T4092 Werkzeugdeltalänge -0.00761471mm ermittelt
+20261122T194056241 --- BlankChange wurde aufgerufen
+20261122T194137834 --- Im Spannsystem ist ein Blankhalter. Messwert = 468 (min 445/ max 485)
+20261122T194137986 --- BlankChange wurde abgearbeitet
+20261122T194209869 --- T4081 Werkzeugdeltalänge -0.00219862mm ermittelt
+20261122T194211835 --- Auf Position 25 ist kein Fraeser. Messwert = 699
+20261122T194222259 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T194223149 --- Auf Position 15 ist ein Fraeser. Messwert = 524
+20261122T194238573 --- T4081 Werkzeugdeltalänge -0.00762411mm ermittelt
+20261122T194239521 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261122T200453617 --- T4083 Werkzeugdeltalänge 0.009155mm ermittelt
+20261122T200455419 --- Auf Position 15 ist kein Fraeser. Messwert = 698
+20261122T200505588 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T200506382 --- Auf Position 17 ist ein Fraeser. Messwert = 528
+20261122T200521612 --- T4083 Werkzeugdeltalänge -0.01608266mm ermittelt
+20261122T200522530 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261122T204610848 --- T4090 Werkzeugdeltalänge 0.00562971mm ermittelt
+20261122T204612494 --- Auf Position 17 ist kein Fraeser. Messwert = 699
+20261122T204622579 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T204623512 --- Auf Position 21 ist ein Fraeser. Messwert = 520
+20261122T204638907 --- T4090 Werkzeugdeltalänge -0.0081647mm ermittelt
+20261122T204639851 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261122T221902315 --- T4085 Werkzeugdeltalänge 0.00026895mm ermittelt
+20261122T221904085 --- Auf Position 21 ist kein Fraeser. Messwert = 699
+20261122T221914293 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T221915088 --- Auf Position 19 ist ein Fraeser. Messwert = 521
+20261122T221930382 --- T4085 Werkzeugdeltalänge -0.01327531mm ermittelt
+20261122T221931314 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261122T231057978 --- T4093 Werkzeugdeltalänge 0.0032958mm ermittelt
+20261122T231059718 --- Auf Position 19 ist kein Fraeser. Messwert = 699
+20261122T231109822 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T231110938 --- Auf Position 24 ist ein Fraeser. Messwert = 526
+20261122T231125708 --- T4093 Werkzeugdeltalänge 0.01803697mm ermittelt
+20261122T231126633 --- T4093 wurde aus dem Werkzeugwechsler geholt
+20261122T233729952 --- T4086 Werkzeugdeltalänge 0.00331761mm ermittelt
+20261122T233731887 --- Auf Position 24 ist kein Fraeser. Messwert = 702
+20261122T233742270 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261122T233743127 --- Auf Position 20 ist ein Fraeser. Messwert = 520
+20261122T233758465 --- T4086 Werkzeugdeltalänge 0.00724528mm ermittelt
+20261122T233759410 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261123T004051886 --- T4088 Werkzeugdeltalänge -0.00149967mm ermittelt
+20261123T004053592 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261123T004103715 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261123T004104701 --- Auf Position 22 ist ein Fraeser. Messwert = 521
+20261123T004119135 --- T4088 Werkzeugdeltalänge -0.00712673mm ermittelt
+20261123T004120064 --- T4088 wurde aus dem Werkzeugwechsler geholt
+20261123T015208669 --- T4090 Werkzeugdeltalänge 0.00212857mm ermittelt
+20261123T015210503 --- Auf Position 22 ist kein Fraeser. Messwert = 703
+20261123T015220776 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261123T015221708 --- Auf Position 21 ist ein Fraeser. Messwert = 518
+20261123T015237113 --- T4090 Werkzeugdeltalänge 0.00171895mm ermittelt
+20261123T015238065 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261123T021247366 --- T4086 Werkzeugdeltalänge -0.00686181mm ermittelt
+20261123T021249124 --- Auf Position 21 ist kein Fraeser. Messwert = 699
+20261123T021259331 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261123T021300188 --- Auf Position 20 ist ein Fraeser. Messwert = 520
+20261123T021315618 --- T4086 Werkzeugdeltalänge -0.00684228mm ermittelt
+20261123T021316543 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261123T022457016 --- T4089 Werkzeugdeltalänge 0.00236574mm ermittelt
+20261123T022458712 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261123T022508846 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261123T022509919 --- Auf Position 23 ist ein Fraeser. Messwert = 519
+20261123T022525707 --- T4089 Werkzeugdeltalänge -0.01544742mm ermittelt
+20261123T022526664 --- T4089 wurde aus dem Werkzeugwechsler geholt

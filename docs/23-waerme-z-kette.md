@@ -1,7 +1,7 @@
 # Wärme in der Z-Kette: Spindelkühlung, Temperaturband, Längenmessung
 
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Log) · 🌐 allgemein (Physik, Rechnung) · ❓ offen oder Annahme – NICHT als Fakt verwenden
-> Stand: 24.11.2026. Anlass: Aussage des HEDS-Technikers (Besuch zwei Tage, Woche 16.–20.11.2026), von Andreas am 24.11. weitergegeben.
+> Stand: 24.11.2026 abends (Log 23./24.11. ausgewertet, Abschnitt 3a; Beckhoff-Update und Nullpunkte beantwortet, Abschnitt 6). Anlass: Aussage des HEDS-Technikers (Besuch zwei Tage, Woche 16.–20.11.2026), von Andreas am 24.11. weitergegeben.
 > Was die Frässtrategien daraus machen (Warmlauf, Nur messen, Jobfolge): `../fraesstrategien-hyperdent/docs/drehfraesen_spindelwaerme.md` Abschnitt 9.
 
 ## 1. Aussage des Technikers (Andreas 24.11.2026)
@@ -39,14 +39,29 @@ Log 09.–12.11.2026 (399 Werkzeugeinsätze, Serien Primärteleskop):
 - ✅ **Von Teil zu Teil (≈ 1–1,5 h) wandert sie mit ≈ 5 µm Streuung** (alle Werkzeuge gleich, darin steckt auch das neue Einspannen im Kegel). Als langsame Schwingung gelesen sind das ≈ 12 µm Spitze-Spitze: Größenordnung von Rechnung 2.
 - ✅ **Über Nacht noch mehr:** alle Längen gemeinsam −35 … −39 µm in 14 h (13./14.11., `13-offene-fragen.md`). ❓ Mit 8,19 µm je °C wären das 4,4 °C: passt zu einem Kühlgerät, das der Raumtemperatur folgt (Nachtabsenkung), ist aber nicht belegt.
 - ✅ Einzelne Ausreißer gibt es (MKD einmal +7,2 statt −12, also 19 µm daneben; 10–15 % der langen Jobs liegen > 5 µm neben dem Median). ❓ Ursache offen: Schaltpunkt des Kühlgeräts, Span am Taster oder Kegel.
-- ❓ Die Logs 09.–12.11. stammen aus der Zeit vor Warmlauf und „Nur messen“. Für die Zeit danach liegt kein Log auf dem Mac; Gegenprobe mit dem nächsten `LOGS_SAMMELN` (gleiches Skript).
+- ✅ Die Logs 09.–12.11. stammen aus der Zeit vor Warmlauf und „Nur messen“. Gegenprobe mit dem Log 23./24.11.: Abschnitt 3a.
+
+## 3a. Log 23./24.11.2026 (✅ gemessen: elf Primärteleskope CAM V5.74 mit Warmlauf, 23.11. 18:05 bis 24.11. 20:45, HMI-Log in `maschine/log/`)
+| Werkzeug | in der Spindel | Änderung im Job nach Warmlauf/Messen (Median) | Streuung von Teil zu Teil | Warmlauf selbst (kalt → warm, Median und Spanne) |
+|---|---|---|---|---|
+| MKD T4126 (6 000) | 20 min | **−4,8 µm** | 2,7 µm (2 von 11 > 5 µm daneben) | 8 min: −12,3 (−4,8 … −14,4) |
+| T4089 (40 000) | 18 min | +0,6 | 0,9 | 4 min: +9,2 (+8,1 … +9,7); 4 min später noch +2,5 (+1,5 … +4,9) |
+| T4098 (19 500) | 7 min | +0,3 | 0,8 | 4 min: +0,5 (−0,8 … +1,0) |
+| T4086 (22 000) | 5 min | +1,1 | 1,2 | 4 min: +3,3 (+2,6 … +4,2) |
+| T4088 / T4090 / T4085 / T4081 / T4083 | 4–7 min | +0,2 / −1,9 / +1,5 / −1,5 / +2,4 | 0,7 / 1,0 / 1,5 / 1,7 / 2,1 | ohne Warmlauf |
+
+- ✅ **Im Job bleibt die Z-Kette auch mit Warmlauf auf 0,7–2,7 µm wiederholbar** (vorher 1,4–2,5). Beim Holen streut sie 2,5–9 (≈ 5) µm. Abschnitt 4 gilt unverändert.
+- ✅ **Gemeinsame Drift im Dauerlauf:** von Teil 2 bis Teil 11 (22 h) werden alle Werkzeuge 25–32 µm kürzer (T4081 −25, T4085 −28, T4088 −32, T4089 −25, T4090 −25), ≈ −3 µm je Teil. Jedes Antasten nimmt das mit.
+- ✅ **MKD nach dem Ø0,6-Ring (40 000 → 6 000):** beim Holen +12,7 µm gegen die letzte Abgabe, im 8-min-Warmlauf −12,3, danach im Job noch −4,8 (−0,3 … −13,4). Mit 4 min Warmlauf (Log 20./21.11., vier Teile) im Job −4,7 / −4,4 / +3,8 / −8,4. **8 min bringen gegen 4 min nichts Messbares:** das Abkühlen hat einen schnellen Teil (≈ −12 µm, nach 4 min durch) und einen langsamen Rest (≈ −0,4 µm je Minute), den auch 8 min nicht holen. Die Abklingzeit „3–4,5 min“ aus Abschnitt 4 gilt nur für den schnellen Teil.
+- ✅ T4098 ändert sich im Warmlauf nicht (kein Drehzahlsprung davor), T4086 um +3,3 µm, T4089 um +9,2 und in weiteren 4 min um +2,5 µm.
+- ❓ **Zweiter MKD (seit 23.11., der erste nach ≈ 100 Teilen bei Hufschmied, Andreas 24.11.):** `skripte/laengen_trend_log.py` (neu): seine Länge beim Holen fällt von Teil 2 bis 11 um 46 µm (−5,1 je Teil), die anderen Werkzeuge −2,7 … −3,5, T4083 −4 … −5, T4086 0. Nicht eindeutig: der erste MKD zeigte am 09./10.11. dasselbe (−34 µm in fünf Teilen, danach +15 in neun). Das Log belegt weder Verschleiß noch Ausbruch.
 
 ## 4. Was das Antasten ausgleicht und was nicht
 | Anteil der Z-Kette | Größe | Zeit | ausgeglichen durch |
 |---|---|---|---|
 | Kühlband, langsam (Rechnung 2) und Raumtemperatur | bis 16 µm im Band, über Nacht bis ≈ 36 µm | Stunden | ✅ jedes Antasten (bei jedem Werkzeugwechsel, nach jedem Warmlauf, bei „Nur messen“): der Stand zum Messzeitpunkt ist in der Länge |
 | Kühlband, schnell (Rechnung 1) | ≈ 3–6 µm Spitze-Spitze | Minuten | ❌ nicht (zu schnell); bleibt als ≈ ± 2 µm in jeder Fläche |
-| Spindelwärme nach Drehzahlsprung | T4089 +10 … +13 µm, MKD −12 … −16 µm | Abklingzeit 3–4,5 min | ✅ Warmlauf auf Jobdrehzahl + Nachmessen (eigene Unterprogramme `WARMT…`, `MESST…`); Rest im Job 1–3 µm |
+| Spindelwärme nach Drehzahlsprung | T4089 +10 … +13 µm, MKD −12 … −16 µm | Abklingzeit 3–4,5 min | ✅ Warmlauf auf Jobdrehzahl + Nachmessen (eigene Unterprogramme `WARMT…`, `MESST…`); Rest im Job ≤ 1 µm, **beim MKD ≈ 5 µm (langsamer Teil, auch nach 8 min, Abschnitt 3a)** |
 | Lage des Tasters gegen die B-Achse (Werkstück) | ❓ unbekannt | ❓ | ❌ Antasten sieht das nicht. Prüfbar nur am Teil: Kontroll-Tonne morgens kalt und nach langem Dauerlauf (`13-offene-fragen.md`) |
 | Spindel läuft gegen Spindel steht (Lager, Fliehkraft) | ❓ unbekannt, je Drehzahl fest | sofort | ❌ gemessen wird im Stillstand. Fester Betrag je Werkzeug, gehört ins Aufmaß (CAM) |
 
@@ -68,10 +83,11 @@ Log 09.–12.11.2026 (399 Werkzeugeinsätze, Serien Primärteleskop):
 
 ## 6. Beckhoff-Update (Andreas 24.11.2026)
 - ✅ Andreas: Beckhoff hat in der Woche des Technikerbesuchs ein Update herausgebracht, das das Drehfräs- und B-Achs-Beschleunigungsproblem (50120/50121, `21-achsdynamik-50120.md`) vollständig lösen soll. Andreas geht deshalb in den Frässtrategien zurück auf die alte Drehfräs-Geschwindigkeit und will Genauigkeit 0,005 probieren.
-- ❓ Offen: Ist das Update auf der Maschine installiert (Datum, CNC-Version; bisher 4.34.0)? Hat der Techniker Nullpunkte oder den Längenoffset angefasst (Tabelle vorher/nachher, `02-koordinaten-nullpunkte.md`)? Liegen die eigenen Unterprogramme (`WARMT…`, `MESST…`, `DYN18`) noch in `C:\HMI\NCProg\sub\`? Eintrag in `12-aenderungsprotokoll.md` folgt mit Andreas' Antwort.
-- ❓ Prüfbar nach den ersten Teilen: `LoggedEvents.db` auf 50120/50121 (Skript `loggedevents_dump.py`), CNC-Version im Startprotokoll.
+- ✅ **Andreas 24.11. abends: Das Beckhoff-Update ist seit 17.11.2026 installiert; was es genau ändert, ist nicht bekannt.** Nullpunkte und Längenoffset sind unverändert, der Techniker hat mechanisch nichts verändert.
+- ✅ `LoggedEvents.db` (08.11. bis 24.11. 21:09): 50120/50121 am 08.–11.11. je Tag 12–16, am 13.11. 4, **seitdem keine mehr**, auch nicht in den elf Teleskopen vom 23./24.11. Gelaufen sind seit dem Update aber nur die schonenden MKD-Werte (5 600 °/min, Ende 1 mm vor dem Pol); die schnelleren Werte des CAM-Plans (8 000 °/min, bis zum Pol, Genauigkeit 0,005) sind damit nicht geprüft.
+- ❓ CNC-Version nach dem Update: im Ereignisprotokoll steht nur ein Versionseintrag (08.11.: 4.34.0-x64), keiner nach dem 17.11. Liegen die eigenen Unterprogramme noch in `C:\HMI\NCProg\sub\`? ✅ ja, alle `WARMT…`/`MESST…` der V5.74 liefen am 23./24.11.
 
 ## 7. Nächste Schritte ohne Eingriff
-1. **Log vom 23.11.2026 holen** (`LOGS_SAMMELN`; neun Primärteleskope mit CAM V5.74, erste Teile mit 8 min MKD-Warmlauf und den vier neuen Unterprogrammen). Am Mac `python3 -I skripte/werkzeug_warm_log.py <Ordner> 4126,4089,4098,4086`: Frage Andreas 24.11., ob 8 min gegen 4 min etwas bringen (MKD im Job ≈ −1 … −3 µm = ja, weiter −4 … −8 = nein); dazu `python3 -I skripte/laengen_streuung_log.py <Ordner>`: bleibt die Streuung im Job bei ≈ 2 µm, auch mit Warmlauf? Und `loggedevents_dump.py`: 50120/50121 seit dem Technikerbesuch?
+1. ✅ Erledigt 24.11.: Log 23./24.11. ausgewertet (Abschnitt 3a). Nach den ersten Teilen der nächsten CAM-Version wieder `LOGS_SAMMELN`, dann `werkzeug_warm_log.py`, `laengen_streuung_log.py`, `laengen_trend_log.py` und die Zählung 50120/50121 (neue MKD-Werte).
 2. Beim nächsten Kontakt mit HEDS: Welches Bauteil sind die 150 mm, welche Länge die „Z-Achse“; regelt das Kühlgerät auf einen festen Wert oder gegen die Raumtemperatur; gibt es eine Wärmekompensation der Z-Achse in der Steuerung?
 3. Zwei Zahlen vom Kühlgerät (Durchfluss, Zykluszeit), nur falls der Behälter wieder Thema wird.

@@ -1,7 +1,7 @@
 # Änderungsprotokoll (Rückweg auf Herstellerstand)
 
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
-> Stand: 22.11.2026 (Grundlage: Export aus dem claude.ai-Projekt „Hedmill Maschine“ vom 09.11.2026)
+> Stand: 24.11.2026 (Grundlage: Export aus dem claude.ai-Projekt „Hedmill Maschine“ vom 09.11.2026)
 
 | Datum | Was | Ort (Datei / Variable / Feld) | Alt | Neu | Getestet |
 |---|---|---|---|---|---|
@@ -32,5 +32,6 @@
 | 01.11.2026 | Rundwechsler-Lift: Zeit „Endlage verlassen“ senken | SPS (TwinCAT) `…stBlankChange.stRotaryChanger.stLifter.tDisablePosNotLeaved` | T#0ms | T#8s | ✅ manuell + automatisch · ❓ nach Neustart |
 | 01.11.2026 | Bearbeitungstoleranz hyperDENT-Template | hyperDENT | (bisher gröber) | 0,01 mm (0,005 → Fehler 50120) | ✅ läuft mit Warnung 50121 |
 | 03.11.2026 ca. 17:15 | Preform-Greifhöhe Wechsler 2 mm höher (Holen + Ablegen) | setVPVars Z. 27, `V.P.ZOffsetPreformC` (Herstellerstand −17.7) | −28.2 | −26.2 | ❓ Test steht aus |
+| 17.11.2026 | Beckhoff-Update (HEDS-Techniker im Haus; soll das Drehfräs- und B-Achs-Beschleunigungsproblem 50120/50121 lösen) | Steuerung (CNC-Kern); Inhalt nicht bekannt | CNC 4.34.0-x64 | ❓ Version nicht belegt | ✅ Andreas 24.11.: seit 17.11. installiert, Nullpunkte und Längenoffset unverändert, mechanisch nichts verändert; kein 50120/50121 seit 13.11. (`21-achsdynamik-50120.md`) |
 | zurückgestellt | Vorschlag A: 8-mm-Nachfahren beim Preform-Holen im Wechsler abschalten | getBlankFromChanger Z. 210 + RC-Gegenstück | aktiv | `;` | – nicht umgesetzt |
 | zurückgestellt | Vorschlag B: Ablegehöhe Preform = Schließhöhe + Fallweg | giveBlankInChanger `#VAR` + 2 Ablegezeilen | – | `V.L.PosZPlacePreformOffset = 2` | – nicht umgesetzt |

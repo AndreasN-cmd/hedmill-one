@@ -1,0 +1,945 @@
+20261124T010722395 --- BlankChange wurde aufgerufen
+20261124T010804332 --- Im Spannsystem ist ein Preformhalter. Messwert = 609 (min 570/ max 614)
+20261124T010833385 --- Blank '104.80018-GA21' aus B-Achse geholt
+20261124T010905781 --- Auf Position 5 ist ein Preformhalter. Messwert = 599 (min 565/ max 620)
+20261124T010905840 --- Blankhalter erfolgreich im Wechlser abgelegt. Pos 5
+20261124T010911463 --- Blank 104.80018-GA21 Wechslerposition 104 abgelegt
+20261124T010918920 --- Auf Position 5 ist ein Preformhalter. Messwert = 597 (min 565/ max 620)
+20261124T010932107 --- Blank '105.80018-GA26' aus Wechslerposition 105 geholt
+20261124T011014427 --- Blank '105.80018-GA26' im B-Achsennullpunktspannsystem abgesetzt
+20261124T011021214 --- Im Spannsystem ist ein Preformhalter. Messwert = 607 (min 570/ max 614)
+20261124T011021267 --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt
+20261124T011021352 --- BlankChange wurde abgearbeitet
+20261124T011054164 --- T4083 Werkzeugdeltal‰nge -0.00241312mm ermittelt
+20261124T011055922 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T011106120 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T011106913 --- Auf Position 17 ist ein Fraeser. Messwert = 518
+20261124T011122146 --- T4083 Werkzeugdeltal‰nge -0.01481747mm ermittelt
+20261124T011123080 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T011125017 --- WARMT4083S18000DYN4: Warmlauf 4 min Start, Laenge aktiv 27.3249mm
+20261124T011541778 --- T4083 Werkzeugl‰nge 27.33343222mm ermittelt (erwartet 28.7mm)
+20261124T011544439 --- WARMT4083S18000DYN4: warm nachgemessen, Laenge aktiv 27.3334mm
+20261124T012515675 --- T4090 Werkzeugdeltal‰nge 0.00395659mm ermittelt
+20261124T012517290 --- Auf Position 17 ist kein Fraeser. Messwert = 700
+20261124T012527395 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T012528347 --- Auf Position 21 ist ein Fraeser. Messwert = 519
+20261124T012543864 --- T4090 Werkzeugdeltal‰nge 0.00494599mm ermittelt
+20261124T012544785 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T013220518 --- T4086 Werkzeugdeltal‰nge -0.00435999mm ermittelt
+20261124T013222317 --- Auf Position 21 ist kein Fraeser. Messwert = 702
+20261124T013232525 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T013233401 --- Auf Position 20 ist ein Fraeser. Messwert = 523
+20261124T013248752 --- T4086 Werkzeugdeltal‰nge -0.0061361mm ermittelt
+20261124T013249763 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T013524908 --- T4085 Werkzeugdeltal‰nge 0.00044074mm ermittelt
+20261124T013526631 --- Auf Position 20 ist kein Fraeser. Messwert = 701
+20261124T013536756 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T013537550 --- Auf Position 19 ist ein Fraeser. Messwert = 517
+20261124T013552845 --- T4085 Werkzeugdeltal‰nge -0.00049707mm ermittelt
+20261124T013553804 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261124T014301867 --- T4088 Werkzeugdeltal‰nge 0.00281627mm ermittelt
+20261124T014303476 --- Auf Position 19 ist kein Fraeser. Messwert = 701
+20261124T014313571 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T014314558 --- Auf Position 22 ist ein Fraeser. Messwert = 516
+20261124T014329092 --- T4088 Werkzeugdeltal‰nge -0.00527858mm ermittelt
+20261124T014330021 --- T4088 wurde aus dem Werkzeugwechsler geholt
+20261124T014948647 --- T4098 Werkzeugdeltal‰nge -0.00025991mm ermittelt
+20261124T014950478 --- Auf Position 22 ist kein Fraeser. Messwert = 703
+20261124T015000740 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T015001940 --- Auf Position 26 ist ein Fraeser. Messwert = 518
+20261124T015017996 --- T4098 Werkzeugdeltal‰nge -0.0069887mm ermittelt
+20261124T015018950 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T015459356 --- T4081 Werkzeugdeltal‰nge 0.00136552mm ermittelt
+20261124T015501434 --- Auf Position 26 ist kein Fraeser. Messwert = 701
+20261124T015511924 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T015512815 --- Auf Position 15 ist ein Fraeser. Messwert = 517
+20261124T015528168 --- T4081 Werkzeugdeltal‰nge 0.00491855mm ermittelt
+20261124T015529095 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261124T015949319 --- T4083 Werkzeugdeltal‰nge 5.669000001e-005mm ermittelt
+20261124T015951050 --- Auf Position 15 ist kein Fraeser. Messwert = 696
+20261124T020001220 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T020002033 --- Auf Position 17 ist ein Fraeser. Messwert = 518
+20261124T020017295 --- T4083 Werkzeugdeltal‰nge -0.00669529mm ermittelt
+20261124T020018319 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T020324669 --- T4086 Werkzeugdeltal‰nge 0.00210279mm ermittelt
+20261124T020326303 --- Auf Position 17 ist kein Fraeser. Messwert = 701
+20261124T020336398 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T020337265 --- Auf Position 20 ist ein Fraeser. Messwert = 526
+20261124T020352607 --- T4086 Werkzeugdeltal‰nge -0.00020721mm ermittelt
+20261124T020353568 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T020355511 --- WARMT4086S22000DYN4: Warmlauf 4 min Start, Laenge aktiv 26.7215mm
+20261124T020813040 --- T4086 Werkzeugl‰nge 26.72435381mm ermittelt (erwartet 28mm)
+20261124T020815608 --- WARMT4086S22000DYN4: warm nachgemessen, Laenge aktiv 26.7244mm
+20261124T021229623 --- T4098 Werkzeugdeltal‰nge 0.00126034mm ermittelt
+20261124T021231408 --- Auf Position 20 ist kein Fraeser. Messwert = 701
+20261124T021241551 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T021242760 --- Auf Position 26 ist ein Fraeser. Messwert = 519
+20261124T021258817 --- T4098 Werkzeugdeltal‰nge 0.0008286mm ermittelt
+20261124T021259780 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T021301703 --- WARMT4098S19500DYN4: Warmlauf 4 min Start, Laenge aktiv 23.8195mm
+20261124T021719190 --- T4098 Werkzeugl‰nge 23.82050611mm ermittelt (erwartet 25.2mm)
+20261124T021721760 --- WARMT4098S19500DYN4: warm nachgemessen, Laenge aktiv 23.8205mm
+20261124T022519182 --- T4089 Werkzeugdeltal‰nge -0.00086173mm ermittelt
+20261124T022521241 --- Auf Position 26 ist kein Fraeser. Messwert = 701
+20261124T022531732 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T022532805 --- Auf Position 23 ist ein Fraeser. Messwert = 522
+20261124T022548604 --- T4089 Werkzeugdeltal‰nge -0.01142382mm ermittelt
+20261124T022549649 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261124T022551578 --- WARMT4089S40000DYN5: Warmlauf 4 min Start, Laenge aktiv 24.592mm
+20261124T023012971 --- T4089 Werkzeugl‰nge 24.60071184mm ermittelt (erwartet 26mm)
+20261124T023015560 --- WARMT4089S40000DYN5: warm nachgemessen, Laenge aktiv 24.6007mm
+20261124T023056681 --- MESST4089S40000DYN5G59: Start, Laenge aktiv 24.6007mm, Position X 2.28362 Y -3.44341 Z 60.29916 
+20261124T023122478 --- T4089 Werkzeugl‰nge 24.60053541mm ermittelt (erwartet 26mm)
+20261124T023141445 --- MESST4089S40000DYN5G59: nachgemessen, Laenge aktiv 24.6005mm, Aenderung -0.0002mm
+20261124T023235769 --- MESST4089S40000DYN5G59MIN4: Start, Laenge aktiv 24.6005mm, Position X -3.56972 Y 4.61466 Z 60.29
+20261124T023235970 --- MESST4089S40000DYN5G59MIN4: Warmlauf 4 min Start, Laenge aktiv 24.6005mm
+20261124T023706260 --- T4089 Werkzeugl‰nge 24.60295298mm ermittelt (erwartet 26mm)
+20261124T023725260 --- MESST4089S40000DYN5G59MIN4: nachgemessen, Laenge aktiv 24.603mm, Aenderung 0.0025mm
+20261124T024409740 --- T4126 Werkzeugdeltal‰nge 0.0004012mm ermittelt
+20261124T024411657 --- Auf Position 23 ist kein Fraeser. Messwert = 701
+20261124T024421983 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T024422915 --- Auf Position 7 ist ein Fraeser. Messwert = 518
+20261124T024438563 --- T4126 Werkzeugdeltal‰nge 0.01772118mm ermittelt
+20261124T024439533 --- T4126 wurde aus dem Werkzeugwechsler geholt
+20261124T024441481 --- WARMT4126S6000DYN17MIN8: Warmlauf 8 min Start, Laenge aktiv 24.7094mm
+20261124T025256396 --- T4126 Werkzeugl‰nge 24.69627954mm ermittelt (erwartet 26mm)
+20261124T025259570 --- WARMT4126S6000DYN17MIN8: warm nachgemessen, Laenge aktiv 24.6963mm
+20261124T030436198 --- T4090 Werkzeugdeltal‰nge -0.00478406mm ermittelt
+20261124T030438003 --- Auf Position 7 ist kein Fraeser. Messwert = 589
+20261124T030448190 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T030449122 --- Auf Position 21 ist ein Fraeser. Messwert = 520
+20261124T030504569 --- T4090 Werkzeugdeltal‰nge -0.00032238mm ermittelt
+20261124T030505480 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T071244130 --- BlankChange wurde aufgerufen
+20261124T071326074 --- Im Spannsystem ist ein Preformhalter. Messwert = 602 (min 570/ max 614)
+20261124T071355107 --- Blank '105.80018-GA26' aus B-Achse geholt
+20261124T071427552 --- Auf Position 5 ist ein Preformhalter. Messwert = 595 (min 565/ max 620)
+20261124T071427611 --- Blankhalter erfolgreich im Wechlser abgelegt. Pos 5
+20261124T071433245 --- Blank 105.80018-GA26 Wechslerposition 105 abgelegt
+20261124T071441552 --- Auf Position 5 ist ein Preformhalter. Messwert = 597 (min 565/ max 620)
+20261124T071454769 --- Blank '102.80018-GA22' aus Wechslerposition 102 geholt
+20261124T071535299 --- Blank '102.80018-GA22' im B-Achsennullpunktspannsystem abgesetzt
+20261124T071542086 --- Im Spannsystem ist ein Preformhalter. Messwert = 609 (min 570/ max 614)
+20261124T071542139 --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt
+20261124T071542224 --- BlankChange wurde abgearbeitet
+20261124T071615046 --- T4083 Werkzeugdeltal‰nge -0.0014672mm ermittelt
+20261124T071616784 --- Auf Position 21 ist kein Fraeser. Messwert = 702
+20261124T071626992 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T071627775 --- Auf Position 17 ist ein Fraeser. Messwert = 521
+20261124T071643008 --- T4083 Werkzeugdeltal‰nge -0.01458366mm ermittelt
+20261124T071643951 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T071644111 --- Warmlaufprogramm wurde gestartet
+20261124T071850002 --- Warmlaufprogramm Teil 1/4 beendet. Laufzeit 124s/120s
+20261124T071957204 --- Warmlaufprogramm Teil 2/4 beendet. Laufzeit 67s/60s
+20261124T072200552 --- Warmlaufprogramm Teil 3/4 beendet. Laufzeit 123s/120s
+20261124T072402686 --- Warmlaufprogramm Teil 4/4 beendet. Laufzeit 122s/120s
+20261124T072402692 --- Warmlaufprogramm erfolgreich beendet. Laufzeit 439s
+20261124T072406297 --- WARMT4083S18000DYN4: Warmlauf 4 min Start, Laenge aktiv 27.3182mm
+20261124T072823048 --- T4083 Werkzeugl‰nge 27.32960798mm ermittelt (erwartet 28.7mm)
+20261124T072825638 --- WARMT4083S18000DYN4: warm nachgemessen, Laenge aktiv 27.3296mm
+20261124T073349628 --- T4090 Werkzeugdeltal‰nge 0.00339829mm ermittelt
+20261124T073351241 --- Auf Position 17 ist kein Fraeser. Messwert = 700
+20261124T073401348 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T073402289 --- Auf Position 21 ist ein Fraeser. Messwert = 519
+20261124T073417725 --- T4090 Werkzeugdeltal‰nge 0.00952186mm ermittelt
+20261124T073418647 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T073719590 --- T4086 Werkzeugdeltal‰nge -0.0014468mm ermittelt
+20261124T073721379 --- Auf Position 21 ist kein Fraeser. Messwert = 701
+20261124T073731597 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T073732473 --- Auf Position 20 ist ein Fraeser. Messwert = 526
+20261124T073747823 --- T4086 Werkzeugdeltal‰nge 0.0026497mm ermittelt
+20261124T073748738 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T074025099 --- T4085 Werkzeugdeltal‰nge 0.00131809mm ermittelt
+20261124T074026784 --- Auf Position 20 ist kein Fraeser. Messwert = 701
+20261124T074036918 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T074037732 --- Auf Position 19 ist ein Fraeser. Messwert = 518
+20261124T074053018 --- T4085 Werkzeugdeltal‰nge -0.00379842mm ermittelt
+20261124T074053927 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261124T074530507 --- T4088 Werkzeugdeltal‰nge 0.00095048mm ermittelt
+20261124T074532177 --- Auf Position 19 ist kein Fraeser. Messwert = 702
+20261124T074542281 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T074543278 --- Auf Position 22 ist ein Fraeser. Messwert = 519
+20261124T074557703 --- T4088 Werkzeugdeltal‰nge -0.0104551mm ermittelt
+20261124T074558591 --- T4088 wurde aus dem Werkzeugwechsler geholt
+20261124T074935536 --- T4098 Werkzeugdeltal‰nge 3.537000001e-005mm ermittelt
+20261124T074937356 --- Auf Position 22 ist kein Fraeser. Messwert = 703
+20261124T074947639 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T074948848 --- Auf Position 26 ist ein Fraeser. Messwert = 519
+20261124T075004905 --- T4098 Werkzeugdeltal‰nge -0.00195491mm ermittelt
+20261124T075005888 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T075248490 --- T4081 Werkzeugdeltal‰nge 0.00028351mm ermittelt
+20261124T075250539 --- Auf Position 26 ist kein Fraeser. Messwert = 702
+20261124T075301029 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T075301938 --- Auf Position 15 ist ein Fraeser. Messwert = 516
+20261124T075317304 --- T4081 Werkzeugdeltal‰nge -0.00686208mm ermittelt
+20261124T075318238 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261124T075634767 --- T4083 Werkzeugdeltal‰nge -0.00154995mm ermittelt
+20261124T075636617 --- Auf Position 15 ist kein Fraeser. Messwert = 696
+20261124T075646786 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T075647580 --- Auf Position 17 ist ein Fraeser. Messwert = 525
+20261124T075702922 --- T4083 Werkzeugdeltal‰nge -0.00325374mm ermittelt
+20261124T075703858 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T075943148 --- T4086 Werkzeugdeltal‰nge 0.00168658mm ermittelt
+20261124T075944782 --- Auf Position 17 ist kein Fraeser. Messwert = 701
+20261124T075954867 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T075955714 --- Auf Position 20 ist ein Fraeser. Messwert = 525
+20261124T080011065 --- T4086 Werkzeugdeltal‰nge -0.0057278mm ermittelt
+20261124T080011977 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T080013895 --- WARMT4086S22000DYN4: Warmlauf 4 min Start, Laenge aktiv 26.7239mm
+20261124T080431478 --- T4086 Werkzeugl‰nge 26.72706701mm ermittelt (erwartet 28mm)
+20261124T080434077 --- WARMT4086S22000DYN4: warm nachgemessen, Laenge aktiv 26.7271mm
+20261124T080804844 --- T4098 Werkzeugdeltal‰nge 0.00204602mm ermittelt
+20261124T080806539 --- Auf Position 20 ist kein Fraeser. Messwert = 701
+20261124T080816671 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T080817880 --- Auf Position 26 ist ein Fraeser. Messwert = 520
+20261124T080833907 --- T4098 Werkzeugdeltal‰nge 0.00350257mm ermittelt
+20261124T080834862 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T080836828 --- WARMT4098S19500DYN4: Warmlauf 4 min Start, Laenge aktiv 23.8214mm
+20261124T081254451 --- T4098 Werkzeugl‰nge 23.82080652mm ermittelt (erwartet 25.2mm)
+20261124T081257010 --- WARMT4098S19500DYN4: warm nachgemessen, Laenge aktiv 23.8208mm
+20261124T081951756 --- T4089 Werkzeugdeltal‰nge 0.00103649mm ermittelt
+20261124T081953855 --- Auf Position 26 ist kein Fraeser. Messwert = 701
+20261124T082004344 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T082005399 --- Auf Position 23 ist ein Fraeser. Messwert = 523
+20261124T082021187 --- T4089 Werkzeugdeltal‰nge -0.01113771mm ermittelt
+20261124T082022136 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261124T082024102 --- WARMT4089S40000DYN5: Warmlauf 4 min Start, Laenge aktiv 24.5923mm
+20261124T082445785 --- T4089 Werkzeugl‰nge 24.60101702mm ermittelt (erwartet 26mm)
+20261124T082448403 --- WARMT4089S40000DYN5: warm nachgemessen, Laenge aktiv 24.601mm
+20261124T082527270 --- MESST4089S40000DYN5G59: Start, Laenge aktiv 24.601mm, Position X 2.24026 Y -4.4568 Z 61.02677 A 
+20261124T082557691 --- T4089 Werkzeugl‰nge 24.60048296mm ermittelt (erwartet 26mm)
+20261124T082616197 --- MESST4089S40000DYN5G59: nachgemessen, Laenge aktiv 24.6005mm, Aenderung -0.0005mm
+20261124T082647162 --- MESST4089S40000DYN5G59MIN4: Start, Laenge aktiv 24.6005mm, Position X -1.20982 Y -7.45088 Z 61.0
+20261124T082647954 --- MESST4089S40000DYN5G59MIN4: Warmlauf 4 min Start, Laenge aktiv 24.6005mm
+20261124T083113155 --- T4089 Werkzeugl‰nge 24.60284807mm ermittelt (erwartet 26mm)
+20261124T083131826 --- MESST4089S40000DYN5G59MIN4: nachgemessen, Laenge aktiv 24.6028mm, Aenderung 0.0023mm
+20261124T083759616 --- T4126 Werkzeugdeltal‰nge 0.00177422mm ermittelt
+20261124T083801633 --- Auf Position 23 ist kein Fraeser. Messwert = 701
+20261124T083811968 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T083812890 --- Auf Position 7 ist ein Fraeser. Messwert = 520
+20261124T083828647 --- T4126 Werkzeugdeltal‰nge 0.01794502mm ermittelt
+20261124T083829579 --- T4126 wurde aus dem Werkzeugwechsler geholt
+20261124T083831546 --- WARMT4126S6000DYN17MIN8: Warmlauf 8 min Start, Laenge aktiv 24.7094mm
+20261124T084646621 --- T4126 Werkzeugl‰nge 24.69881155mm ermittelt (erwartet 26mm)
+20261124T084649796 --- WARMT4126S6000DYN17MIN8: warm nachgemessen, Laenge aktiv 24.6988mm
+20261124T085747914 --- T4090 Werkzeugdeltal‰nge -0.00027932mm ermittelt
+20261124T085749690 --- Auf Position 7 ist kein Fraeser. Messwert = 597
+20261124T085759887 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T085800819 --- Auf Position 21 ist ein Fraeser. Messwert = 519
+20261124T085816227 --- T4090 Werkzeugdeltal‰nge -0.00982196mm ermittelt
+20261124T085817157 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T090324204 --- BlankChange wurde aufgerufen
+20261124T090406135 --- Im Spannsystem ist ein Preformhalter. Messwert = 609 (min 570/ max 614)
+20261124T090435185 --- Blank '102.80018-GA22' aus B-Achse geholt
+20261124T090507580 --- Auf Position 5 ist ein Preformhalter. Messwert = 598 (min 565/ max 620)
+20261124T090507640 --- Blankhalter erfolgreich im Wechlser abgelegt. Pos 5
+20261124T090513282 --- Blank 102.80018-GA22 Wechslerposition 102 abgelegt
+20261124T090520760 --- Auf Position 5 ist ein Preformhalter. Messwert = 597 (min 565/ max 620)
+20261124T090533957 --- Blank '101.80018-GA17' aus Wechslerposition 101 geholt
+20261124T090614417 --- Blank '101.80018-GA17' im B-Achsennullpunktspannsystem abgesetzt
+20261124T090621204 --- Im Spannsystem ist ein Preformhalter. Messwert = 610 (min 570/ max 614)
+20261124T090621256 --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt
+20261124T090621342 --- BlankChange wurde abgearbeitet
+20261124T090654114 --- T4083 Werkzeugdeltal‰nge 0.00271508mm ermittelt
+20261124T090655872 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T090706070 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T090706863 --- Auf Position 17 ist ein Fraeser. Messwert = 521
+20261124T090722085 --- T4083 Werkzeugdeltal‰nge -0.00811488mm ermittelt
+20261124T090723149 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T090725102 --- WARMT4083S18000DYN4: Warmlauf 4 min Start, Laenge aktiv 27.3233mm
+20261124T091141888 --- T4083 Werkzeugl‰nge 27.32731439mm ermittelt (erwartet 28.7mm)
+20261124T091144598 --- WARMT4083S18000DYN4: warm nachgemessen, Laenge aktiv 27.3273mm
+20261124T091959599 --- T4090 Werkzeugdeltal‰nge 0.00817785mm ermittelt
+20261124T092001233 --- Auf Position 17 ist kein Fraeser. Messwert = 701
+20261124T092011338 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T092012261 --- Auf Position 21 ist ein Fraeser. Messwert = 519
+20261124T092027657 --- T4090 Werkzeugdeltal‰nge 0.00600893mm ermittelt
+20261124T092028598 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T092611394 --- T4086 Werkzeugdeltal‰nge -0.00274242mm ermittelt
+20261124T092613162 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T092623369 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T092624217 --- Auf Position 20 ist ein Fraeser. Messwert = 523
+20261124T092639558 --- T4086 Werkzeugdeltal‰nge -0.00538039mm ermittelt
+20261124T092640479 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T092926353 --- T4085 Werkzeugdeltal‰nge 0.00018174mm ermittelt
+20261124T092928027 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261124T092938159 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T092938945 --- Auf Position 19 ist ein Fraeser. Messwert = 518
+20261124T092954241 --- T4085 Werkzeugdeltal‰nge -0.00254338mm ermittelt
+20261124T092955171 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261124T093532917 --- T4088 Werkzeugdeltal‰nge 0.00274135mm ermittelt
+20261124T093534546 --- Auf Position 19 ist kein Fraeser. Messwert = 702
+20261124T093544630 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T093545628 --- Auf Position 22 ist ein Fraeser. Messwert = 519
+20261124T093600073 --- T4088 Werkzeugdeltal‰nge -0.00213901mm ermittelt
+20261124T093600992 --- T4088 wurde aus dem Werkzeugwechsler geholt
+20261124T094102102 --- T4098 Werkzeugdeltal‰nge 0.00084791mm ermittelt
+20261124T094103921 --- Auf Position 22 ist kein Fraeser. Messwert = 703
+20261124T094114183 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T094115384 --- Auf Position 26 ist ein Fraeser. Messwert = 521
+20261124T094131421 --- T4098 Werkzeugdeltal‰nge -0.00586199mm ermittelt
+20261124T094132373 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T094553251 --- T4081 Werkzeugdeltal‰nge -9.670000004e-006mm ermittelt
+20261124T094555299 --- Auf Position 26 ist kein Fraeser. Messwert = 702
+20261124T094605779 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T094606669 --- Auf Position 15 ist ein Fraeser. Messwert = 517
+20261124T094622015 --- T4081 Werkzeugdeltal‰nge -0.00547635mm ermittelt
+20261124T094622979 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261124T094935009 --- T4083 Werkzeugdeltal‰nge 0.00075798mm ermittelt
+20261124T094936827 --- Auf Position 15 ist kein Fraeser. Messwert = 696
+20261124T094946997 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T094947791 --- Auf Position 17 ist ein Fraeser. Messwert = 522
+20261124T095003023 --- T4083 Werkzeugdeltal‰nge -0.01666854mm ermittelt
+20261124T095003947 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T095230189 --- T4086 Werkzeugdeltal‰nge 0.00822829mm ermittelt
+20261124T095231823 --- Auf Position 17 ist kein Fraeser. Messwert = 700
+20261124T095241908 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T095242765 --- Auf Position 20 ist ein Fraeser. Messwert = 524
+20261124T095258116 --- T4086 Werkzeugdeltal‰nge -0.0033895mm ermittelt
+20261124T095259038 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T095300961 --- WARMT4086S22000DYN4: Warmlauf 4 min Start, Laenge aktiv 26.7205mm
+20261124T095718730 --- T4086 Werkzeugl‰nge 26.72379591mm ermittelt (erwartet 28mm)
+20261124T095721338 --- WARMT4086S22000DYN4: warm nachgemessen, Laenge aktiv 26.7238mm
+20261124T100031876 --- T4098 Werkzeugdeltal‰nge 0.0020177mm ermittelt
+20261124T100033701 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261124T100043835 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T100045043 --- Auf Position 26 ist ein Fraeser. Messwert = 519
+20261124T100101081 --- T4098 Werkzeugdeltal‰nge -0.0017835mm ermittelt
+20261124T100102043 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T100103961 --- WARMT4098S19500DYN4: Warmlauf 4 min Start, Laenge aktiv 23.8141mm
+20261124T100521364 --- T4098 Werkzeugl‰nge 23.81504156mm ermittelt (erwartet 25.2mm)
+20261124T100523943 --- WARMT4098S19500DYN4: warm nachgemessen, Laenge aktiv 23.815mm
+20261124T101141361 --- T4089 Werkzeugdeltal‰nge -0.0001301mm ermittelt
+20261124T101143420 --- Auf Position 26 ist kein Fraeser. Messwert = 701
+20261124T101153899 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T101154953 --- Auf Position 23 ist ein Fraeser. Messwert = 521
+20261124T101210763 --- T4089 Werkzeugdeltal‰nge -0.01629546mm ermittelt
+20261124T101211719 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261124T101213649 --- WARMT4089S40000DYN5: Warmlauf 4 min Start, Laenge aktiv 24.5883mm
+20261124T101635311 --- T4089 Werkzeugl‰nge 24.59757425mm ermittelt (erwartet 26mm)
+20261124T101638029 --- WARMT4089S40000DYN5: warm nachgemessen, Laenge aktiv 24.5976mm
+20261124T101721323 --- MESST4089S40000DYN5G59: Start, Laenge aktiv 24.5976mm, Position X 5.15393 Y 1.67836 Z 59.84333 A
+20261124T101754037 --- T4089 Werkzeugl‰nge 24.59634401mm ermittelt (erwartet 26mm)
+20261124T101812082 --- MESST4089S40000DYN5G59: nachgemessen, Laenge aktiv 24.5963mm, Aenderung -0.0013mm
+20261124T101901969 --- MESST4089S40000DYN5G59MIN4: Start, Laenge aktiv 24.5963mm, Position X 5.53661 Y 0.83584 Z 59.842
+20261124T101902172 --- MESST4089S40000DYN5G59MIN4: Warmlauf 4 min Start, Laenge aktiv 24.5963mm
+20261124T102332139 --- T4089 Werkzeugl‰nge 24.59988214mm ermittelt (erwartet 26mm)
+20261124T102350152 --- MESST4089S40000DYN5G59MIN4: nachgemessen, Laenge aktiv 24.5999mm, Aenderung 0.0036mm
+20261124T102848434 --- T4126 Werkzeugdeltal‰nge 0.00062111mm ermittelt
+20261124T102850341 --- Auf Position 23 ist kein Fraeser. Messwert = 701
+20261124T102900686 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T102901628 --- Auf Position 7 ist ein Fraeser. Messwert = 519
+20261124T102917267 --- T4126 Werkzeugdeltal‰nge 0.00195187mm ermittelt
+20261124T102918218 --- T4126 wurde aus dem Werkzeugwechsler geholt
+20261124T102920144 --- WARMT4126S6000DYN17MIN8: Warmlauf 8 min Start, Laenge aktiv 24.7005mm
+20261124T103735010 --- T4126 Werkzeugl‰nge 24.68699552mm ermittelt (erwartet 26mm)
+20261124T103738034 --- WARMT4126S6000DYN17MIN8: warm nachgemessen, Laenge aktiv 24.687mm
+20261124T104601180 --- T4090 Werkzeugdeltal‰nge -0.00355691mm ermittelt
+20261124T104603075 --- Auf Position 7 ist kein Fraeser. Messwert = 596
+20261124T104613273 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T104614205 --- Auf Position 21 ist ein Fraeser. Messwert = 517
+20261124T104629624 --- T4090 Werkzeugdeltal‰nge -0.006227mm ermittelt
+20261124T104630563 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T105919517 --- BlankChange wurde aufgerufen
+20261124T110001478 --- Im Spannsystem ist ein Preformhalter. Messwert = 608 (min 570/ max 614)
+20261124T110030487 --- Blank '101.80018-GA17' aus B-Achse geholt
+20261124T110102843 --- Auf Position 5 ist ein Preformhalter. Messwert = 597 (min 565/ max 620)
+20261124T110102903 --- Blankhalter erfolgreich im Wechlser abgelegt. Pos 5
+20261124T110108545 --- Blank 101.80018-GA17 Wechslerposition 101 abgelegt
+20261124T110120862 --- Auf Position 5 ist ein Preformhalter. Messwert = 599 (min 565/ max 620)
+20261124T110134059 --- Blank '114.80018-MG11' aus Wechslerposition 114 geholt
+20261124T110214569 --- Blank '114.80018-MG11' im B-Achsennullpunktspannsystem abgesetzt
+20261124T110221356 --- Im Spannsystem ist ein Preformhalter. Messwert = 604 (min 570/ max 614)
+20261124T110221410 --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt
+20261124T110221503 --- BlankChange wurde abgearbeitet
+20261124T110254297 --- T4083 Werkzeugdeltal‰nge -0.00203925mm ermittelt
+20261124T110256094 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T110306291 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T110307085 --- Auf Position 17 ist ein Fraeser. Messwert = 520
+20261124T110321868 --- T4083 Werkzeugl‰nge 26.99026205mm ermittelt (erwartet 29mm)
+20261124T110322071 --- T4083 Werkzeug auﬂerhalb der erwarteten L‰nge (erwartet 29mm / ist 26.99026205mm)
+20261124T110322784 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T110322802 --- Das eingewechselte Werkzeug T4083 ist ungueltig
+20261124T110323624 --- Auf Position 17 ist kein Fraeser. Messwert = 701
+20261124T110333710 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T110335719 --- Das geforderte Werkzeug T4083 ist ungueltig
+20261124T111128295 --- Das geforderte Werkzeug T4083 ist ungueltig
+20261124T111133953 --- BlankChange wurde aufgerufen
+20261124T111215556 --- Im Spannsystem ist ein Preformhalter. Messwert = 603 (min 570/ max 614)
+20261124T111215721 --- BlankChange wurde abgearbeitet
+20261124T111246210 --- Das geforderte Werkzeug T4083 ist ungueltig
+20261124T112256230 --- Auf Position 17 ist ein Fraeser. Messwert = 526
+20261124T112311005 --- T4083 Werkzeugl‰nge 26.99446775mm ermittelt (erwartet 28.6mm)
+20261124T112311962 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T112313901 --- WARMT4083S18000DYN4: Warmlauf 4 min Start, Laenge aktiv 26.9945mm
+20261124T112730658 --- T4083 Werkzeugl‰nge 27.0027075mm ermittelt (erwartet 28.6mm)
+20261124T112733280 --- WARMT4083S18000DYN4: warm nachgemessen, Laenge aktiv 27.0027mm
+20261124T113349075 --- T4090 Werkzeugdeltal‰nge 0.00568186mm ermittelt
+20261124T113350720 --- Auf Position 17 ist kein Fraeser. Messwert = 700
+20261124T113400816 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T113401758 --- Auf Position 21 ist ein Fraeser. Messwert = 517
+20261124T113417185 --- T4090 Werkzeugdeltal‰nge 0.00773319mm ermittelt
+20261124T113418118 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T113810277 --- T4086 Werkzeugdeltal‰nge -0.00234623mm ermittelt
+20261124T113812065 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T113822262 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T113823130 --- Auf Position 20 ist ein Fraeser. Messwert = 523
+20261124T113837838 --- T4086 Werkzeugl‰nge 28.07553388mm ermittelt (erwartet 29.8mm)
+20261124T113838773 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T114056764 --- T4085 Werkzeugdeltal‰nge 0.00187924mm ermittelt
+20261124T114058452 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261124T114108594 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T114109409 --- Auf Position 19 ist ein Fraeser. Messwert = 517
+20261124T114124685 --- T4085 Werkzeugdeltal‰nge 0.00015102mm ermittelt
+20261124T114125594 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261124T114445419 --- T4088 Werkzeugdeltal‰nge 0.00035634mm ermittelt
+20261124T114447028 --- Auf Position 19 ist kein Fraeser. Messwert = 701
+20261124T114457124 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T114458140 --- Auf Position 22 ist ein Fraeser. Messwert = 516
+20261124T114512565 --- T4088 Werkzeugdeltal‰nge 0.00126861mm ermittelt
+20261124T114513473 --- T4088 wurde aus dem Werkzeugwechsler geholt
+20261124T114944045 --- T4098 Werkzeugdeltal‰nge 0.00209053mm ermittelt
+20261124T114945954 --- Auf Position 22 ist kein Fraeser. Messwert = 702
+20261124T114956228 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T114957447 --- Auf Position 26 ist ein Fraeser. Messwert = 527
+20261124T115013052 --- T4098 Werkzeugl‰nge 24.49508287mm ermittelt (erwartet 26.3mm)
+20261124T115014018 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T115313837 --- T4081 Werkzeugdeltal‰nge 0.00086502mm ermittelt
+20261124T115315897 --- Auf Position 26 ist kein Fraeser. Messwert = 701
+20261124T115326386 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T115327276 --- Auf Position 15 ist ein Fraeser. Messwert = 511
+20261124T115342723 --- T4081 Werkzeugdeltal‰nge -0.0050965mm ermittelt
+20261124T115343656 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261124T115726115 --- T4083 Werkzeugdeltal‰nge 0.00164859mm ermittelt
+20261124T115727814 --- Auf Position 15 ist kein Fraeser. Messwert = 696
+20261124T115737975 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T115738787 --- Auf Position 17 ist ein Fraeser. Messwert = 522
+20261124T115754048 --- T4083 Werkzeugdeltal‰nge -0.0006571mm ermittelt
+20261124T115754973 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T120045312 --- T4086 Werkzeugdeltal‰nge 0.0006914mm ermittelt
+20261124T120047037 --- Auf Position 17 ist kein Fraeser. Messwert = 701
+20261124T120057123 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T120057980 --- Auf Position 20 ist ein Fraeser. Messwert = 529
+20261124T120113169 --- T4086 Werkzeugdeltal‰nge -0.00848938mm ermittelt
+20261124T120114233 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T120116161 --- WARMT4086S22000DYN4: Warmlauf 4 min Start, Laenge aktiv 28.0689mm
+20261124T120533723 --- T4086 Werkzeugl‰nge 28.07200052mm ermittelt (erwartet 29.8mm)
+20261124T120536382 --- WARMT4086S22000DYN4: warm nachgemessen, Laenge aktiv 28.072mm
+20261124T120920888 --- T4098 Werkzeugdeltal‰nge 0.0014358mm ermittelt
+20261124T120922595 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261124T120932718 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T120933916 --- Auf Position 26 ist ein Fraeser. Messwert = 526
+20261124T120949972 --- T4098 Werkzeugdeltal‰nge -0.00366848mm ermittelt
+20261124T120951027 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T120952950 --- WARMT4098S19500DYN4: Warmlauf 4 min Start, Laenge aktiv 24.4923mm
+20261124T121410506 --- T4098 Werkzeugl‰nge 24.49310877mm ermittelt (erwartet 26.3mm)
+20261124T121413246 --- WARMT4098S19500DYN4: warm nachgemessen, Laenge aktiv 24.4931mm
+20261124T122151519 --- T4089 Werkzeugdeltal‰nge 0.00080509mm ermittelt
+20261124T122153590 --- Auf Position 26 ist kein Fraeser. Messwert = 701
+20261124T122204058 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T122205102 --- Auf Position 23 ist ein Fraeser. Messwert = 521
+20261124T122220924 --- T4089 Werkzeugdeltal‰nge -0.01780307mm ermittelt
+20261124T122221960 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261124T122223898 --- WARMT4089S40000DYN5: Warmlauf 4 min Start, Laenge aktiv 24.5827mm
+20261124T122645390 --- T4089 Werkzeugl‰nge 24.59214785mm ermittelt (erwartet 26mm)
+20261124T122648038 --- WARMT4089S40000DYN5: warm nachgemessen, Laenge aktiv 24.5921mm
+20261124T122729951 --- MESST4089S40000DYN5G59: Start, Laenge aktiv 24.5921mm, Position X -2.5117 Y -4.74872 Z 60.79455 
+20261124T122755377 --- T4089 Werkzeugl‰nge 24.59214785mm ermittelt (erwartet 26mm)
+20261124T122813235 --- MESST4089S40000DYN5G59: nachgemessen, Laenge aktiv 24.5921mm, Aenderung 0mm
+20261124T122847908 --- MESST4089S40000DYN5G59MIN4: Start, Laenge aktiv 24.5921mm, Position X 0.43941 Y -6.63672 Z 60.79
+20261124T122848534 --- MESST4089S40000DYN5G59MIN4: Warmlauf 4 min Start, Laenge aktiv 24.5921mm
+20261124T123313510 --- T4089 Werkzeugl‰nge 24.59419824mm ermittelt (erwartet 26mm)
+20261124T123331398 --- MESST4089S40000DYN5G59MIN4: nachgemessen, Laenge aktiv 24.5942mm, Aenderung 0.0021mm
+20261124T124026960 --- T4126 Werkzeugdeltal‰nge 0.00120941mm ermittelt
+20261124T124028846 --- Auf Position 23 ist kein Fraeser. Messwert = 700
+20261124T124039183 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T124040134 --- Auf Position 7 ist ein Fraeser. Messwert = 525
+20261124T124055794 --- T4126 Werkzeugdeltal‰nge 0.00481623mm ermittelt
+20261124T124056742 --- T4126 wurde aus dem Werkzeugwechsler geholt
+20261124T124058673 --- WARMT4126S6000DYN17MIN8: Warmlauf 8 min Start, Laenge aktiv 24.6882mm
+20261124T124913567 --- T4126 Werkzeugl‰nge 24.67605688mm ermittelt (erwartet 26mm)
+20261124T124916559 --- WARMT4126S6000DYN17MIN8: warm nachgemessen, Laenge aktiv 24.6761mm
+20261124T130101848 --- T4090 Werkzeugdeltal‰nge -0.00634691mm ermittelt
+20261124T130103661 --- Auf Position 7 ist kein Fraeser. Messwert = 592
+20261124T130113860 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T130114801 --- Auf Position 21 ist ein Fraeser. Messwert = 516
+20261124T130130219 --- T4090 Werkzeugdeltal‰nge -0.00861022mm ermittelt
+20261124T130131251 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T130706466 --- BlankChange wurde aufgerufen
+20261124T130748413 --- Im Spannsystem ist ein Preformhalter. Messwert = 602 (min 570/ max 614)
+20261124T130821415 --- Blank '114.80018-MG11' aus B-Achse geholt
+20261124T130853710 --- Auf Position 5 ist ein Preformhalter. Messwert = 597 (min 565/ max 620)
+20261124T130853769 --- Blankhalter erfolgreich im Wechlser abgelegt. Pos 5
+20261124T130859392 --- Blank 114.80018-MG11 Wechslerposition 114 abgelegt
+20261124T130908450 --- Auf Position 5 ist ein Preformhalter. Messwert = 597 (min 565/ max 620)
+20261124T130921627 --- Blank '109.80018-MG12' aus Wechslerposition 109 geholt
+20261124T131002067 --- Blank '109.80018-MG12' im B-Achsennullpunktspannsystem abgesetzt
+20261124T131008854 --- Im Spannsystem ist ein Preformhalter. Messwert = 603 (min 570/ max 614)
+20261124T131008907 --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt
+20261124T131008994 --- BlankChange wurde abgearbeitet
+20261124T131041775 --- T4083 Werkzeugdeltal‰nge 0.00223568mm ermittelt
+20261124T131043582 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T131053779 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T131054584 --- Auf Position 17 ist ein Fraeser. Messwert = 526
+20261124T131109944 --- T4083 Werkzeugdeltal‰nge -0.0076523mm ermittelt
+20261124T131110989 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T131112943 --- WARMT4083S18000DYN4: Warmlauf 4 min Start, Laenge aktiv 27.0007mm
+20261124T131529628 --- T4083 Werkzeugl‰nge 27.00470068mm ermittelt (erwartet 28.6mm)
+20261124T131532199 --- WARMT4083S18000DYN4: warm nachgemessen, Laenge aktiv 27.0047mm
+20261124T132045819 --- T4090 Werkzeugdeltal‰nge -0.00070027mm ermittelt
+20261124T132047453 --- Auf Position 17 ist kein Fraeser. Messwert = 699
+20261124T132057550 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T132058501 --- Auf Position 21 ist ein Fraeser. Messwert = 517
+20261124T132113918 --- T4090 Werkzeugdeltal‰nge 0.00430814mm ermittelt
+20261124T132114859 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T132429603 --- T4086 Werkzeugdeltal‰nge -0.00208994mm ermittelt
+20261124T132431380 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T132441607 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T132442464 --- Auf Position 20 ist ein Fraeser. Messwert = 523
+20261124T132457664 --- T4086 Werkzeugdeltal‰nge -0.00560041mm ermittelt
+20261124T132458617 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T132743919 --- T4085 Werkzeugdeltal‰nge 0.00372845mm ermittelt
+20261124T132745605 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261124T132755739 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T132756553 --- Auf Position 19 ist ein Fraeser. Messwert = 516
+20261124T132811939 --- T4085 Werkzeugdeltal‰nge -0.00436858mm ermittelt
+20261124T132812948 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261124T133057145 --- T4088 Werkzeugdeltal‰nge -0.00120835mm ermittelt
+20261124T133058893 --- Auf Position 19 ist kein Fraeser. Messwert = 701
+20261124T133108978 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T133109965 --- Auf Position 22 ist ein Fraeser. Messwert = 527
+20261124T133124391 --- T4088 Werkzeugdeltal‰nge -0.00295155mm ermittelt
+20261124T133125298 --- T4088 wurde aus dem Werkzeugwechsler geholt
+20261124T133450765 --- T4098 Werkzeugdeltal‰nge 0.00035839mm ermittelt
+20261124T133452564 --- Auf Position 22 ist kein Fraeser. Messwert = 701
+20261124T133502847 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T133504066 --- Auf Position 26 ist ein Fraeser. Messwert = 525
+20261124T133520022 --- T4098 Werkzeugdeltal‰nge -0.00591246mm ermittelt
+20261124T133520976 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T133748199 --- T4081 Werkzeugdeltal‰nge 0.0016517mm ermittelt
+20261124T133750257 --- Auf Position 26 ist kein Fraeser. Messwert = 701
+20261124T133800738 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T133801647 --- Auf Position 15 ist ein Fraeser. Messwert = 517
+20261124T133816994 --- T4081 Werkzeugdeltal‰nge -0.00597386mm ermittelt
+20261124T133817917 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261124T134139728 --- T4083 Werkzeugdeltal‰nge 0.00092259mm ermittelt
+20261124T134141546 --- Auf Position 15 ist kein Fraeser. Messwert = 695
+20261124T134151717 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T134152519 --- Auf Position 17 ist ein Fraeser. Messwert = 521
+20261124T134207780 --- T4083 Werkzeugdeltal‰nge -0.00538853mm ermittelt
+20261124T134208706 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T134453825 --- T4086 Werkzeugdeltal‰nge 0.00321105mm ermittelt
+20261124T134455459 --- Auf Position 17 ist kein Fraeser. Messwert = 700
+20261124T134505545 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T134506403 --- Auf Position 20 ist ein Fraeser. Messwert = 519
+20261124T134521672 --- T4086 Werkzeugdeltal‰nge -0.00208394mm ermittelt
+20261124T134522625 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T134524563 --- WARMT4086S22000DYN4: Warmlauf 4 min Start, Laenge aktiv 28.0694mm
+20261124T134941985 --- T4086 Werkzeugl‰nge 28.07355978mm ermittelt (erwartet 29.8mm)
+20261124T134944665 --- WARMT4086S22000DYN4: warm nachgemessen, Laenge aktiv 28.0736mm
+20261124T135316901 --- T4098 Werkzeugdeltal‰nge -0.00069826mm ermittelt
+20261124T135318607 --- Auf Position 20 ist kein Fraeser. Messwert = 699
+20261124T135328731 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T135329940 --- Auf Position 26 ist ein Fraeser. Messwert = 524
+20261124T135345966 --- T4098 Werkzeugdeltal‰nge -0.00296178mm ermittelt
+20261124T135347020 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T135348968 --- WARMT4098S19500DYN4: Warmlauf 4 min Start, Laenge aktiv 24.4867mm
+20261124T135806240 --- T4098 Werkzeugl‰nge 24.48728182mm ermittelt (erwartet 26.3mm)
+20261124T135808790 --- WARMT4098S19500DYN4: warm nachgemessen, Laenge aktiv 24.4873mm
+20261124T140509996 --- T4089 Werkzeugdeltal‰nge 0.00115007mm ermittelt
+20261124T140512035 --- Auf Position 26 ist kein Fraeser. Messwert = 700
+20261124T140522525 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T140523597 --- Auf Position 23 ist ein Fraeser. Messwert = 525
+20261124T140539408 --- T4089 Werkzeugdeltal‰nge -0.01513017mm ermittelt
+20261124T140540373 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261124T140542308 --- WARMT4089S40000DYN5: Warmlauf 4 min Start, Laenge aktiv 24.5803mm
+20261124T141003916 --- T4089 Werkzeugl‰nge 24.58985903mm ermittelt (erwartet 26mm)
+20261124T141006603 --- WARMT4089S40000DYN5: warm nachgemessen, Laenge aktiv 24.5899mm
+20261124T141046749 --- MESST4089S40000DYN5G59: Start, Laenge aktiv 24.5899mm, Position X -0.17043 Y -1.87196 Z 60.74146
+20261124T141115482 --- T4089 Werkzeugl‰nge 24.58922483mm ermittelt (erwartet 26mm)
+20261124T141134587 --- MESST4089S40000DYN5G59: nachgemessen, Laenge aktiv 24.5892mm, Aenderung -0.0007mm
+20261124T141201044 --- MESST4089S40000DYN5G59MIN4: Start, Laenge aktiv 24.5892mm, Position X 1.40756 Y -5.59983 Z 60.74
+20261124T141201248 --- MESST4089S40000DYN5G59MIN4: Warmlauf 4 min Start, Laenge aktiv 24.5892mm
+20261124T141627007 --- T4089 Werkzeugl‰nge 24.59102728mm ermittelt (erwartet 26mm)
+20261124T141646005 --- MESST4089S40000DYN5G59MIN4: nachgemessen, Laenge aktiv 24.591mm, Aenderung 0.0018mm
+20261124T142322276 --- T4126 Werkzeugdeltal‰nge 0.0016819mm ermittelt
+20261124T142324193 --- Auf Position 23 ist kein Fraeser. Messwert = 699
+20261124T142334529 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T142335470 --- Auf Position 7 ist ein Fraeser. Messwert = 515
+20261124T142351132 --- T4126 Werkzeugdeltal‰nge 0.01285631mm ermittelt
+20261124T142352078 --- T4126 wurde aus dem Werkzeugwechsler geholt
+20261124T142353996 --- WARMT4126S6000DYN17MIN8: Warmlauf 8 min Start, Laenge aktiv 24.6827mm
+20261124T143209054 --- T4126 Werkzeugl‰nge 24.66826536mm ermittelt (erwartet 26mm)
+20261124T143212085 --- WARMT4126S6000DYN17MIN8: warm nachgemessen, Laenge aktiv 24.6683mm
+20261124T144351797 --- T4090 Werkzeugdeltal‰nge -0.00548012mm ermittelt
+20261124T144353588 --- Auf Position 7 ist kein Fraeser. Messwert = 592
+20261124T144403775 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T144404708 --- Auf Position 21 ist ein Fraeser. Messwert = 517
+20261124T144420117 --- T4090 Werkzeugdeltal‰nge -0.00870176mm ermittelt
+20261124T144421056 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T145601597 --- BlankChange wurde aufgerufen
+20261124T145643540 --- Im Spannsystem ist ein Preformhalter. Messwert = 603 (min 570/ max 614)
+20261124T145712544 --- Blank '109.80018-MG12' aus B-Achse geholt
+20261124T145744859 --- Auf Position 5 ist ein Preformhalter. Messwert = 595 (min 565/ max 620)
+20261124T145744919 --- Blankhalter erfolgreich im Wechlser abgelegt. Pos 5
+20261124T145750570 --- Blank 109.80018-MG12 Wechslerposition 109 abgelegt
+20261124T145759268 --- Auf Position 5 ist ein Preformhalter. Messwert = 595 (min 565/ max 620)
+20261124T145812446 --- Blank '113.80018-MG13' aus Wechslerposition 113 geholt
+20261124T145852895 --- Blank '113.80018-MG13' im B-Achsennullpunktspannsystem abgesetzt
+20261124T145859683 --- Im Spannsystem ist ein Preformhalter. Messwert = 601 (min 570/ max 614)
+20261124T145859736 --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt
+20261124T145859821 --- BlankChange wurde abgearbeitet
+20261124T145932585 --- T4083 Werkzeugdeltal‰nge 0.00061336mm ermittelt
+20261124T145934371 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T145944568 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T145945372 --- Auf Position 17 ist ein Fraeser. Messwert = 520
+20261124T150000643 --- T4083 Werkzeugdeltal‰nge -0.0083336mm ermittelt
+20261124T150001578 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T150003507 --- WARMT4083S18000DYN4: Warmlauf 4 min Start, Laenge aktiv 26.9935mm
+20261124T150420277 --- T4083 Werkzeugl‰nge 26.99921228mm ermittelt (erwartet 28.6mm)
+20261124T150422887 --- WARMT4083S18000DYN4: warm nachgemessen, Laenge aktiv 26.9992mm
+20261124T151120901 --- T4090 Werkzeugdeltal‰nge 0.00115669mm ermittelt
+20261124T151122527 --- Auf Position 17 ist kein Fraeser. Messwert = 699
+20261124T151132612 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T151133544 --- Auf Position 21 ist ein Fraeser. Messwert = 517
+20261124T151148944 --- T4090 Werkzeugdeltal‰nge 5.151000001e-005mm ermittelt
+20261124T151149882 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T151617594 --- T4086 Werkzeugdeltal‰nge -0.00239453mm ermittelt
+20261124T151619350 --- Auf Position 21 ist kein Fraeser. Messwert = 702
+20261124T151629557 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T151630403 --- Auf Position 20 ist ein Fraeser. Messwert = 526
+20261124T151645594 --- T4086 Werkzeugdeltal‰nge -0.01059358mm ermittelt
+20261124T151646587 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T151957678 --- T4085 Werkzeugdeltal‰nge 0.00155614mm ermittelt
+20261124T151959364 --- Auf Position 20 ist kein Fraeser. Messwert = 699
+20261124T152009496 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T152010281 --- Auf Position 19 ist ein Fraeser. Messwert = 515
+20261124T152025658 --- T4085 Werkzeugdeltal‰nge -0.01340271mm ermittelt
+20261124T152026716 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261124T152352402 --- T4088 Werkzeugdeltal‰nge 0.00245777mm ermittelt
+20261124T152354050 --- Auf Position 19 ist kein Fraeser. Messwert = 700
+20261124T152404144 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T152405151 --- Auf Position 22 ist ein Fraeser. Messwert = 518
+20261124T152419577 --- T4088 Werkzeugdeltal‰nge -0.0027405mm ermittelt
+20261124T152420585 --- T4088 wurde aus dem Werkzeugwechsler geholt
+20261124T153046112 --- T4098 Werkzeugdeltal‰nge 0.00024083mm ermittelt
+20261124T153048011 --- Auf Position 22 ist kein Fraeser. Messwert = 701
+20261124T153058273 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T153059473 --- Auf Position 26 ist ein Fraeser. Messwert = 523
+20261124T153115438 --- T4098 Werkzeugdeltal‰nge -0.00493274mm ermittelt
+20261124T153116423 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T153411064 --- T4081 Werkzeugdeltal‰nge 0.00126425mm ermittelt
+20261124T153413223 --- Auf Position 26 ist kein Fraeser. Messwert = 700
+20261124T153423714 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T153424613 --- Auf Position 15 ist ein Fraeser. Messwert = 520
+20261124T153439959 --- T4081 Werkzeugdeltal‰nge -0.00190383mm ermittelt
+20261124T153440934 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261124T153841172 --- T4083 Werkzeugdeltal‰nge -0.00182535mm ermittelt
+20261124T153842909 --- Auf Position 15 ist kein Fraeser. Messwert = 695
+20261124T153853087 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T153853873 --- Auf Position 17 ist ein Fraeser. Messwert = 522
+20261124T153909144 --- T4083 Werkzeugdeltal‰nge -0.00822583mm ermittelt
+20261124T153910109 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T154212939 --- T4086 Werkzeugdeltal‰nge 0.00268737mm ermittelt
+20261124T154214562 --- Auf Position 17 ist kein Fraeser. Messwert = 700
+20261124T154224648 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T154225515 --- Auf Position 20 ist ein Fraeser. Messwert = 530
+20261124T154240705 --- T4086 Werkzeugdeltal‰nge -0.00381564mm ermittelt
+20261124T154241628 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T154243546 --- WARMT4086S22000DYN4: Warmlauf 4 min Start, Laenge aktiv 28.0601mm
+20261124T154701109 --- T4086 Werkzeugl‰nge 28.06365587mm ermittelt (erwartet 29.8mm)
+20261124T154703688 --- WARMT4086S22000DYN4: warm nachgemessen, Laenge aktiv 28.0637mm
+20261124T155107823 --- T4098 Werkzeugdeltal‰nge 0.00067113mm ermittelt
+20261124T155109539 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261124T155119671 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T155120870 --- Auf Position 26 ist ein Fraeser. Messwert = 524
+20261124T155136938 --- T4098 Werkzeugdeltal‰nge -0.00425099mm ermittelt
+20261124T155137909 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T155139844 --- WARMT4098S19500DYN4: Warmlauf 4 min Start, Laenge aktiv 24.4806mm
+20261124T155557231 --- T4098 Werkzeugl‰nge 24.48087313mm ermittelt (erwartet 26.3mm)
+20261124T155559861 --- WARMT4098S19500DYN4: warm nachgemessen, Laenge aktiv 24.4809mm
+20261124T160402614 --- T4089 Werkzeugdeltal‰nge -0.00027483mm ermittelt
+20261124T160404682 --- Auf Position 26 ist kein Fraeser. Messwert = 700
+20261124T160415162 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T160416225 --- Auf Position 23 ist ein Fraeser. Messwert = 519
+20261124T160432037 --- T4089 Werkzeugdeltal‰nge -0.01021764mm ermittelt
+20261124T160433081 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261124T160435029 --- WARMT4089S40000DYN5: Warmlauf 4 min Start, Laenge aktiv 24.5825mm
+20261124T160856404 --- T4089 Werkzeugl‰nge 24.59107496mm ermittelt (erwartet 26mm)
+20261124T160859050 --- WARMT4089S40000DYN5: warm nachgemessen, Laenge aktiv 24.5911mm
+20261124T160953104 --- MESST4089S40000DYN5G59: Start, Laenge aktiv 24.5911mm, Position X -1.96472 Y -4.08566 Z 61.00596
+20261124T161022949 --- T4089 Werkzeugl‰nge 24.59115602mm ermittelt (erwartet 26mm)
+20261124T161041852 --- MESST4089S40000DYN5G59: nachgemessen, Laenge aktiv 24.5912mm, Aenderung 0.0001mm
+20261124T161115979 --- MESST4089S40000DYN5G59MIN4: Start, Laenge aktiv 24.5912mm, Position X 1.67691 Y -7.3698 Z 61.006
+20261124T161116187 --- MESST4089S40000DYN5G59MIN4: Warmlauf 4 min Start, Laenge aktiv 24.5912mm
+20261124T161540673 --- T4089 Werkzeugl‰nge 24.59372141mm ermittelt (erwartet 26mm)
+20261124T161559792 --- MESST4089S40000DYN5G59MIN4: nachgemessen, Laenge aktiv 24.5937mm, Aenderung 0.0025mm
+20261124T162356859 --- T4126 Werkzeugdeltal‰nge 0.000565mm ermittelt
+20261124T162358765 --- Auf Position 23 ist kein Fraeser. Messwert = 699
+20261124T162409102 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T162410053 --- Auf Position 7 ist ein Fraeser. Messwert = 517
+20261124T162425834 --- T4126 Werkzeugdeltal‰nge 0.01253209mm ermittelt
+20261124T162426811 --- T4126 wurde aus dem Werkzeugwechsler geholt
+20261124T162428728 --- WARMT4126S6000DYN17MIN8: Warmlauf 8 min Start, Laenge aktiv 24.6753mm
+20261124T163243548 --- T4126 Werkzeugl‰nge 24.66627218mm ermittelt (erwartet 26mm)
+20261124T163246658 --- WARMT4126S6000DYN17MIN8: warm nachgemessen, Laenge aktiv 24.6663mm
+20261124T164606194 --- T4090 Werkzeugdeltal‰nge -0.0029556mm ermittelt
+20261124T164607985 --- Auf Position 7 ist kein Fraeser. Messwert = 594
+20261124T164618173 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T164619105 --- Auf Position 21 ist ein Fraeser. Messwert = 517
+20261124T164634525 --- T4090 Werkzeugdeltal‰nge -0.00592638mm ermittelt
+20261124T164635452 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T171331593 --- BlankChange wurde aufgerufen
+20261124T171413523 --- Im Spannsystem ist ein Preformhalter. Messwert = 605 (min 570/ max 614)
+20261124T171442545 --- Blank '113.80018-MG13' aus B-Achse geholt
+20261124T171514912 --- Auf Position 5 ist ein Preformhalter. Messwert = 602 (min 565/ max 620)
+20261124T171514970 --- Blankhalter erfolgreich im Wechlser abgelegt. Pos 5
+20261124T171520604 --- Blank 113.80018-MG13 Wechslerposition 113 abgelegt
+20261124T171528482 --- Auf Position 5 ist ein Preformhalter. Messwert = 598 (min 565/ max 620)
+20261124T171541659 --- Blank '111.80018-MG15' aus Wechslerposition 111 geholt
+20261124T171622061 --- Blank '111.80018-MG15' im B-Achsennullpunktspannsystem abgesetzt
+20261124T171628849 --- Im Spannsystem ist ein Preformhalter. Messwert = 609 (min 570/ max 614)
+20261124T171628902 --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt
+20261124T171628991 --- BlankChange wurde abgearbeitet
+20261124T171701783 --- T4083 Werkzeugdeltal‰nge -0.00183836mm ermittelt
+20261124T171703568 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T171713785 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T171714580 --- Auf Position 17 ist ein Fraeser. Messwert = 522
+20261124T171729844 --- T4083 Werkzeugdeltal‰nge -0.01303505mm ermittelt
+20261124T171730817 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T171730991 --- Warmlaufprogramm wurde gestartet
+20261124T171936913 --- Warmlaufprogramm Teil 1/4 beendet. Laufzeit 124s/120s
+20261124T172043917 --- Warmlaufprogramm Teil 2/4 beendet. Laufzeit 67s/60s
+20261124T172249286 --- Warmlaufprogramm Teil 3/4 beendet. Laufzeit 123s/120s
+20261124T172451435 --- Warmlaufprogramm Teil 4/4 beendet. Laufzeit 122s/120s
+20261124T172451440 --- Warmlaufprogramm erfolgreich beendet. Laufzeit 438s
+20261124T172454824 --- WARMT4083S18000DYN4: Warmlauf 4 min Start, Laenge aktiv 26.9819mm
+20261124T172911599 --- T4083 Werkzeugl‰nge 26.99292757mm ermittelt (erwartet 28.6mm)
+20261124T172914140 --- WARMT4083S18000DYN4: warm nachgemessen, Laenge aktiv 26.9929mm
+20261124T173643794 --- T4090 Werkzeugdeltal‰nge -0.00239953mm ermittelt
+20261124T173645448 --- Auf Position 17 ist kein Fraeser. Messwert = 700
+20261124T173655553 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T173656495 --- Auf Position 21 ist ein Fraeser. Messwert = 518
+20261124T173711905 --- T4090 Werkzeugdeltal‰nge 0.00979402mm ermittelt
+20261124T173712844 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T174226978 --- T4086 Werkzeugdeltal‰nge -0.00227573mm ermittelt
+20261124T174228744 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T174238941 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T174239788 --- Auf Position 20 ist ein Fraeser. Messwert = 531
+20261124T174254959 --- T4086 Werkzeugdeltal‰nge -0.00576046mm ermittelt
+20261124T174255912 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T174520763 --- T4085 Werkzeugdeltal‰nge 0.0028195mm ermittelt
+20261124T174522468 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261124T174532590 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T174533395 --- Auf Position 19 ist ein Fraeser. Messwert = 517
+20261124T174548686 --- T4085 Werkzeugdeltal‰nge -0.00913075mm ermittelt
+20261124T174549612 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261124T174833868 --- T4088 Werkzeugdeltal‰nge 8.370000001e-005mm ermittelt
+20261124T174835495 --- Auf Position 19 ist kein Fraeser. Messwert = 701
+20261124T174845599 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T174846607 --- Auf Position 22 ist ein Fraeser. Messwert = 521
+20261124T174901025 --- T4088 Werkzeugdeltal‰nge -0.00618666mm ermittelt
+20261124T174901941 --- T4088 wurde aus dem Werkzeugwechsler geholt
+20261124T175336876 --- T4098 Werkzeugdeltal‰nge 0.00122927mm ermittelt
+20261124T175338696 --- Auf Position 22 ist kein Fraeser. Messwert = 702
+20261124T175348969 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T175350188 --- Auf Position 26 ist ein Fraeser. Messwert = 525
+20261124T175406157 --- T4098 Werkzeugdeltal‰nge -0.00350342mm ermittelt
+20261124T175407209 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T175714350 --- T4081 Werkzeugdeltal‰nge 0.00269547mm ermittelt
+20261124T175716418 --- Auf Position 26 ist kein Fraeser. Messwert = 701
+20261124T175726907 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T175727797 --- Auf Position 15 ist ein Fraeser. Messwert = 522
+20261124T175743135 --- T4081 Werkzeugdeltal‰nge 0.00245897mm ermittelt
+20261124T175744089 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261124T180100298 --- T4083 Werkzeugdeltal‰nge -0.00165751mm ermittelt
+20261124T180102007 --- Auf Position 15 ist kein Fraeser. Messwert = 696
+20261124T180112186 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T180112990 --- Auf Position 17 ist ein Fraeser. Messwert = 530
+20261124T180128264 --- T4083 Werkzeugdeltal‰nge -0.00964595mm ermittelt
+20261124T180129227 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T180403417 --- T4086 Werkzeugdeltal‰nge 0.00723536mm ermittelt
+20261124T180405059 --- Auf Position 17 ist kein Fraeser. Messwert = 701
+20261124T180415146 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T180416003 --- Auf Position 20 ist ein Fraeser. Messwert = 519
+20261124T180431262 --- T4086 Werkzeugdeltal‰nge 0.00710054mm ermittelt
+20261124T180432207 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T180434151 --- WARMT4086S22000DYN4: Warmlauf 4 min Start, Laenge aktiv 28.0685mm
+20261124T180851598 --- T4086 Werkzeugl‰nge 28.07263471mm ermittelt (erwartet 29.8mm)
+20261124T180854218 --- WARMT4086S22000DYN4: warm nachgemessen, Laenge aktiv 28.0726mm
+20261124T181215534 --- T4098 Werkzeugdeltal‰nge -6.542e-005mm ermittelt
+20261124T181217240 --- Auf Position 20 ist kein Fraeser. Messwert = 700
+20261124T181227374 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T181228583 --- Auf Position 26 ist ein Fraeser. Messwert = 522
+20261124T181244540 --- T4098 Werkzeugdeltal‰nge 0.0083592mm ermittelt
+20261124T181245485 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T181247433 --- WARMT4098S19500DYN4: Warmlauf 4 min Start, Laenge aktiv 24.4882mm
+20261124T181704806 --- T4098 Werkzeugl‰nge 24.48879339mm ermittelt (erwartet 26.3mm)
+20261124T181707466 --- WARMT4098S19500DYN4: warm nachgemessen, Laenge aktiv 24.4888mm
+20261124T182329571 --- T4089 Werkzeugdeltal‰nge 0.00068004mm ermittelt
+20261124T182331600 --- Auf Position 26 ist kein Fraeser. Messwert = 700
+20261124T182342080 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T182343124 --- Auf Position 23 ist ein Fraeser. Messwert = 520
+20261124T182358926 --- T4089 Werkzeugdeltal‰nge -0.0212018mm ermittelt
+20261124T182359861 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261124T182401837 --- WARMT4089S40000DYN5: Warmlauf 4 min Start, Laenge aktiv 24.5731mm
+20261124T182823266 --- T4089 Werkzeugl‰nge 24.5824156mm ermittelt (erwartet 26mm)
+20261124T182825822 --- WARMT4089S40000DYN5: warm nachgemessen, Laenge aktiv 24.5824mm
+20261124T182851286 --- MESST4089S40000DYN5G59: Start, Laenge aktiv 24.5824mm, Position X 0.39601 Y -1.84776 Z 60.97848 
+20261124T182922046 --- T4089 Werkzeugl‰nge 24.58293058mm ermittelt (erwartet 26mm)
+20261124T182941141 --- MESST4089S40000DYN5G59: nachgemessen, Laenge aktiv 24.5829mm, Aenderung 0.0005mm
+20261124T183017678 --- MESST4089S40000DYN5G59MIN4: Start, Laenge aktiv 24.5829mm, Position X 1.36893 Y -1.79483 Z 60.97
+20261124T183017883 --- MESST4089S40000DYN5G59MIN4: Warmlauf 4 min Start, Laenge aktiv 24.5829mm
+20261124T183442674 --- T4089 Werkzeugl‰nge 24.58444692mm ermittelt (erwartet 26mm)
+20261124T183501759 --- MESST4089S40000DYN5G59MIN4: nachgemessen, Laenge aktiv 24.5844mm, Aenderung 0.0015mm
+20261124T184040014 --- T4126 Werkzeugdeltal‰nge 0.00149651mm ermittelt
+20261124T184041939 --- Auf Position 23 ist kein Fraeser. Messwert = 701
+20261124T184052265 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T184053197 --- Auf Position 7 ist ein Fraeser. Messwert = 518
+20261124T184108840 --- T4126 Werkzeugdeltal‰nge 0.01157909mm ermittelt
+20261124T184109936 --- T4126 wurde aus dem Werkzeugwechsler geholt
+20261124T184111888 --- WARMT4126S6000DYN17MIN8: Warmlauf 8 min Start, Laenge aktiv 24.6749mm
+20261124T184926766 --- T4126 Werkzeugl‰nge 24.66241934mm ermittelt (erwartet 26mm)
+20261124T184929877 --- WARMT4126S6000DYN17MIN8: warm nachgemessen, Laenge aktiv 24.6624mm
+20261124T185946321 --- T4090 Werkzeugdeltal‰nge -0.00451538mm ermittelt
+20261124T185948103 --- Auf Position 7 ist kein Fraeser. Messwert = 594
+20261124T185958300 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T185959232 --- Auf Position 21 ist ein Fraeser. Messwert = 517
+20261124T190014732 --- T4090 Werkzeugdeltal‰nge -0.00320868mm ermittelt
+20261124T190015670 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T190329436 --- BlankChange wurde aufgerufen
+20261124T190411371 --- Im Spannsystem ist ein Preformhalter. Messwert = 608 (min 570/ max 614)
+20261124T190440417 --- Blank '111.80018-MG15' aus B-Achse geholt
+20261124T190512723 --- Auf Position 5 ist ein Preformhalter. Messwert = 596 (min 565/ max 620)
+20261124T190512782 --- Blankhalter erfolgreich im Wechlser abgelegt. Pos 5
+20261124T190518416 --- Blank 111.80018-MG15 Wechslerposition 111 abgelegt
+20261124T190525883 --- Auf Position 5 ist ein Preformhalter. Messwert = 599 (min 565/ max 620)
+20261124T190539062 --- Blank '112.80018-MG21' aus Wechslerposition 112 geholt
+20261124T190619543 --- Blank '112.80018-MG21' im B-Achsennullpunktspannsystem abgesetzt
+20261124T190626330 --- Im Spannsystem ist ein Preformhalter. Messwert = 604 (min 570/ max 614)
+20261124T190626383 --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt
+20261124T190626473 --- BlankChange wurde abgearbeitet
+20261124T190659234 --- T4083 Werkzeugdeltal‰nge 0.00225153mm ermittelt
+20261124T190701120 --- Auf Position 21 ist kein Fraeser. Messwert = 701
+20261124T190711308 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T190712123 --- Auf Position 17 ist ein Fraeser. Messwert = 524
+20261124T190727505 --- T4083 Werkzeugdeltal‰nge -0.0008754mm ermittelt
+20261124T190728489 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T190730429 --- WARMT4083S18000DYN4: Warmlauf 4 min Start, Laenge aktiv 26.9872mm
+20261124T191147221 --- T4083 Werkzeugl‰nge 26.99117281mm ermittelt (erwartet 28.6mm)
+20261124T191149901 --- WARMT4083S18000DYN4: warm nachgemessen, Laenge aktiv 26.9912mm
+20261124T191840615 --- T4090 Werkzeugdeltal‰nge 0.00531815mm ermittelt
+20261124T191842349 --- Auf Position 17 ist kein Fraeser. Messwert = 701
+20261124T191852455 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T191853397 --- Auf Position 21 ist ein Fraeser. Messwert = 518
+20261124T191908787 --- T4090 Werkzeugdeltal‰nge 0.0027601mm ermittelt
+20261124T191909726 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T192331158 --- T4086 Werkzeugdeltal‰nge 0.00209156mm ermittelt
+20261124T192332936 --- Auf Position 21 ist kein Fraeser. Messwert = 703
+20261124T192343165 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T192344030 --- Auf Position 20 ist ein Fraeser. Messwert = 529
+20261124T192359211 --- T4086 Werkzeugdeltal‰nge -0.00725149mm ermittelt
+20261124T192400134 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T192642565 --- T4085 Werkzeugdeltal‰nge 0.00031077mm ermittelt
+20261124T192644250 --- Auf Position 20 ist kein Fraeser. Messwert = 699
+20261124T192654372 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T192655168 --- Auf Position 19 ist ein Fraeser. Messwert = 519
+20261124T192710457 --- T4085 Werkzeugdeltal‰nge 0.00266352mm ermittelt
+20261124T192711383 --- T4085 wurde aus dem Werkzeugwechsler geholt
+20261124T193025240 --- T4088 Werkzeugdeltal‰nge 0.00147509mm ermittelt
+20261124T193026897 --- Auf Position 19 ist kein Fraeser. Messwert = 701
+20261124T193036991 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T193038009 --- Auf Position 22 ist ein Fraeser. Messwert = 519
+20261124T193052547 --- T4088 Werkzeugdeltal‰nge -0.00364714mm ermittelt
+20261124T193053484 --- T4088 wurde aus dem Werkzeugwechsler geholt
+20261124T193523400 --- T4098 Werkzeugdeltal‰nge 0.00188405mm ermittelt
+20261124T193525227 --- Auf Position 22 ist kein Fraeser. Messwert = 703
+20261124T193535490 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T193536720 --- Auf Position 26 ist ein Fraeser. Messwert = 525
+20261124T193552688 --- T4098 Werkzeugdeltal‰nge -0.01309484mm ermittelt
+20261124T193553661 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T193858682 --- T4081 Werkzeugdeltal‰nge 0.00038663mm ermittelt
+20261124T193900729 --- Auf Position 26 ist kein Fraeser. Messwert = 702
+20261124T193911209 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T193912099 --- Auf Position 15 ist ein Fraeser. Messwert = 526
+20261124T193927459 --- T4081 Werkzeugdeltal‰nge -0.00106377mm ermittelt
+20261124T193928470 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261124T194338861 --- T4083 Werkzeugdeltal‰nge -0.00269605mm ermittelt
+20261124T194340598 --- Auf Position 15 ist kein Fraeser. Messwert = 696
+20261124T194350758 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T194351553 --- Auf Position 17 ist ein Fraeser. Messwert = 527
+20261124T194406915 --- T4083 Werkzeugdeltal‰nge -0.00502202mm ermittelt
+20261124T194407969 --- T4083 wurde aus dem Werkzeugwechsler geholt
+20261124T194713839 --- T4086 Werkzeugdeltal‰nge -0.00212964mm ermittelt
+20261124T194715482 --- Auf Position 17 ist kein Fraeser. Messwert = 701
+20261124T194725577 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T194726434 --- Auf Position 20 ist ein Fraeser. Messwert = 520
+20261124T194741714 --- T4086 Werkzeugdeltal‰nge 0.00238065mm ermittelt
+20261124T194742638 --- T4086 wurde aus dem Werkzeugwechsler geholt
+20261124T194744607 --- WARMT4086S22000DYN4: Warmlauf 4 min Start, Laenge aktiv 28.0679mm
+20261124T195202060 --- T4086 Werkzeugl‰nge 28.07149507mm ermittelt (erwartet 29.8mm)
+20261124T195204799 --- WARMT4086S22000DYN4: warm nachgemessen, Laenge aktiv 28.0715mm
+20261124T195617106 --- T4098 Werkzeugdeltal‰nge 0.00030502mm ermittelt
+20261124T195618792 --- Auf Position 20 ist kein Fraeser. Messwert = 699
+20261124T195628915 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T195630114 --- Auf Position 26 ist ein Fraeser. Messwert = 523
+20261124T195646082 --- T4098 Werkzeugdeltal‰nge 0.00996683mm ermittelt
+20261124T195647037 --- T4098 wurde aus dem Werkzeugwechsler geholt
+20261124T195649009 --- WARMT4098S19500DYN4: Warmlauf 4 min Start, Laenge aktiv 24.4868mm
+20261124T200106377 --- T4098 Werkzeugl‰nge 24.48647119mm ermittelt (erwartet 26.3mm)
+20261124T200108958 --- WARMT4098S19500DYN4: warm nachgemessen, Laenge aktiv 24.4865mm
+20261124T200922863 --- T4089 Werkzeugdeltal‰nge -0.00080605mm ermittelt
+20261124T200924872 --- Auf Position 26 ist kein Fraeser. Messwert = 701
+20261124T200935363 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T200936435 --- Auf Position 23 ist ein Fraeser. Messwert = 521
+20261124T200952319 --- T4089 Werkzeugdeltal‰nge -0.0157868mm ermittelt
+20261124T200953283 --- T4089 wurde aus dem Werkzeugwechsler geholt
+20261124T200955201 --- WARMT4089S40000DYN5: Warmlauf 4 min Start, Laenge aktiv 24.5701mm
+20261124T201416638 --- T4089 Werkzeugl‰nge 24.57978346mm ermittelt (erwartet 26mm)
+20261124T201419354 --- WARMT4089S40000DYN5: warm nachgemessen, Laenge aktiv 24.5798mm
+20261124T201531519 --- MESST4089S40000DYN5G59: Start, Laenge aktiv 24.5798mm, Position X 2.13716 Y -2.82885 Z 60.83351 
+20261124T201604338 --- T4089 Werkzeugl‰nge 24.58045103mm ermittelt (erwartet 26mm)
+20261124T201623833 --- MESST4089S40000DYN5G59: nachgemessen, Laenge aktiv 24.5805mm, Aenderung 0.0007mm
+20261124T201658367 --- MESST4089S40000DYN5G59MIN4: Start, Laenge aktiv 24.5805mm, Position X -0.30316 Y -6.90691 Z 60.8
+20261124T201658574 --- MESST4089S40000DYN5G59MIN4: Warmlauf 4 min Start, Laenge aktiv 24.5805mm
+20261124T202124326 --- T4089 Werkzeugl‰nge 24.58313562mm ermittelt (erwartet 26mm)
+20261124T202143787 --- MESST4089S40000DYN5G59MIN4: nachgemessen, Laenge aktiv 24.5831mm, Aenderung 0.0026mm
+20261124T202935545 --- T4126 Werkzeugdeltal‰nge 0.00071273mm ermittelt
+20261124T202937460 --- Auf Position 23 ist kein Fraeser. Messwert = 700
+20261124T202947796 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T202948737 --- Auf Position 7 ist ein Fraeser. Messwert = 517
+20261124T203004391 --- T4126 Werkzeugdeltal‰nge 0.01448523mm ermittelt
+20261124T203005347 --- T4126 wurde aus dem Werkzeugwechsler geholt
+20261124T203007294 --- WARMT4126S6000DYN17MIN8: Warmlauf 8 min Start, Laenge aktiv 24.6724mm
+20261124T203822225 --- T4126 Werkzeugl‰nge 24.66758348mm ermittelt (erwartet 26mm)
+20261124T203825327 --- WARMT4126S6000DYN17MIN8: warm nachgemessen, Laenge aktiv 24.6676mm
+20261124T205049661 --- T4090 Werkzeugdeltal‰nge -0.01208527mm ermittelt
+20261124T205051452 --- Auf Position 7 ist kein Fraeser. Messwert = 593
+20261124T205101650 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T205102572 --- Auf Position 21 ist ein Fraeser. Messwert = 517
+20261124T205118043 --- T4090 Werkzeugdeltal‰nge -0.00972161mm ermittelt
+20261124T205118991 --- T4090 wurde aus dem Werkzeugwechsler geholt
+20261124T205441616 --- BlankChange wurde aufgerufen
+20261124T205523552 --- Im Spannsystem ist ein Preformhalter. Messwert = 604 (min 570/ max 614)
+20261124T205552596 --- Blank '112.80018-MG21' aus B-Achse geholt
+20261124T205624913 --- Auf Position 5 ist ein Preformhalter. Messwert = 599 (min 565/ max 620)
+20261124T205624974 --- Blankhalter erfolgreich im Wechlser abgelegt. Pos 5
+20261124T205630585 --- Blank 112.80018-MG21 Wechslerposition 112 abgelegt
+20261124T205632386 --- Auf Position 4 ist ein Blankhalter. Messwert = 258 (min 480/ max 545)
+20261124T205642601 --- Blank '4.40016-1827' aus Wechslerposition 4 geholt
+20261124T205713614 --- Blank '4.40016-1827' im B-Achsennullpunktspannsystem abgesetzt
+20261124T205720401 --- Im Spannsystem ist ein Blankhalter. Messwert = 467 (min 445/ max 485)
+20261124T205720455 --- Blankhalter erfolgreich im Nullpunktspannsystem abgelegt
+20261124T205720543 --- BlankChange wurde abgearbeitet
+20261124T205753344 --- T4081 Werkzeugdeltal‰nge 0.00185236mm ermittelt
+20261124T205755110 --- Auf Position 21 ist kein Fraeser. Messwert = 702
+20261124T205805299 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T205806198 --- Auf Position 15 ist ein Fraeser. Messwert = 516
+20261124T205821617 --- T4081 Werkzeugdeltal‰nge 0.00166335mm ermittelt
+20261124T205822629 --- T4081 wurde aus dem Werkzeugwechsler geholt
+20261124T210433249 --- T4086 Werkzeugdeltal‰nge -0.00105708mm ermittelt
+20261124T210434976 --- Auf Position 15 ist kein Fraeser. Messwert = 697
+20261124T210445135 --- T0 wurde erfolgreich in den Werkzeugwechsler abgelegt
+20261124T210446003 --- Auf Position 20 ist ein Fraeser. Messwert = 523
+20261124T210501274 --- T4086 Werkzeugdeltal‰nge 0.0025561mm ermittelt
+20261124T210502237 --- T4086 wurde aus dem Werkzeugwechsler geholt
