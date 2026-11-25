@@ -3,7 +3,7 @@
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
 > Stand: 25.11.2026
 
-- ❓ **25.11.2026 abends: CAM V5.79 gebaut (noch nicht importiert): MKD 0,5 mm weiter Richtung Konnektor** – bei den ersten Teilen auf 50120/50121 am MKD achten (`21-achsdynamik-50120.md`); Kavität der Primärteleskope 8 µm enger, Sekundär 10 µm lockerer (reine CAM-Änderungen).
+- ❓ **25.11.2026 abends: CAM V5.79 gebaut und in hyperDENT importiert (noch nicht gefräst): MKD 0,5 mm weiter Richtung Konnektor** – bei den ersten Teilen auf 50120/50121 am MKD achten (`21-achsdynamik-50120.md`); Kavität der Primärteleskope 8 µm enger, Sekundär 10 µm lockerer (reine CAM-Änderungen).
 
 - ✅ **25.11.2026: die ersten drei Primärteleskope mit CAM V5.77 liefen im Autostart ohne 50120/50121** (MG22, MG25, MG23; MKD 8 000 °/min, Genauigkeit 0,005, bis zum Pol; CNC 4.38.0-x64 seit 16.11.). MKD wird im jetzt 19–24 min langen Job noch 6–8 µm kürzer (`23-waerme-z-kette.md` Abschnitt 3b). **Meldung 20723 geklärt:** `#MSG`-Zeile über 120 Zeichen in den eigenen `MESST…`-Unterprogrammen, 8 × je Teleskop, harmlos; vier Dateien neu erzeugt, ✅ seit 25.11. auf der Maschine (Andreas), ❓ noch nicht gelaufen (`eigene-programme/README.md`). **Sammel-Skripte legen ihr Ergebnis künftig unter `D:\CNC\Bibliothek\Logs` ab** und `LOGS_SAMMELN` bringt die NC der fertigen Jobs mit; ✅ seit 25.11. auf dem Steuerungs-PC (Andreas), ❓ noch nicht gelaufen (`05-maschinen-log.md`).
 
