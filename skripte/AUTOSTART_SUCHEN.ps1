@@ -5,7 +5,7 @@
 # Veraendert nichts an der Maschine, liest nur. Durchsucht die Festplatte 1-3 Minuten: am besten starten, wenn die
 # Maschine steht (zwischen zwei Jobs oder Autostart aus). Waehrend des Fraesens nur ausserhalb von Friktion/MKD.
 #
-# Inhalt des Ordners HEDmill-Autostart-<Datum-Uhrzeit> auf dem Desktop:
+# Inhalt des Ordners HEDmill-Autostart-<Datum-Uhrzeit> unter D:\CNC\Bibliothek\Logs:
 #   JOBABLAGE_WP.txt   was in C:\CNC\wp (Jobablage, aus der die Jobs starten) gerade liegt, mit Datum
 #   DATEILISTE.txt     alle Dateien in C:\HMI ausser NCProg, die in den letzten 4 Tagen geaendert wurden
 #   TREFFER.txt        Textstellen mit "autostart", "auto start", "automatik", "autorun", "joblist", "jobliste"
@@ -15,7 +15,11 @@
 #   UEBERSICHT.txt     was kopiert wurde
 
 $stamp = Get-Date -Format 'yyyy-MM-dd_HHmm'
-$ziel = Join-Path ([Environment]::GetFolderPath('Desktop')) "HEDmill-Autostart-$stamp"
+# Ablage (Andreas 25.11.2026): D:\CNC\Bibliothek\Logs statt Desktop. Gibt es den Ordner nicht, wird er angelegt;
+# ist D: nicht erreichbar, ersatzweise der Desktop.
+$basis = 'D:\CNC\Bibliothek\Logs'
+try { New-Item -ItemType Directory -Path $basis -Force -ErrorAction Stop | Out-Null } catch { $basis = [Environment]::GetFolderPath('Desktop') }
+$ziel = Join-Path $basis "HEDmill-Autostart-$stamp"
 $zd = Join-Path $ziel 'dateien'
 New-Item -ItemType Directory -Path $zd -Force | Out-Null
 $ue = Join-Path $ziel 'UEBERSICHT.txt'

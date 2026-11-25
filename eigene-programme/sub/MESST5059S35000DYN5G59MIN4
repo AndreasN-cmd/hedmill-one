@@ -10,6 +10,8 @@
 ;   Danach schreibt der PP den Kopf des Folgejobs (Luft, Absaugung, MHT).
 ; Version 2 (2026-11-13, Andreas: Z-Achse fuhr beim Anheben in den Endschalter): F25000 -> F3000, Z nicht mehr auf die gemerkte Z-Position, X/Y-Pruefung, MHT AUS (M109) vor dem Messen.
 ; Weicht die Laenge um mehr als 0,015 ab: einmal neu messen. Mehr als 0,1: Abbruch (Bruch, Werkzeug gezogen).
+; 2026-11-25: Logzeile 'Start' in drei Zeilen geteilt (Laenge, Position X Y Z, Position A B), jede unter 120 Zeichen;
+;   die lange Zeile loeste bei jedem Aufruf 4 x Warnung 20723 aus. Ablauf unveraendert.
 ; Quelle: ../fraesstrategien-hyperdent/docs/drehfraesen_spindelwaerme.md, tools/warmlauf_unterprogramme.py
 #VAR
    V.L.PX = 0
@@ -32,7 +34,9 @@ V.L.PZ = V.A.ABS.Z
 V.L.PA = V.A.ABS.A
 V.L.PB = V.A.ABS.B
 V.L.LAlt = V.G.WZ_AKT.L
-#MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59MIN4: Start, Laenge aktiv %Fmm, Position X %F Y %F Z %F A %F B %F", V.G.TIME_STAMP_FILE_NAME, V.G.WZ_AKT.L, V.L.PX, V.L.PY, V.L.PZ, V.L.PA, V.L.PB]
+#MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59MIN4: Start, Laenge aktiv %Fmm", V.G.TIME_STAMP_FILE_NAME, V.G.WZ_AKT.L]
+#MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59MIN4: Position X %F Y %F Z %F", V.G.TIME_STAMP_FILE_NAME, V.L.PX, V.L.PY, V.L.PZ]
+#MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59MIN4: Position A %F B %F", V.G.TIME_STAMP_FILE_NAME, V.L.PA, V.L.PB]
 $IF ABS[V.L.PX] > 30 OR ABS[V.L.PY] > 30
    #MSG SYN HMI ["MESST5059S35000DYN5G59MIN4: Position X/Y nicht plausibel - Abbruch"]
    #MSG SAVE EXCLUSIVE ["%S --- MESST5059S35000DYN5G59MIN4: Position X/Y nicht plausibel - Abbruch", V.G.TIME_STAMP_FILE_NAME]

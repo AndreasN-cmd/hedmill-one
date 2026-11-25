@@ -1,12 +1,16 @@
 # DYNSUCHE – nur lesend. Am Steuerungs-PC in PowerShell ausfuehren.
-# Schreibt nur DYNSUCHE.txt auf den Desktop (UTF-8). Nur laufen lassen, wenn die Maschine NICHT fraest.
+# Schreibt nur DYNSUCHE.txt nach D:\CNC\Bibliothek\Logs (UTF-8). Nur laufen lassen, wenn die Maschine NICHT fraest.
 # Sucht nicht in gepackten Archiven (.tnzip / .tszip).
 # Hinweis: Der Boot-Pfad 'C:\TwinCAT\3.1\Boot' ist fuer diese Maschine falsch,
 # richtig ist 'C:\ProgramData\Beckhoff\TwinCAT\3.1\Boot' (unten bereits korrigiert).
 # Erfolgreich gelaufen am 01.11.2026.
 
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-$ziel = "$env:USERPROFILE\Desktop\DYNSUCHE.txt"
+# Ablage (Andreas 25.11.2026): D:\CNC\Bibliothek\Logs statt Desktop. Gibt es den Ordner nicht, wird er angelegt;
+# ist D: nicht erreichbar, ersatzweise der Desktop.
+$basis = 'D:\CNC\Bibliothek\Logs'
+try { New-Item -ItemType Directory -Path $basis -Force -ErrorAction Stop | Out-Null } catch { $basis = [Environment]::GetFolderPath('Desktop') }
+$ziel = Join-Path $basis 'DYNSUCHE.txt'
 $boot = 'C:\ProgramData\Beckhoff\TwinCAT\3.1\Boot'
 $muster = 'a_trans_weight|r_trans_weight|trans_limit_with_curvature|opt_contour_mode|auto_contour_mode|LOOK_AHEAD|FCT_SURFACE|dev_surface_5ax|slope\.profile|filter\[0\]\.order|filter\[0\]\.prototype|error_filter|dyn_monitoring|corr_v_trans_jerk|mode_trans_jerk'
 $proj = @('C:\','D:\') | Where-Object { Test-Path $_ } | ForEach-Object { Get-ChildItem $_ -Recurse -File -Include *.tsproj,*.tszip,*.tnzip -ErrorAction SilentlyContinue }

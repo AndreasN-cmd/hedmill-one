@@ -5,10 +5,14 @@
 #   TEMP.txt           Inhalt von C:\TEMP (HEDS-Diagnoseschalter hedmill_debug.on, Log hedmill_ui_debug.log)
 #   PROZESSE.txt       Programme unter C:\HMI mit Startzeit (seit wann laeuft die Bedienoberflaeche)
 #   dateien\...        paths.xml, machPara.xml, GeneralSettings.xml, Blanks.xml, HEDS-Diagnoselog, HMI Program.log
-# Ergebnis: Ordner HEDmill-Jobliste-<Datum-Uhrzeit> auf dem Desktop.
+# Ergebnis: Ordner HEDmill-Jobliste-<Datum-Uhrzeit> unter D:\CNC\Bibliothek\Logs.
 
 $stamp = Get-Date -Format 'yyyy-MM-dd_HHmm'
-$ziel = Join-Path ([Environment]::GetFolderPath('Desktop')) "HEDmill-Jobliste-$stamp"
+# Ablage (Andreas 25.11.2026): D:\CNC\Bibliothek\Logs statt Desktop. Gibt es den Ordner nicht, wird er angelegt;
+# ist D: nicht erreichbar, ersatzweise der Desktop.
+$basis = 'D:\CNC\Bibliothek\Logs'
+try { New-Item -ItemType Directory -Path $basis -Force -ErrorAction Stop | Out-Null } catch { $basis = [Environment]::GetFolderPath('Desktop') }
+$ziel = Join-Path $basis "HEDmill-Jobliste-$stamp"
 $zd = Join-Path $ziel 'dateien'
 New-Item -ItemType Directory -Path $zd -Force | Out-Null
 $ue = Join-Path $ziel 'UEBERSICHT.txt'

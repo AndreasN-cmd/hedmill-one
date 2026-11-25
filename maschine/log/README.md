@@ -9,3 +9,5 @@ Lesen/Auswerten: siehe `docs/05-maschinen-log.md`.
 11.11.2026: `message20261109.txt` bis `message20261111.txt` (Nächte mit 50120 am MKD) und `cnc_ereignisse_2026-11-09_bis_11.md` (alle 50120/50121 aus LoggedEvents.db mit Programm und Satznummer). Die LoggedEvents.db selbst (15 MB) liegt in `~/Downloads/HEDmill-Logs-2026-11-11_1127/`, nicht im Repo.
 
 24.11.2026: `message20261122.txt` bis `message20261124.txt` (elf Primärteleskope CAM V5.74 mit Warmlauf, zweiter MKD; Auswertung `docs/23-waerme-z-kette.md` Abschnitt 3a). Die LoggedEvents.db dazu liegt in `~/Downloads/HEDmill-Logs-2026-11-24_2112/`, nicht im Repo.
+
+25.11.2026: `message20261124.txt` (jetzt der ganze Tag) und `message20261125.txt` bis 11:44 (die ersten drei Primärteleskope CAM V5.77: MG22, MG25, MG23; Auswertung `docs/23-waerme-z-kette.md` Abschnitt 3b). Die LoggedEvents.db dazu liegt in `~/Downloads/HEDmill-Logs-2026-11-25_1148/`, nicht im Repo.

@@ -56,6 +56,22 @@ Log 09.–12.11.2026 (399 Werkzeugeinsätze, Serien Primärteleskop):
 - ✅ T4098 ändert sich im Warmlauf nicht (kein Drehzahlsprung davor), T4086 um +3,3 µm, T4089 um +9,2 und in weiteren 4 min um +2,5 µm.
 - ❓ **Zweiter MKD (seit 23.11., der erste nach ≈ 100 Teilen bei Hufschmied, Andreas 24.11.):** `skripte/laengen_trend_log.py` (neu): seine Länge beim Holen fällt von Teil 2 bis 11 um 46 µm (−5,1 je Teil), die anderen Werkzeuge −2,7 … −3,5, T4083 −4 … −5, T4086 0. Nicht eindeutig: der erste MKD zeigte am 09./10.11. dasselbe (−34 µm in fünf Teilen, danach +15 in neun). Das Log belegt weder Verschleiß noch Ausbruch.
 
+## 3b. Log 25.11.2026 (✅ gemessen: die ersten drei Primärteleskope CAM V5.77, MG22 / MG25 / MG23, SLM-CoCr, 02:04 bis 07:47, HMI-Log in `maschine/log/`)
+CAM V5.77 gegen V5.74: kein Warmlauf mehr an T4086 (Stufe 4) und T4098 (Ø1,0-Ring), MKD 4 statt 8 min Warmlauf, MKD-Job länger (Steigung 0,025 bei 8 000 °/min, bis zum Pol). Auswertung `skripte/werkzeug_warm_log.py`, `skripte/laengen_trend_log.py`, `skripte/job_uebergaenge.py`.
+
+| Teil | Job gesamt | T4083 Warmlauf | T4089 Warmlauf | Nur messen / nach 4 min | MKD beim Holen | MKD Warmlauf 4 min | MKD im Job | Dauer MKD-Job |
+|---|---|---|---|---|---|---|---|---|
+| MG22 | 1:56:31 | +3,1 | +9,7 | −0,5 / +2,5 | +10,2 | −11,4 | **−7,7** | 23,8 min |
+| MG25 | 1:49:48 | +4,3 | +9,0 | −1,0 / +2,9 | +12,3 | −10,0 | **−8,2** | 19,0 min |
+| MG23 | 1:59:44 | +4,1 | +8,9 | +0,1 / +2,5 | +26,2 | −11,2 | **−6,0** | 23,0 min |
+
+(Längenänderungen in µm, Spindel steht bei jeder Messung.)
+- ✅ **Alle drei Teile liefen im Autostart durch, keine 50120/50121** (Abschnitt 6), jeder Warmlauf und jedes „Nur messen“ sauber („nachgemessen“), kein „messe nochmal“, kein Abbruch.
+- ✅ **Ohne Warmlauf an Stufe 4 und Ø1,0-Ring:** T4086 ändert sich im Job um +0,5 … +1,8 µm (3,7–3,9 min), T4098 um −0,9 … +2,5 µm (7,7–8,8 min). Der gestrichene Warmlauf fehlt nicht (mit Warmlauf am 23./24.11.: +2,6 … +4,2 bzw. −0,8 … +1,0 µm im Warmlauf, danach im Job −0,7 … +6,1 bzw. −0,9 … +1,2).
+- ✅ **MKD: der Warmlauf fängt −10 … −11,4 µm, im Job kommen noch −6,0 … −8,2 µm** (V5.74 mit 8 min Warmlauf und 10–13 min Job: −3,0 … −6,3). Die Summe nach dem Holen ist in beiden Versionen gleich (≈ −17 … −19 µm); was der Warmlauf nicht fängt, fällt in den Job, und der ist jetzt 19–24 min lang. Zwischen 19 und 24 min wächst der Wert nicht mehr: das Abkühlen ist dann durch.
+- ✅ Folge für das Teil (Länge geht beim Drehfräsen 1 : 1 in den Radius, der MKD läuft von der Präpgrenze zum Pol): **die Friktion ist am Ende des MKD-Jobs (Deckelseite) 6–8 µm im Radius dicker als am Anfang**, bei V5.74 waren es 3–6 µm. Der Anstieg liegt im ersten Teil des Jobs. Ob das am Teil zählt, entscheidet der Fit-Check (CAM: `../fraesstrategien-hyperdent/docs/drehfraesen_spindelwaerme.md` Abschnitt 11).
+- ✅ Gemeinsame Drift über die acht MG-Teile (24.11. 11:38 bis 25.11. 07:47): T4126 −21 µm, T4083 −38, T4089 −9, T4098 −16 µm beim Holen; T4081 −46 µm (davon −33 im Vollrohling-Job `1831-39__CoCr-16-1827` dazwischen, Verschleiß des Schruppers; 25.11. 07:59 Meldung 301 „Verschleißgrenze erreicht“, 08:27 neues T4081 eingemessen 26,9143).
+
 ## 4. Was das Antasten ausgleicht und was nicht
 | Anteil der Z-Kette | Größe | Zeit | ausgeglichen durch |
 |---|---|---|---|
@@ -85,9 +101,10 @@ Log 09.–12.11.2026 (399 Werkzeugeinsätze, Serien Primärteleskop):
 - ✅ Andreas: Beckhoff hat in der Woche des Technikerbesuchs ein Update herausgebracht, das das Drehfräs- und B-Achs-Beschleunigungsproblem (50120/50121, `21-achsdynamik-50120.md`) vollständig lösen soll. Andreas geht deshalb in den Frässtrategien zurück auf die alte Drehfräs-Geschwindigkeit und will Genauigkeit 0,005 probieren.
 - ✅ **Andreas 24.11. abends: Das Beckhoff-Update ist seit 17.11.2026 installiert; was es genau ändert, ist nicht bekannt.** Nullpunkte und Längenoffset sind unverändert, der Techniker hat mechanisch nichts verändert.
 - ✅ `LoggedEvents.db` (08.11. bis 24.11. 21:09): 50120/50121 am 08.–11.11. je Tag 12–16, am 13.11. 4, **seitdem keine mehr**, auch nicht in den elf Teleskopen vom 23./24.11. Gelaufen sind seit dem Update aber nur die schonenden MKD-Werte (5 600 °/min, Ende 1 mm vor dem Pol); die schnelleren Werte der CAM V5.77 (gebaut 24.11.: 8 000 °/min, bis zum Pol, Genauigkeit 0,005) sind damit nicht geprüft.
-- ❓ CNC-Version nach dem Update: im Ereignisprotokoll steht nur ein Versionseintrag (08.11.: 4.34.0-x64), keiner nach dem 17.11. Liegen die eigenen Unterprogramme noch in `C:\HMI\NCProg\sub\`? ✅ ja, alle `WARMT…`/`MESST…` der V5.74 liefen am 23./24.11.
+- ✅ **Log 25.11. (`LoggedEvents.db` bis 25.11. 11:46): die ersten drei Teile CAM V5.77 (MG22, MG25, MG23) liefen ohne 50120 und ohne Warnung 50121** – MKD 8 000 °/min mit Genauigkeit 0,005 bis zum Pol, Stufe 3/4 und Ringe ebenfalls 0,005. Vor dem Update ergab 0,005 den 3,75-fachen Grenzwert (Fehler). Drei Teile sind ein erster Beleg, kein Dauertest.
+- ✅ **CNC-Version nach dem Update: 4.38.0-x64** (vorher 4.34.0-x64). Jede CNC-Meldung trägt die Version in ihren Attributen (`JsonAttributes`, Feld `Version`): letzte Meldung mit 4.34.0 am 16.11. 08:19, erste mit 4.38.0 am 16.11. 08:20 → das Update lief am 16.11. morgens (Andreas nannte den 17.11.). Liegen die eigenen Unterprogramme noch in `C:\HMI\NCProg\sub\`? ✅ ja, alle `WARMT…`/`MESST…` der V5.74 liefen am 23./24.11.
 
 ## 7. Nächste Schritte ohne Eingriff
-1. ✅ Erledigt 24.11.: Log 23./24.11. ausgewertet (Abschnitt 3a). CAM V5.77 (24.11.) nimmt den Warmlauf an T4086 und T4098 wieder heraus und setzt den MKD auf 4 min (`WARMT4126S6000DYN17`); die Unterprogramme `WARMT4086S22000DYN4`, `WARMT4098S19500DYN4` (CoCr-Abutment nutzt es weiter) und `WARMT4126S6000DYN17MIN8` bleiben auf der Maschine. Nach den ersten V5.77-Teilen wieder `LOGS_SAMMELN`, dann `werkzeug_warm_log.py`, `laengen_streuung_log.py`, `laengen_trend_log.py` und die Zählung 50120/50121 (neue MKD-Werte).
+1. ✅ Erledigt 24.11.: Log 23./24.11. ausgewertet (Abschnitt 3a). CAM V5.77 (24.11.) nimmt den Warmlauf an T4086 und T4098 wieder heraus und setzt den MKD auf 4 min (`WARMT4126S6000DYN17`); die Unterprogramme `WARMT4086S22000DYN4`, `WARMT4098S19500DYN4` (CoCr-Abutment nutzt es weiter) und `WARMT4126S6000DYN17MIN8` bleiben auf der Maschine. ✅ Erledigt 25.11.: Log der ersten drei V5.77-Teile ausgewertet (Abschnitt 3b), keine 50120/50121. Beim nächsten Log (mehr Teile): dieselben drei Skripte und die Zählung wiederholen; `LOGS_SAMMELN` bringt ab jetzt die NC der fertigen Jobs mit (`05-maschinen-log.md`).
 2. Beim nächsten Kontakt mit HEDS: Welches Bauteil sind die 150 mm, welche Länge die „Z-Achse“; regelt das Kühlgerät auf einen festen Wert oder gegen die Raumtemperatur; gibt es eine Wärmekompensation der Z-Achse in der Steuerung?
 3. Zwei Zahlen vom Kühlgerät (Durchfluss, Zykluszeit), nur falls der Behälter wieder Thema wird.
