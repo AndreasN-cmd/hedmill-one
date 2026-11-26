@@ -11,3 +11,5 @@ Lesen/Auswerten: siehe `docs/05-maschinen-log.md`.
 24.11.2026: `message20261122.txt` bis `message20261124.txt` (elf Primärteleskope CAM V5.74 mit Warmlauf, zweiter MKD; Auswertung `docs/23-waerme-z-kette.md` Abschnitt 3a). Die LoggedEvents.db dazu liegt in `~/Downloads/HEDmill-Logs-2026-11-24_2112/`, nicht im Repo.
 
 25.11.2026: `message20261124.txt` (jetzt der ganze Tag) und `message20261125.txt` bis 11:44 (die ersten drei Primärteleskope CAM V5.77: MG22, MG25, MG23; Auswertung `docs/23-waerme-z-kette.md` Abschnitt 3b). Die LoggedEvents.db dazu liegt in `~/Downloads/HEDmill-Logs-2026-11-25_1148/`, nicht im Repo.
+
+26.11.2026: `message20261125.txt` (jetzt der ganze Tag) und `message20261126.txt` bis 17:18 (sechs Primärteleskope CAM V5.79: AP43, AP34, AP37, AP44, GA17, GA21; fünf Titan-Abutments CAM V5.75; zwei Jobs ohne Rohling am Wechslerplatz; Auswertung `docs/23-waerme-z-kette.md` Abschnitt 3c, `docs/21-achsdynamik-50120.md`, `docs/11-stoerungen-historie.md`). Die LoggedEvents.db dazu liegt in `~/Downloads/HEDmill-Logs-2026-11-26_1719/`, nicht im Repo.

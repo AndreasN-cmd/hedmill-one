@@ -1,9 +1,13 @@
 # Kurzüberblick: Stand nach dem 03.11.2026
 
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
-> Stand: 25.11.2026
+> Stand: 26.11.2026
 
-- ❓ **25.11.2026 abends: CAM V5.79 gebaut und in hyperDENT importiert (noch nicht gefräst): MKD 0,5 mm weiter Richtung Konnektor** – bei den ersten Teilen auf 50120/50121 am MKD achten (`21-achsdynamik-50120.md`); Kavität der Primärteleskope 8 µm enger, Sekundär 10 µm lockerer (reine CAM-Änderungen).
+- ✅ **26.11.2026: erste sechs Primärteleskope mit CAM V5.79 (MKD 0,5 mm über den Pol): Warnung 50121 (Achse B) ist zurück, kein Halt.** AP43 1 × (3,1-fach), AP44 1 × (4,1-fach), GA21 4 × (1,6- bis 2,9-fach), alle im MKD-Job am Konnektor-Knick; AP34, AP37, GA17 ohne Meldung; kein 50120 (bis zum Beckhoff-Update war 2,0-fach die Fehlergrenze mit Halt). ❓ Die neue Fehlergrenze ist nicht bekannt. Geplant im CAM (noch nicht gebaut): MKD bis +1,0, dann umkreist er auf jedem Teil den Konnektor → erste Teile tagsüber (`21-achsdynamik-50120.md`).
+- ✅ **26.11.2026: zwei Jobs liefen nicht, weil der Rohling nicht am Wechslerplatz stand** („Gewünschtes Material nicht an definierter Wechsler-Position 102“ um 03:57, GA22; „… 105“ um 09:16, GA26). Der erste hielt die Maschine von 03:57 bis 07:20 an (3:24 h, bis Andreas kam), die Jobliste läuft danach nicht von selbst weiter. Beide NC liegen trotzdem in `D:\CNC\done` (`11-stoerungen-historie.md`).
+- ✅ **26.11.2026: geänderte „Nur messen“-Unterprogramme und Sammel-Skripte gelaufen:** `MESST4089S40000DYN5G59` und `…MIN4` schreiben drei kurze Logzeilen, Warnung 20723 kommt nicht mehr (sechs Teleskope). `LOGS_SAMMELN` legt die 8 zuletzt fertigen NC in `done` ab. **MKD 2 an der Stirn defekt (Andreas 26.11., ≈ 20 Teleskope seit 23.11.), neuer MKD eingesetzt.**
+
+- ✅ **25.11.2026 abends: CAM V5.79 gebaut und in hyperDENT importiert (gefräst ab 25.11. 19:41, Ergebnis im Eintrag 26.11.): MKD 0,5 mm weiter Richtung Konnektor** – bei den ersten Teilen auf 50120/50121 am MKD achten (`21-achsdynamik-50120.md`); Kavität der Primärteleskope 8 µm enger, Sekundär 10 µm lockerer (reine CAM-Änderungen).
 
 - ✅ **25.11.2026: die ersten drei Primärteleskope mit CAM V5.77 liefen im Autostart ohne 50120/50121** (MG22, MG25, MG23; MKD 8 000 °/min, Genauigkeit 0,005, bis zum Pol; CNC 4.38.0-x64 seit 16.11.). MKD wird im jetzt 19–24 min langen Job noch 6–8 µm kürzer (`23-waerme-z-kette.md` Abschnitt 3b). **Meldung 20723 geklärt:** `#MSG`-Zeile über 120 Zeichen in den eigenen `MESST…`-Unterprogrammen, 8 × je Teleskop, harmlos; vier Dateien neu erzeugt, ✅ seit 25.11. auf der Maschine (Andreas), ❓ noch nicht gelaufen (`eigene-programme/README.md`). **Sammel-Skripte legen ihr Ergebnis künftig unter `D:\CNC\Bibliothek\Logs` ab** und `LOGS_SAMMELN` bringt die NC der fertigen Jobs mit; ✅ seit 25.11. auf dem Steuerungs-PC (Andreas), ❓ noch nicht gelaufen (`05-maschinen-log.md`).
 

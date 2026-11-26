@@ -72,6 +72,23 @@ CAM V5.77 gegen V5.74: kein Warmlauf mehr an T4086 (Stufe 4) und T4098 (Ø1,0-Ri
 - ✅ Folge für das Teil (Länge geht beim Drehfräsen 1 : 1 in den Radius, der MKD läuft von der Präpgrenze zum Pol): **die Friktion ist am Ende des MKD-Jobs (Deckelseite) 6–8 µm im Radius dicker als am Anfang**, bei V5.74 waren es 3–6 µm. Der Anstieg liegt im ersten Teil des Jobs. Ob das am Teil zählt, entscheidet der Fit-Check (CAM: `../fraesstrategien-hyperdent/docs/drehfraesen_spindelwaerme.md` Abschnitt 11).
 - ✅ Gemeinsame Drift über die acht MG-Teile (24.11. 11:38 bis 25.11. 07:47): T4126 −21 µm, T4083 −38, T4089 −9, T4098 −16 µm beim Holen; T4081 −46 µm (davon −33 im Vollrohling-Job `1831-39__CoCr-16-1827` dazwischen, Verschleiß des Schruppers; 25.11. 07:59 Meldung 301 „Verschleißgrenze erreicht“, 08:27 neues T4081 eingemessen 26,9143).
 
+## 3c. Log 25./26.11.2026 (✅ gemessen: sechs Primärteleskope CAM V5.79, SLM-CoCr, HMI-Log in `maschine/log/`)
+CAM V5.79 gegen V5.77: MKD-Job 0,5 mm weiter über den Pol (+0,9 min), sonst gleich. Auswertung `skripte/werkzeug_warm_log.py`.
+
+| Teil | Job gesamt | T4089 Warmlauf | Nur messen / nach 4 min | MKD beim Holen | MKD Warmlauf 4 min | MKD im Job | Dauer MKD-Job |
+|---|---|---|---|---|---|---|---|
+| AP43 (25.11. 19:41) | 2:16:44 | +9,6 | −0,8 / +2,4 | +8,8 | −11,3 | −6,0 | 27,5 min |
+| AP34 | 1:49:58 | +9,5 | −0,9 / +2,5 | +18,5 | −8,5 | −7,0 | 21,9 |
+| AP37 | 2:18:18 | +9,6 | −0,9 / +2,3 | +9,3 | −9,3 | −7,3 | 26,5 |
+| AP44 | 1:51:58 | +8,4 | +2,0 / +1,8 | +17,8 | −9,8 | −2,8 | 20,6 |
+| GA17 (26.11. 07:22) | 1:54:16 | +8,1 | −0,6 / +2,5 | +13,4 | **−3,9** | **−10,8** | 16,7 |
+| GA21 | 1:58:26 | +8,5 | −0,6 / +2,6 | +19,2 | −10,3 | −5,2 | 24,6 |
+
+- ✅ Bild wie in 3b: der MKD verliert nach dem Holen zusammen ≈ −13 … −17 µm, der 4-min-Warmlauf fängt davon −8,5 … −11,3 ab, der Rest (−2,8 … −7,3) fällt in den Job. Ausnahme GA17: Warmlauf nur −3,9, im Job −10,8 (❓ Grund offen; es war der erste Job nach 3:24 h Stillstand, der MKD kommt aber erst 1,5 h nach dem Jobstart).
+- ✅ T4089 wie bisher (+8 … +10 im Warmlauf, „Nur messen“ ± 1, nach weiteren 4 min +1,8 … +2,6).
+- ✅ Titan-Abutments 26.11. (CAM V5.75, fünf Teile): T5058 Warmlauf +3,9 … +4,4, im Job danach +0,7 … +2,7 (ohne Warmlauf am 21.11.: +2,8 … +8,5); T5062 Warmlauf −1,0 … +1,2, im Job −0,9 … +1,3.
+- ✅ MKD 2 (seit 23.11.) laut Andreas 26.11. an der Stirn defekt und ersetzt; im Längen-Log nicht zu erkennen (kein Sprung).
+
 ## 4. Was das Antasten ausgleicht und was nicht
 | Anteil der Z-Kette | Größe | Zeit | ausgeglichen durch |
 |---|---|---|---|
