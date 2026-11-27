@@ -1,7 +1,9 @@
 # Kurzüberblick: Stand nach dem 03.11.2026
 
 > Kennzeichnung: ✅ bestätigt (Andreas / Maschine / Unterprogramme / Log / TwinCAT live / erfolgreich gelaufen) · 🌐 öffentliche Quelle / allgemeines Steuerungswissen · ❓ offen oder Annahme – NICHT als Fakt verwenden
-> Stand: 26.11.2026
+> Stand: 27.11.2026
+
+- ❓ **27.11.2026: zwei Primärteleskope mit CAM V5.81 gefräst (Andreas): MKD 3 (neu seit 26.11.) direkt an der Stirn beschädigt wie MKD 2, Beschleunigungsmeldung der B-Achse wieder da.** Das Log `HEDmill-Logs-2026-11-27_1431` lag beim Auswerten nicht mehr vor (Downloads leer): ob 50120 (Halt) oder 50121 (Warnung), welche Teile und die Länge von MKD 3 sind **nicht** ausgewertet; `LOGS_SAMMELN` beim nächsten Mal erneut laufen lassen. ✅ Aus den Logs 23.–26.11. (`skripte/laengen_trend_log.py`): MKD 2 verlor gegen T4085/T4088/T4089/T4090 ≈ 25–40 µm Länge in 17 Teilen (1,5–2,5 µm je Teil), ≈ 20 µm davon schon in den ersten sieben Teilen (CAM V5.74, MKD-Ende −1). Andreas 27.11.: kein Torus mehr im Primärteleskop; CAM-Rechnung und Vorschlag (letzter Job Ø0,6-Kugelring, noch nicht gebaut) in `../fraesstrategien-hyperdent/docs/auslenkung_werkzeuge.md` §43. Für die Maschine heißt das: mit der nächsten CAM-Version entfällt der MKD-Job, in dem alle 50120/50121 lagen; die Kugeljobs (X-Versatz 1,5) hatten in keinem Log eine Meldung.
 
 - ❓ **26.11.2026 abends: CAM V5.81 gebaut und in hyperDENT importiert (noch nicht gefräst): der MKD läuft bis +1,0 über den Pol (Titan T5062 +0,75), die beiden Ringe bis +0,6 / +0,4.** Der MKD umkreist damit auf jedem Primärteleskop den Ø3-Konnektor (≈ 20 Umläufe mehr): mehr Warnungen 50121 zu erwarten; ob noch ein Halt 50120 möglich ist, ist nicht bekannt → erste Teile tagsüber, Ereignisprotokoll danach prüfen (`21-achsdynamik-50120.md`). Konnektor-Steg 0,30 → 0,19 mm.
 
